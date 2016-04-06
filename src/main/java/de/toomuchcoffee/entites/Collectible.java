@@ -17,11 +17,8 @@ public class Collectible {
 
     private String verbatim;
 
-    private String productNo;
-
-    private String productLine;
-
-    private int year;
+    @ManyToOne
+    private ProductLine productLine;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name="tagging", joinColumns=@JoinColumn(name="collectible_id"), inverseJoinColumns=@JoinColumn(name="tag_id"))
@@ -43,28 +40,12 @@ public class Collectible {
         this.verbatim = verbatim;
     }
 
-    public String getProductNo() {
-        return productNo;
-    }
-
-    public void setProductNo(String productNo) {
-        this.productNo = productNo;
-    }
-
-    public String getProductLine() {
+    public ProductLine getProductLine() {
         return productLine;
     }
 
-    public void setProductLine(String productLine) {
+    public void setProductLine(ProductLine productLine) {
         this.productLine = productLine;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
     }
 
     public Set<Tag> getTags() {
@@ -73,24 +54,6 @@ public class Collectible {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
-    }
-
-    public String getTagsString() {
-        return getTags().size() == 0
-                ? null
-                : "#"+String.join(" #", getTags().stream()
-                .map(Tag::getName)
-                .collect(Collectors.toList()));
-    }
-
-    public void setTagsString(String tagsString) {
-        List<String> strings = Arrays.asList(tagsString.split("#"));
-        Set<Tag> tags = strings.stream()
-                .map(String::trim)
-                .filter(s -> s.length()>0)
-                .map(Tag::new)
-                .collect(Collectors.toSet());
-        setTags(tags);
     }
 
 }

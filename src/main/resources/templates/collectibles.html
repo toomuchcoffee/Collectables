@@ -7,8 +7,8 @@
     <div th:unless="${#lists.isEmpty(collectibles)}">
         <dl th:each="collectible : ${collectibles}">
             <dt><span th:text="${collectible.verbatim}">Verbatim</span></dt>
-            <dt><span th:text="${collectible.year}">Year</span></dt>
-            <dt><span th:text="${collectible.tagsString}">Tags</span></dt>
+            <dt><span th:text="${collectible.productLine}">Product Line</span></dt>
+            <dt><span th:text="${collectible.tags}">Tags</span></dt>
         </dl>
     </div>
     <div th:if="${#lists.isEmpty(collectibles)}">
@@ -18,8 +18,8 @@
     <h3>Add Collectible</h3>
     <form method="POST">
         Verbatim: <input type="text" name="verbatim"/>
-        Year: <input type="text" name="year"/>
-        Tags: <input type="text" name="tagsString"/>
+        Product Line: <input type="text" name="productLine"/>
+        Tags: <input type="text" name="tags"/>
         <input type="submit"/>
     </form>
 </body>

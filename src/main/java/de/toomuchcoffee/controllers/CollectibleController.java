@@ -1,11 +1,7 @@
 package de.toomuchcoffee.controllers;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import de.toomuchcoffee.entites.Collectible;
-import de.toomuchcoffee.entites.Tag;
-import de.toomuchcoffee.repositories.CollectibleRepository;
-import de.toomuchcoffee.repositories.TagRepository;
+import de.toomuchcoffee.dtos.CollectibleDto;
+import de.toomuchcoffee.service.CollectibleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,28 +19,24 @@ import java.util.List;
 public class CollectibleController {
 
     @Autowired
-    private CollectibleRepository collectibleRepository;
-
-    @Autowired
-    private TagRepository tagRepository;
+    private CollectibleService collectibleService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String allCollectibles(Model model) {
-        List<Collectible> collectibles = collectibleRepository.findAll();
+        List<CollectibleDto> collectibles = collectibleService.find();
         model.addAttribute("collectibles", collectibles);
         return "collectibles";
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public String addToCollectibles(Collectible collectible) {
-        collectibleRepository.save(collectible);
+    public String addToCollectibles(CollectibleDto collectible) {
+        collectibleService.add(collectible);
         return "redirect:/";
     }
 
-    @RequestMapping(value = "{tagName}", method = RequestMethod.GET)
+    @RequestMapping(value = "tag/{tagName}", method = RequestMethod.GET)
     public String collectiblesByTag(@PathVariable String tagName, Model model) {
-        Tag tag = tagRepository.findOne(tagName);
-        List<Collectible> collectibles = collectibleRepository.findByTags(Sets.newHashSet(tag));
+        List<CollectibleDto> collectibles = collectibleService.findByTagName(tagName);
         model.addAttribute("collectibles", collectibles);
         return "collectibles";
     }

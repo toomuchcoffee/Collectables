@@ -14,8 +14,7 @@ public class Tag {
     @ManyToMany(mappedBy="tags", cascade = CascadeType.ALL)
     private Set<Collectible> collectibles;
 
-    public Tag() {
-    }
+    public Tag() {}
 
     public Tag(String name) {
         this.name = name;
