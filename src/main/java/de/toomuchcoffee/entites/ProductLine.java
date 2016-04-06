@@ -13,6 +13,13 @@ public class ProductLine {
 
     private String description;
 
+    public ProductLine() {
+    }
+
+    public ProductLine(String abbreviation) {
+        this.abbreviation = abbreviation;
+    }
+
     public String getAbbreviation() {
         return abbreviation;
     }

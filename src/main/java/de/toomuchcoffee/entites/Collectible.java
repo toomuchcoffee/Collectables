@@ -1,10 +1,7 @@
 package de.toomuchcoffee.entites;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by gerald.sander on 04/04/16.
@@ -17,7 +14,7 @@ public class Collectible {
 
     private String verbatim;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private ProductLine productLine;
 
     @ManyToMany(cascade = CascadeType.ALL)

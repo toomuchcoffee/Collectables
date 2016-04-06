@@ -40,4 +40,11 @@ public class CollectibleController {
         model.addAttribute("collectibles", collectibles);
         return "collectibles";
     }
+
+    @RequestMapping(value = "line/{productLineName}", method = RequestMethod.GET)
+    public String collectiblesByLine(@PathVariable String productLineName, Model model) {
+        List<CollectibleDto> collectibles = collectibleService.findByProductLineName(productLineName);
+        model.addAttribute("collectibles", collectibles);
+        return "collectibles";
+    }
 }

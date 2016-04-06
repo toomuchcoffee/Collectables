@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -32,20 +31,18 @@ public class CollectibleService {
     private ProductLineRepository productLineRepository;
 
     public void add(CollectibleDto collectibleDto) {
-
         Collectible collectible = new Collectible();
         collectible.setVerbatim(collectibleDto.getVerbatim());
 
-        ProductLine productLine = productLineRepository.findOne(collectibleDto.getProductLine());
-        collectible.setProductLine(productLine);
+        collectible.setProductLine(
+                Optional.ofNullable(productLineRepository.findOne(collectibleDto.getProductLine()))
+                .orElse(new ProductLine(collectibleDto.getProductLine())));
 
-        Set<Tag> tags = Arrays.asList(collectibleDto.getTags().split("#")).stream()
+        collectible.setTags(Arrays.asList(collectibleDto.getTags().split("#")).stream()
                 .map(String::trim)
                 .filter(s -> s.length() > 0)
                 .map(t -> Optional.ofNullable(tagRepository.findOne(t)).orElse(new Tag(t)))
-                .collect(Collectors.toSet());
-
-        collectible.setTags(tags);
+                .collect(Collectors.toSet()));
 
         collectibleRepository.save(collectible);
     }
@@ -58,6 +55,12 @@ public class CollectibleService {
     public List<CollectibleDto> findByTagName(String tagName) {
         Tag tag = tagRepository.findOne(tagName);
         List<Collectible> collectibles = collectibleRepository.findByTags(Sets.newHashSet(tag));
+        return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
+    }
+
+    public List<CollectibleDto> findByProductLineName(String productLineName) {
+        ProductLine productLine = productLineRepository.findOne(productLineName);
+        List<Collectible> collectibles = collectibleRepository.findByProductLine(productLine);
         return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
     }
 
