@@ -1,7 +1,11 @@
 package de.toomuchcoffee.controllers;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import de.toomuchcoffee.entites.Collectible;
+import de.toomuchcoffee.entites.Tag;
 import de.toomuchcoffee.repositories.CollectibleRepository;
+import de.toomuchcoffee.repositories.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +25,9 @@ public class CollectibleController {
     @Autowired
     private CollectibleRepository collectibleRepository;
 
+    @Autowired
+    private TagRepository tagRepository;
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String allCollectibles(Model model) {
         List<Collectible> collectibles = collectibleRepository.findAll();
@@ -28,17 +35,17 @@ public class CollectibleController {
         return "collectibles";
     }
 
-    @RequestMapping(value = "/{year}", method = RequestMethod.GET)
-    public String collectiblesByYear(@PathVariable int year, Model model) {
-        List<Collectible> collectibles = collectibleRepository.findByYear(year);
-        model.addAttribute("collectibles", collectibles);
-        return "collectibles";
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public String addToCollectibles(Collectible collectible) {
+        collectibleRepository.save(collectible);
+        return "redirect:/";
     }
 
-    @RequestMapping(value = "/{year}", method = RequestMethod.POST)
-    public String addToCollectibles(@PathVariable int year, Collectible collectible) {
-        collectible.setYear(year);
-        collectibleRepository.save(collectible);
-        return "redirect:/{year}";
+    @RequestMapping(value = "{tagName}", method = RequestMethod.GET)
+    public String collectiblesByTag(@PathVariable String tagName, Model model) {
+        Tag tag = tagRepository.findOne(tagName);
+        List<Collectible> collectibles = collectibleRepository.findByTags(Sets.newHashSet(tag));
+        model.addAttribute("collectibles", collectibles);
+        return "collectibles";
     }
 }

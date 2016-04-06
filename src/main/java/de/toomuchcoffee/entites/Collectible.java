@@ -1,9 +1,10 @@
 package de.toomuchcoffee.entites;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by gerald.sander on 04/04/16.
@@ -21,6 +22,10 @@ public class Collectible {
     private String productLine;
 
     private int year;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name="tagging", joinColumns=@JoinColumn(name="collectible_id"), inverseJoinColumns=@JoinColumn(name="tag_id"))
+    private Set<Tag> tags;
 
     public Long getId() {
         return id;
@@ -60,6 +65,32 @@ public class Collectible {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public String getTagsString() {
+        return getTags().size() == 0
+                ? null
+                : "#"+String.join(" #", getTags().stream()
+                .map(Tag::getName)
+                .collect(Collectors.toList()));
+    }
+
+    public void setTagsString(String tagsString) {
+        List<String> strings = Arrays.asList(tagsString.split("#"));
+        Set<Tag> tags = strings.stream()
+                .map(String::trim)
+                .filter(s -> s.length()>0)
+                .map(Tag::new)
+                .collect(Collectors.toSet());
+        setTags(tags);
     }
 
 }
