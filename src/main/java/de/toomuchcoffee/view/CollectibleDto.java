@@ -1,14 +1,15 @@
-package de.toomuchcoffee.dtos;
+package de.toomuchcoffee.view;
 
-import de.toomuchcoffee.entites.Collectible;
-import de.toomuchcoffee.entites.Tag;
+import de.toomuchcoffee.model.entites.Collectible;
+import de.toomuchcoffee.model.entites.Tag;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
  * Created by gerald on 06/04/16.
  */
-public class CollectibleDTO {
+public class CollectibleDto {
     private String verbatim;
 
     private String productLine;
@@ -39,20 +40,18 @@ public class CollectibleDTO {
         this.tags = tags;
     }
 
-    public static CollectibleDTO toDto(Collectible collectible) {
-        CollectibleDTO dto = new CollectibleDTO();
+    public static CollectibleDto toDto(Collectible collectible) {
+        CollectibleDto dto = new CollectibleDto();
 
         dto.setVerbatim(collectible.getVerbatim());
 
-        dto.setProductLine(collectible.getProductLine() != null
-                ? collectible.getProductLine().getAbbreviation()
-                : null);
+        Optional.ofNullable(collectible.getProductLine())
+                .ifPresent(p -> dto.setProductLine(p.getAbbreviation()));
 
-        dto.setTags(collectible.getTags().size() > 0
-                ? "#" + String.join(" #", collectible.getTags().stream()
-                .map(Tag::getName)
-                .collect(Collectors.toList()))
-                : null);
+        dto.setTags(collectible.getTags().size()>0
+                ? "#" + String.join(" #", collectible.getTags().stream().map(Tag::getName).collect(Collectors.toList()))
+                : null
+        );
 
         return dto;
     }

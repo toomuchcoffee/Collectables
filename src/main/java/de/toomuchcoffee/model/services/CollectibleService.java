@@ -1,13 +1,13 @@
-package de.toomuchcoffee.service;
+package de.toomuchcoffee.model.services;
 
 import com.google.common.collect.Sets;
-import de.toomuchcoffee.dtos.CollectibleDto;
-import de.toomuchcoffee.entites.Collectible;
-import de.toomuchcoffee.entites.ProductLine;
-import de.toomuchcoffee.entites.Tag;
-import de.toomuchcoffee.repositories.CollectibleRepository;
-import de.toomuchcoffee.repositories.ProductLineRepository;
-import de.toomuchcoffee.repositories.TagRepository;
+import de.toomuchcoffee.view.CollectibleDto;
+import de.toomuchcoffee.model.entites.Collectible;
+import de.toomuchcoffee.model.entites.ProductLine;
+import de.toomuchcoffee.model.entites.Tag;
+import de.toomuchcoffee.model.repositories.CollectibleRepository;
+import de.toomuchcoffee.model.repositories.ProductLineRepository;
+import de.toomuchcoffee.model.repositories.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

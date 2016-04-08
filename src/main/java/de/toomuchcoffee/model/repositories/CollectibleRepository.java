@@ -1,8 +1,8 @@
-package de.toomuchcoffee.repositories;
+package de.toomuchcoffee.model.repositories;
 
-import de.toomuchcoffee.entites.Collectible;
-import de.toomuchcoffee.entites.ProductLine;
-import de.toomuchcoffee.entites.Tag;
+import de.toomuchcoffee.model.entites.Collectible;
+import de.toomuchcoffee.model.entites.ProductLine;
+import de.toomuchcoffee.model.entites.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

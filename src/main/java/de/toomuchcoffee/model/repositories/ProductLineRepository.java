@@ -1,6 +1,6 @@
-package de.toomuchcoffee.repositories;
+package de.toomuchcoffee.model.repositories;
 
-import de.toomuchcoffee.entites.ProductLine;
+import de.toomuchcoffee.model.entites.ProductLine;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

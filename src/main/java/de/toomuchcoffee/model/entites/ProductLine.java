@@ -1,4 +1,4 @@
-package de.toomuchcoffee.entites;
+package de.toomuchcoffee.model.entites;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

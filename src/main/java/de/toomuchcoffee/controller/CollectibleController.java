@@ -1,7 +1,7 @@
-package de.toomuchcoffee.controllers;
+package de.toomuchcoffee.controller;
 
-import de.toomuchcoffee.dtos.CollectibleDto;
-import de.toomuchcoffee.service.CollectibleService;
+import de.toomuchcoffee.view.CollectibleDto;
+import de.toomuchcoffee.model.services.CollectibleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
