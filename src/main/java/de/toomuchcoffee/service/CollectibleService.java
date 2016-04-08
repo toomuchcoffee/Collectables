@@ -1,7 +1,7 @@
 package de.toomuchcoffee.service;
 
 import com.google.common.collect.Sets;
-import de.toomuchcoffee.dtos.CollectibleDto;
+import de.toomuchcoffee.dtos.CollectibleDTO;
 import de.toomuchcoffee.entites.Collectible;
 import de.toomuchcoffee.entites.ProductLine;
 import de.toomuchcoffee.entites.Tag;
@@ -30,7 +30,7 @@ public class CollectibleService {
     @Autowired
     private ProductLineRepository productLineRepository;
 
-    public void add(CollectibleDto collectibleDto) {
+    public void add(CollectibleDTO collectibleDto) {
         Collectible collectible = new Collectible();
         collectible.setVerbatim(collectibleDto.getVerbatim());
 
@@ -47,21 +47,21 @@ public class CollectibleService {
         collectibleRepository.save(collectible);
     }
 
-    public List<CollectibleDto> find() {
+    public List<CollectibleDTO> find() {
         List<Collectible> collectibles = collectibleRepository.findAll();
-        return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
+        return collectibles.stream().map(CollectibleDTO::toDto).collect(Collectors.toList());
     }
 
-    public List<CollectibleDto> findByTagName(String tagName) {
+    public List<CollectibleDTO> findByTagName(String tagName) {
         Tag tag = tagRepository.findOne(tagName);
         List<Collectible> collectibles = collectibleRepository.findByTags(Sets.newHashSet(tag));
-        return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
+        return collectibles.stream().map(CollectibleDTO::toDto).collect(Collectors.toList());
     }
 
-    public List<CollectibleDto> findByProductLineName(String productLineName) {
+    public List<CollectibleDTO> findByProductLineName(String productLineName) {
         ProductLine productLine = productLineRepository.findOne(productLineName);
         List<Collectible> collectibles = collectibleRepository.findByProductLine(productLine);
-        return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
+        return collectibles.stream().map(CollectibleDTO::toDto).collect(Collectors.toList());
     }
 
 }

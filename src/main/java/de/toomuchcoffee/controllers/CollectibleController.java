@@ -1,6 +1,6 @@
 package de.toomuchcoffee.controllers;
 
-import de.toomuchcoffee.dtos.CollectibleDto;
+import de.toomuchcoffee.dtos.CollectibleDTO;
 import de.toomuchcoffee.service.CollectibleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,27 +23,27 @@ public class CollectibleController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String allCollectibles(Model model) {
-        List<CollectibleDto> collectibles = collectibleService.find();
+        List<CollectibleDTO> collectibles = collectibleService.find();
         model.addAttribute("collectibles", collectibles);
         return "collectibles";
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public String addToCollectibles(CollectibleDto collectible) {
+    public String addToCollectibles(CollectibleDTO collectible) {
         collectibleService.add(collectible);
         return "redirect:/";
     }
 
     @RequestMapping(value = "tag/{tagName}", method = RequestMethod.GET)
     public String collectiblesByTag(@PathVariable String tagName, Model model) {
-        List<CollectibleDto> collectibles = collectibleService.findByTagName(tagName);
+        List<CollectibleDTO> collectibles = collectibleService.findByTagName(tagName);
         model.addAttribute("collectibles", collectibles);
         return "collectibles";
     }
 
     @RequestMapping(value = "line/{productLineName}", method = RequestMethod.GET)
     public String collectiblesByLine(@PathVariable String productLineName, Model model) {
-        List<CollectibleDto> collectibles = collectibleService.findByProductLineName(productLineName);
+        List<CollectibleDTO> collectibles = collectibleService.findByProductLineName(productLineName);
         model.addAttribute("collectibles", collectibles);
         return "collectibles";
     }
