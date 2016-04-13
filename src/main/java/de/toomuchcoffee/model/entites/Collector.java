@@ -13,7 +13,7 @@ import java.util.Collection;
  * Created by gerald.sander on 11/04/16.
  */
 @Entity
-public class User implements UserDetails{
+public class Collector implements UserDetails{
     @Id
     private String username;
 

@@ -9,7 +9,7 @@ import java.util.Set;
 @Entity
 public class Collectible {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String verbatim;
