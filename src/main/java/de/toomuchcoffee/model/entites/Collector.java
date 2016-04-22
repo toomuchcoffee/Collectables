@@ -9,9 +9,6 @@ import javax.persistence.Id;
 import java.util.Arrays;
 import java.util.Collection;
 
-/**
- * Created by gerald.sander on 11/04/16.
- */
 @Entity
 public class Collector implements UserDetails{
     @Id

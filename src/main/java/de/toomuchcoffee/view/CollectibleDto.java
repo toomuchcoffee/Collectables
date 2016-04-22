@@ -6,9 +6,6 @@ import de.toomuchcoffee.model.entites.Tag;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Created by gerald on 06/04/16.
- */
 public class CollectibleDto {
     private String verbatim;
 

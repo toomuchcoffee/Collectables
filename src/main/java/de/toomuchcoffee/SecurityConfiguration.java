@@ -10,9 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-/**
- * Created by gerald.sander on 11/04/16.
- */
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 

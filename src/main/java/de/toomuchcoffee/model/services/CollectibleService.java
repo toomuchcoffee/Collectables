@@ -16,9 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Created by gerald on 06/04/16.
- */
 @Service
 public class CollectibleService {
     @Autowired

@@ -3,9 +3,6 @@ package de.toomuchcoffee.model.entites;
 import javax.persistence.*;
 import java.util.Set;
 
-/**
- * Created by gerald.sander on 04/04/16.
- */
 @Entity
 public class Collectible {
     @Id

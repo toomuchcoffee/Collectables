@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
-/**
- * Created by gerald.sander on 04/04/16.
- */
 @Controller
 @RequestMapping("/")
 public class CollectibleController {

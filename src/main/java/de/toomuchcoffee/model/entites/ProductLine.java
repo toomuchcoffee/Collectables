@@ -3,9 +3,6 @@ package de.toomuchcoffee.model.entites;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-/**
- * Created by gerald on 06/04/16.
- */
 @Entity
 public class ProductLine {
     @Id
