@@ -1,0 +1,58 @@
+<!doctype html>
+<html ng-app="collectables">
+    <head>
+        <title>Collectables</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/application.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body ng-controller="CollectibleController as ctrl">
+        <div ng-view class="container">
+            <div class="list-group">
+                <h1>Collectibles</h1>
+                <div ng-repeat="collectible in ctrl.collectibles" class="list-group-item">
+                    <h4>{{collectible.verbatim}}</h4>
+                    <p>{{collectible.productLine}}</p>
+                    <p>{{collectible.tags}}</p>
+                </div>
+            </div>
+
+            <form name="collectibleForm" ng-submit="collectibleForm.$valid && ctrl.addCollectible()" novalidate>
+                <blockquote>
+                    <p><strong>Verbatim: {{ctrl.newCollectible.verbatim}}</strong></p>
+                    <p>Product Line: {{ctrl.newCollectible.productLine}}</p>
+                    <p>{{ctrl.newCollectible.tags}}</p>
+                </blockquote>
+
+                <fieldset class="form-group">
+                    <label>
+                        <strong>Verbatim:</strong>
+                        <input type="text" ng-model="ctrl.newCollectible.verbatim" required class="ng-dirty ng-invalid" />
+                    </label>
+                </fieldset>
+
+                <fieldset class="form-group">
+                    <label>
+                        Product Line:
+                        <input type="text" ng-model="ctrl.newCollectible.productLine" required class="ng-dirty ng-invalid" />
+                    </label>
+                </fieldset>
+
+                <fieldset class="form-group">
+                    <label>
+                        Tags:
+                        <textarea ng-model="ctrl.newCollectible.tags"></textarea>
+                    </label>
+                </fieldset>
+
+                <fieldset class="form-group">
+                    <input type="submit" value="Submit" ng-disabled="!collectibleForm.$valid"/>
+                </fieldset>
+            </form>
+        </div>
+
+        <script src="js/angular.min.js" type="text/javascript"></script>
+        <script src="js/app.js"></script>
+
+    </body>
+</html>

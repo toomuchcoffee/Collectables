@@ -1,4 +1,4 @@
-package de.toomuchcoffee;
+package de.toomuchcoffee.config;
 
 import de.toomuchcoffee.model.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
