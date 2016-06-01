@@ -1,9 +1,22 @@
 (function(){
-    var app = angular.module('collectables', []);
+    var app = angular.module('collectables', [ 'ngRoute' ])
+        .config(function($routeProvider) {
+
+            $routeProvider.when('/', {
+                templateUrl: 'index.html',
+                controller: 'CollectibleController'
+            // }).when('/login', {
+            //     templateUrl: 'login.html',
+            //     controller: 'navigation'
+            });
+                //.otherwise('/');
+
+        });
+
     app.controller('CollectibleController', function($http){
         var self = this;
 
-        $http.get('http://localhost:8080/', []).then(
+        $http.get('/collectibles', []).then(
             function(response) {
                 self.collectibles = response.data;
             },
@@ -15,7 +28,7 @@
         this.newCollectible = {};
 
         this.addCollectible = function() {
-            $http.post('http://localhost:8080/', self.newCollectible, []).then(
+            $http.post('/collectibles', self.newCollectible, []).then(
                 function(response) {
                     self.collectibles.push(self.newCollectible);
                     self.newCollectible = {};
