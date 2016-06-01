@@ -35,11 +35,14 @@ public class CollectibleService {
                 Optional.ofNullable(productLineRepository.findOne(collectibleDto.getProductLine().toLowerCase()))
                 .orElse(new ProductLine(collectibleDto.getProductLine().toLowerCase())));
 
-        collectible.setTags(Arrays.asList(collectibleDto.getTags().split("#")).stream()
-                .map(String::trim)
-                .filter(s -> s.length() > 0)
-                .map(t -> Optional.ofNullable(tagRepository.findOne(t.toLowerCase())).orElse(new Tag(t.toLowerCase())))
-                .collect(Collectors.toSet()));
+        Optional.ofNullable(collectibleDto.getTags()).ifPresent(
+                tags -> collectible.setTags(Arrays.asList(tags.split("#")).stream()
+                            .map(String::trim)
+                            .filter(s -> s.length() > 0)
+                            .map(t -> Optional.ofNullable(tagRepository
+                                    .findOne(t.toLowerCase()))
+                                    .orElse(new Tag(t.toLowerCase())))
+                            .collect(Collectors.toSet())));
 
         collectibleRepository.save(collectible);
     }

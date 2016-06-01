@@ -45,12 +45,11 @@ public class CollectibleDto {
         Optional.ofNullable(collectible.getProductLine())
                 .ifPresent(p -> dto.setProductLine(p.getAbbreviation()));
 
-        dto.setTags(collectible.getTags().size()>0
-                ? "#" + String.join(" #", collectible.getTags().stream().map(Tag::getName).collect(Collectors.toList()))
-                : null
+        dto.setTags(
+                (collectible.getTags().size()>0 ? "#" : "")
+              + String.join(" #", collectible.getTags().stream().map(Tag::getName).collect(Collectors.toList()))
         );
 
         return dto;
     }
-
 }
