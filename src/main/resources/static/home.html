@@ -1,45 +1,7 @@
-<div ng-show="authenticated">
-    <div ng-controller="CollectibleController as ctrl">
-        <div class="list-group">
-            <h1>Collectibles</h1>
-            <div ng-repeat="collectible in ctrl.collectibles" class="list-group-item">
-                <h4>{{collectible.verbatim}}</h4>
-                <p>{{collectible.productLine}}</p>
-                <p>{{collectible.tags}}</p>
-            </div>
-        </div>
+    <div class="container" ng-controller="HomeController as ctrl">
 
-        <form name="collectibleForm" ng-submit="collectibleForm.$valid && ctrl.addCollectible()" novalidate>
-            <blockquote>
-                <p><strong>Verbatim: {{ctrl.newCollectible.verbatim}}</strong></p>
-                <p>Product Line: {{ctrl.newCollectible.productLine}}</p>
-                <p>{{ctrl.newCollectible.tags}}</p>
-            </blockquote>
+        <h1>Collectables</h1>
+        <p>A web database for Star Wars action figures</p>
 
-            <fieldset class="form-group">
-                <label>
-                    <strong>Verbatim:</strong>
-                    <input type="text" ng-model="ctrl.newCollectible.verbatim" required class="ng-dirty ng-invalid" />
-                </label>
-            </fieldset>
-
-            <fieldset class="form-group">
-                <label>
-                    Product Line:
-                    <input type="text" ng-model="ctrl.newCollectible.productLine" required class="ng-dirty ng-invalid" />
-                </label>
-            </fieldset>
-
-            <fieldset class="form-group">
-                <label>
-                    Tags:
-                    <textarea ng-model="ctrl.newCollectible.tags"></textarea>
-                </label>
-            </fieldset>
-
-            <fieldset class="form-group">
-                <input type="submit" value="Submit" ng-disabled="!collectibleForm.$valid"/>
-            </fieldset>
-        </form>
+        <img ng-src="/images/welcome" />
     </div>
-</div>

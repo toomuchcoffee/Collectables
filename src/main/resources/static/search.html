@@ -1,0 +1,22 @@
+    <div ng-controller="SearchController as ctrl">
+        <h4>Product Lines</h4>
+        <ul class="nav nav-pills" role="tablist">
+            <li ng-repeat="line in ctrl.lines">
+                <a href="" ng-click="ctrl.searchByLine(line)">{{line}}</a>
+            </li>
+        </ul>
+
+        <h4>Tags</h4>
+        <ul class="nav nav-pills" role="tablist">
+            <li ng-repeat="tag in ctrl.tags">
+                <a href="" ng-click="ctrl.searchByTag(tag)">{{tag}}</a>
+            </li>
+        </ul>
+
+        <div class="list-group" ng-show="ctrl.collectibles">
+            <h2>Found collectibles</h2>
+            <div ng-repeat="collectible in ctrl.collectibles" class="list-group-item">
+                <p><strong>{{collectible.verbatim}}</strong> <em>by</em> {{collectible.productLine}}</p>
+            </div>
+        </div>
+    </div>

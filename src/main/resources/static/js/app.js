@@ -4,10 +4,13 @@
 
             $routeProvider.when('/', {
                 templateUrl: 'home.html',
-                controller: 'CollectibleController'
-                }).when('/login', {
-                     templateUrl: 'login.html',
-                     controller: 'NavigationController'
+                controller: 'HomeController'
+                }).when('/search', {
+                     templateUrl: 'search.html',
+                     controller: 'SearchController'
+                }).when('/edit', {
+                     templateUrl: 'edit.html',
+                     controller: 'EditController'
                 }).otherwise('/');
 
             $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
@@ -43,7 +46,7 @@
                         $location.path("/");
                         $scope.error = false;
                     } else {
-                        $location.path("/login");
+                        $location.path("/");
                         $scope.error = true;
                     }
                 });
@@ -63,8 +66,12 @@
             };
         
         });
+    
+    app.controller('HomeController', function($http){
+    
+    });
 
-    app.controller('CollectibleController', function($http){
+    app.controller('EditController', function($http){
         var self = this;
 
         $http.get('/collectibles', []).then(
@@ -85,6 +92,46 @@
                 },
                 function() {
                     alert("Something went wrong!");
+                }
+            );
+        };
+    });
+
+    app.controller('SearchController', function($http){
+        var self = this;
+
+        $http.get('/tags', []).then(
+            function(response) {
+                self.tags = response.data;
+            },
+            function() {
+            }
+        );
+        
+        $http.get('/lines', []).then(
+            function(response) {
+                self.lines = response.data;
+            },
+            function() {
+            }
+        );
+        
+        this.searchByTag = function(tag) {
+            $http.get('/collectibles/tag/'+tag, []).then(
+                function(response) {
+                    self.collectibles = response.data;
+                },
+                function() {
+                }
+            );
+        };
+        
+        this.searchByLine = function(line) {
+            $http.get('/collectibles/line/'+line, []).then(
+                function(response) {
+                    self.collectibles = response.data;
+                },
+                function() {
                 }
             );
         };
