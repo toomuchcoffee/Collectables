@@ -27,6 +27,11 @@ public class CollectibleController {
         collectibleService.add(collectible);
     }
 
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    public void deleteFromCollectibles(@PathVariable Long id) {
+        collectibleService.delete(id);
+    }
+
     @RequestMapping(value = "tag/{tagName}", method = RequestMethod.GET)
     public List<CollectibleDto> collectiblesByTag(@PathVariable String tagName) {
         return collectibleService.findByTagName(tagName);

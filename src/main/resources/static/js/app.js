@@ -95,6 +95,18 @@
                 }
             );
         };
+
+        this.deleteCollectible = function(item) {
+            $http.delete('/collectibles/'+item.id, []).then(
+                function(response) {
+                    var index = self.collectibles.indexOf(item);
+                    self.collectibles.splice(index, 1);
+                },
+                function() {
+                    alert("Something went wrong!");
+                }
+            )
+        }
     });
 
     app.controller('SearchController', function($http){

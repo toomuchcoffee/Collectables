@@ -13,7 +13,7 @@
     </head>
 
     <body ng-app="collectables" ng-controller="NavigationController" ng-cloak class="ng-cloak">
-        <div ng-show="authenticated">
+        <div ng-if="authenticated">
             <div class="container">
                 <ul class="nav nav-pills" role="tablist">
                     <li ng-class="{ active: isActive('/') }"><a href="#/">Home</a></li>
@@ -25,7 +25,7 @@
             <div ng-view class="container"></div>
         </div>
 
-        <div class="container" ng-show="!authenticated">
+        <div class="container" ng-if="!authenticated">
             <div class="alert alert-danger" ng-show="error">
                 There was a problem logging in. Please try again.
             </div>

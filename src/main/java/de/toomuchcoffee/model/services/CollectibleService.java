@@ -42,6 +42,10 @@ public class CollectibleService {
         collectibleRepository.save(collectible);
     }
 
+    public void delete(Long id) {
+        collectibleRepository.delete(id);
+    }
+
     public List<CollectibleDto> find() {
         List<Collectible> collectibles = collectibleRepository.findAll();
         return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());

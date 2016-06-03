@@ -57,32 +57,21 @@ public class ImageService {
 
     public static class TumblrResponseWrapper {
         public TumblrResponse response;
-        public TumblrResponseWrapper() {
-        }
     }
 
     public static class TumblrResponse {
         public TumblrPost[] posts;
-
-        public TumblrResponse() {
-        }
     }
 
     public static class TumblrPost {
         public String[] tags;
         public TumblrPhoto[] photos;
-
-        public TumblrPost() {
-        }
     }
 
     public static class TumblrPhoto {
         public String caption;
         public TumblrPhotoSource[] alt_sizes;
         public TumblrPhotoSource original_size;
-
-        public TumblrPhoto() {
-        }
     }
 
     public static class TumblrPhotoSource {
