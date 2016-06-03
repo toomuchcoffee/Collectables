@@ -7,11 +7,21 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class CollectibleDto {
+    private Long id;
+
     private String verbatim;
 
     private String productLine;
 
     private String tags;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getVerbatim() {
         return verbatim;
@@ -39,6 +49,8 @@ public class CollectibleDto {
 
     public static CollectibleDto toDto(Collectible collectible) {
         CollectibleDto dto = new CollectibleDto();
+
+        dto.setId(collectible.getId());
 
         dto.setVerbatim(collectible.getVerbatim());
 

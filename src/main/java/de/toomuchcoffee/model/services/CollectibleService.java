@@ -6,12 +6,10 @@ import de.toomuchcoffee.model.entites.ProductLine;
 import de.toomuchcoffee.model.entites.Tag;
 import de.toomuchcoffee.model.repositories.CollectibleRepository;
 import de.toomuchcoffee.model.repositories.ProductLineRepository;
-import de.toomuchcoffee.model.repositories.TagRepository;
 import de.toomuchcoffee.view.CollectibleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,7 +20,10 @@ public class CollectibleService {
     private CollectibleRepository collectibleRepository;
 
     @Autowired
-    private TagRepository tagRepository;
+    private TagService tagService;
+
+    @Autowired
+    private ImageService imageService;
 
     @Autowired
     private ProductLineRepository productLineRepository;
@@ -35,14 +36,8 @@ public class CollectibleService {
                 Optional.ofNullable(productLineRepository.findOne(collectibleDto.getProductLine().toLowerCase()))
                 .orElse(new ProductLine(collectibleDto.getProductLine().toLowerCase())));
 
-        Optional.ofNullable(collectibleDto.getTags()).ifPresent(
-                tags -> collectible.setTags(Arrays.asList(tags.split("#")).stream()
-                            .map(String::trim)
-                            .filter(s -> s.length() > 0)
-                            .map(t -> Optional.ofNullable(tagRepository
-                                    .findOne(t.toLowerCase()))
-                                    .orElse(new Tag(t.toLowerCase())))
-                            .collect(Collectors.toSet())));
+        Optional.ofNullable(collectibleDto.getTags())
+                .ifPresent(tagsString -> collectible.setTags(tagService.getTagsFromString(tagsString)));
 
         collectibleRepository.save(collectible);
     }
@@ -53,7 +48,7 @@ public class CollectibleService {
     }
 
     public List<CollectibleDto> findByTagName(String tagName) {
-        Tag tag = tagRepository.findByNameIgnoreCase(tagName);
+        Tag tag = tagService.find(tagName);
         List<Collectible> collectibles = collectibleRepository.findByTags(Sets.newHashSet(tag));
         return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
     }
@@ -62,6 +57,11 @@ public class CollectibleService {
         ProductLine productLine = productLineRepository.findByAbbreviationIgnoreCase(productLineName);
         List<Collectible> collectibles = collectibleRepository.findByProductLine(productLine);
         return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
+    }
+
+    public byte[] getCollectibleThumbnail(Long collectibleId) {
+        Collectible collectible = collectibleRepository.findOne(collectibleId);
+        return imageService.getCollectibleThumbnail(collectible);
     }
 
 }

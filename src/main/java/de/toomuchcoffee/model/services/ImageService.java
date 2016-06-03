@@ -1,91 +1,94 @@
 package de.toomuchcoffee.model.services;
 
+import com.google.common.collect.Sets;
 import com.jayway.jsonpath.JsonPath;
+import de.toomuchcoffee.model.entites.Collectible;
+import de.toomuchcoffee.model.entites.Tag;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ImageService {
 
-    public static final String IMAGE_BASE_URL = "http://yaswb.tumblr.com/api/read/json?callback=?";
+    @Value("${de.toomuchcoffee.collectables.tumblr-api-key}")
+    private String tumblrApiKey;
 
     public byte[] getWelcomeImage() throws IOException {
-        List<Map<String, String>> tumblrPosts = getTumblrPosts();
-        int nextInt = new Random().nextInt(tumblrPosts.size() - 1);
-        String url = tumblrPosts.get(nextInt).get("photo-url-1280");;
+        JsonPath jsonPath = JsonPath.compile("$.response.posts[0].photos[0].original_size.url");
+        TumblrResponseWrapper tumblrResponse = getTumblrResponse("starwars");
+        String url = tumblrResponse.response.posts[0].photos[0].original_size.url;
         return new RestTemplate().getForObject(url, byte[].class);
     }
 
-    private List<Map<String, String>> getTumblrPosts() {
-        String jsonString = new RestTemplate().getForObject(IMAGE_BASE_URL, String.class)
-                .replaceFirst("var tumblr_api_read = ", "");
-        JsonPath jsonPath = JsonPath.compile("$.posts");
-        return jsonPath.read(jsonString);
+    public byte[] getCollectibleThumbnail(Collectible collectible) {
+        String tag = collectible.getVerbatim().replaceAll("[^a-zA-Z0-9]", "").trim().toLowerCase();
+        try {
+            TumblrResponseWrapper tumblrResponse = getTumblrResponse(tag);
+
+            Set<String> queryTags = Sets.newHashSet(tag);
+            queryTags.add(collectible.getProductLine().getAbbreviation());
+            queryTags.addAll(collectible.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
+
+            for (TumblrPost post : tumblrResponse.response.posts) {
+                for (int threshold = 5; threshold > 0; threshold--) {
+                    Set<String> itemTags = Arrays.stream(post.tags).collect(Collectors.toSet());
+                    if (Sets.intersection(queryTags, itemTags).size() > threshold) {
+                        String url = post.photos[0].alt_sizes[5].url;
+                        return new RestTemplate().getForObject(url, byte[].class);
+                    }
+                }
+            }
+        } catch (Exception e){
+            // TODO handle exception
+        }
+        return new byte[0];
     }
 
+    private TumblrResponseWrapper getTumblrResponse(String tag) {
+        String tumblrUrl = "https://api.tumblr.com/v2/blog/yaswb.tumblr.com/posts/photo?api_key=" + tumblrApiKey + "&tag=" + tag;
+        return new RestTemplate().getForObject(tumblrUrl, TumblrResponseWrapper.class);
+    }
 
-/*
-*
-* {
-    "tumblelog": {
-        "title": "YASWB - Yet Another Star Wars Blog",
-        "description": "                                                                                                                                                                                                                A retrospection on Vintage Star Wars with modern action figures and other Star Wars toys.\nWith the help of a cheap camera, a few colored cardboards, a Swedish halogen desk light, insomniac tendencies, and a growing collection of Star Wars plastic.",
-        "name": "yaswb",
-        "timezone": "Europe\/Amsterdam",
-        "cname": false,
-        "feeds": []
-    },
-    "posts-start": 0,
-    "posts-total": 1426,
-    "posts-type": false,
-    "posts": [
-        {
-            "id": "145296385874",
-            "url": "http:\/\/yaswb.tumblr.com\/post\/145296385874",
-            "url-with-slug": "http:\/\/yaswb.tumblr.com\/post\/145296385874\/the-first-boba-fett-in-my-collection-that-can-pose",
-            "type": "photo",
-            "date-gmt": "2016-06-02 07:16:31 GMT",
-            "date": "Thu, 02 Jun 2016 09:16:31",
-            "bookmarklet": 0,
-            "mobile": 0,
-            "feed-item": "",
-            "from-feed-id": 0,
-            "unix-timestamp": 1464851791,
-            "format": "html",
-            "reblog-key": "IQ5vZweS",
-            "slug": "the-first-boba-fett-in-my-collection-that-can-pose",
-            "photo-caption": "<p>The first Boba Fett in my collection that can pose like on the original vintage Kenner cardback #starwars #actionfigures #bobafett #bandai #kenner #bountyhunter<\/p>",
-            "photo-link-url": "https:\/\/www.instagram.com\/p\/BGJLTFSlzY0\/",
-            "width": 1080,
-            "height": 1080,
-            "photo-url-1280": "http:\/\/66.media.tumblr.com\/e5a7acec5c9abf75c2624544dfce3627\/tumblr_o84uvjeOzd1ssj8pjo1_1280.jpg",
-            "photo-url-500": "http:\/\/67.media.tumblr.com\/e5a7acec5c9abf75c2624544dfce3627\/tumblr_o84uvjeOzd1ssj8pjo1_500.jpg",
-            "photo-url-400": "http:\/\/66.media.tumblr.com\/e5a7acec5c9abf75c2624544dfce3627\/tumblr_o84uvjeOzd1ssj8pjo1_400.jpg",
-            "photo-url-250": "http:\/\/66.media.tumblr.com\/e5a7acec5c9abf75c2624544dfce3627\/tumblr_o84uvjeOzd1ssj8pjo1_250.jpg",
-            "photo-url-100": "http:\/\/66.media.tumblr.com\/e5a7acec5c9abf75c2624544dfce3627\/tumblr_o84uvjeOzd1ssj8pjo1_100.jpg",
-            "photo-url-75": "http:\/\/66.media.tumblr.com\/e5a7acec5c9abf75c2624544dfce3627\/tumblr_o84uvjeOzd1ssj8pjo1_75sq.jpg",
-            "photos": [],
-            "tags": [
-                "starwars",
-                "kenner",
-                "bobafett",
-                "bountyhunter",
-                "actionfigures",
-                "bandai"
-            ]
-        },
-*
-*       ...
-*  }
-*
-*
-*
-* */
+    public static class TumblrResponseWrapper {
+        public TumblrResponse response;
+        public TumblrResponseWrapper() {
+        }
+    }
 
+    public static class TumblrResponse {
+        public TumblrPost[] posts;
+
+        public TumblrResponse() {
+        }
+    }
+
+    public static class TumblrPost {
+        public String[] tags;
+        public TumblrPhoto[] photos;
+
+        public TumblrPost() {
+        }
+    }
+
+    public static class TumblrPhoto {
+        public String caption;
+        public TumblrPhotoSource[] alt_sizes;
+        public TumblrPhotoSource original_size;
+
+        public TumblrPhoto() {
+        }
+    }
+
+    public static class TumblrPhotoSource {
+        public String url;
+        public Integer width;
+        public Integer height;
+    }
 
 }
