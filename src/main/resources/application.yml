@@ -14,6 +14,10 @@ de:
     collectables:
       tumblr-api-key: wyAdl6nmuGYTeBOh8zxrOsufduo9k71tYL4N90RENOwnM7l0HE
 
+# actuator specific
+management:
+  context-path: /status
+
 ---
 
 spring:
