@@ -95,7 +95,7 @@
         this.newCollectible = {};
 
         this.addCollectible = function() {
-            $http.post('/collectibles', self.newCollectible, []).then(
+            $http.post('/admin/collectibles', self.newCollectible, []).then(
                 function(response) {
                     self.collectibles.push(self.newCollectible);
                     self.newCollectible = {};
@@ -107,7 +107,7 @@
         };
 
         this.deleteCollectible = function(item) {
-            $http.delete('/collectibles/'+item.id, []).then(
+            $http.delete('/admin/collectibles/'+item.id, []).then(
                 function(response) {
                     var index = self.collectibles.indexOf(item);
                     self.collectibles.splice(index, 1);

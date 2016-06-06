@@ -2,9 +2,7 @@ package de.toomuchcoffee.config;
 
 import de.toomuchcoffee.model.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -26,7 +24,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Configuration
-@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -40,8 +37,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .logout()
           .and()
             .authorizeRequests()
-            .antMatchers("/index.html", "/login.html", "/home.html", "/").permitAll()
-            .anyRequest().authenticated().and()
+                .antMatchers("/index.html", "/login.html", "/home.html", "/").permitAll()
+                .antMatchers("/admin/**").hasAuthority("ADMIN")
+                .antMatchers("/**").hasAuthority("USER")
+                .anyRequest().authenticated()
+          .and()
             .addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
           .csrf().csrfTokenRepository(csrfTokenRepository());
     }
