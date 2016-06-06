@@ -14,39 +14,14 @@
 
     <body ng-app="collectables" ng-controller="NavigationController" ng-cloak class="ng-cloak">
         <div ng-if="authenticated">
-            <div class="container">
-                <ul class="nav nav-pills" role="tablist">
-                    <li ng-class="{ active: isActive('/') }"><a href="#/">Home</a></li>
-                    <li ng-class="{ active: isActive('/search') }"><a href="#/search">Search</a></li>
-                    <li ng-class="{ active: isActive('/edit') }"><a href="#/edit">Edit</a></li>
-                    <li><a href="" ng-click="logout()">Logout</a></li>
-                </ul>
-            </div>
+            <navigation></navigation>
             <div ng-view class="container"></div>
         </div>
 
-        <div class="container" ng-if="!authenticated">
-            <div class="alert alert-danger" ng-show="error">
-                There was a problem logging in. Please try again.
-            </div>
-            <form role="form" ng-submit="login()">
-                <div class="form-group">
-                    <label>
-                        Username: <input type="text" class="form-control" id="username" name="username" ng-model="credentials.username"/>
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>
-                        Password: <input type="password" class="form-control" id="password" name="password" ng-model="credentials.password"/>
-                    </label>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-        </div>
+        <login ng-if="!authenticated"></login>
 
         <script src="js/angular.js" type="text/javascript"></script>
         <script src="js/angular-route.js" type="text/javascript"></script>
         <script src="js/app.js"></script>
-
     </body>
 </html>
