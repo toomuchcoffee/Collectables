@@ -18,6 +18,11 @@ public class AdminController {
         collectibleService.add(collectible);
     }
 
+    @RequestMapping(value = "/collectibles/{id}", method = RequestMethod.PUT)
+    public void modifyCollectible(@PathVariable Long id, @RequestBody CollectibleDto collectible) {
+        collectibleService.update(id, collectible);
+    }
+
     @RequestMapping(value = "/collectibles/{id}", method = RequestMethod.DELETE)
     public void deleteFromCollectibles(@PathVariable Long id) {
         collectibleService.delete(id);

@@ -98,13 +98,34 @@
             );
         };
 
-        this.newItem = {};
+        this.selectedItem = {};
+        
+        this.saveItem = function() {
+            if (self.selectedItem.id) {
+                self.modifyItem(self.selectedItem);
+            } else {
+                self.addItem(self.selectedItem);
+            }
+        };
 
-        this.addItem = function() {
-            $http.post('/admin/'+this.apipath, self.newItem, []).then(
+        this.addItem = function(item) {
+            $http.post('/admin/'+this.apipath, item, []).then(
                 function(response) {
-                    self.items.push(self.newItem);
-                    self.newItem = {};
+                    self.getItems();
+                    self.selectedItem = {};
+                },
+                function() {
+                    alert("Something went wrong!");
+                }
+            );
+        };
+
+
+        this.modifyItem = function(item) {
+            $http.put('/admin/'+this.apipath+'/'+item.id, item, []).then(
+                function(response) {
+                    self.getItems();
+                    self.selectedItem = {};
                 },
                 function() {
                     alert("Something went wrong!");
@@ -115,13 +136,16 @@
         this.deleteItem = function(item) {
             $http.delete('/admin/'+this.apipath+'/'+item.id, []).then(
                 function(response) {
-                    var index = self.items.indexOf(item);
-                    self.items.splice(index, 1);
+                    self.getItems();
                 },
                 function() {
                     alert("Something went wrong!");
                 }
             )
+        };
+        
+        this.editItem = function(item) {
+            self.selectedItem = item;
         }
     });
 

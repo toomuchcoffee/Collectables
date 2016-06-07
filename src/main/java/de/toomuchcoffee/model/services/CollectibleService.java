@@ -9,8 +9,11 @@ import de.toomuchcoffee.model.repositories.ProductLineRepository;
 import de.toomuchcoffee.view.CollectibleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,7 +31,25 @@ public class CollectibleService {
     @Autowired
     private ProductLineRepository productLineRepository;
 
+    @Transactional
     public void add(CollectibleDto collectibleDto) {
+        Collectible collectible = mapToEntity(collectibleDto);
+        collectibleRepository.save(collectible);
+    }
+
+    @Transactional
+    public void update(Long id, CollectibleDto collectibleDto) {
+        if (!collectibleRepository.exists(id)) {
+            throw new NoSuchElementException(String.format("Collectible with id %d does not exist", id));
+        }
+        if (!Objects.equals(id, collectibleDto.getId())) {
+            throw new IllegalArgumentException(String.format("Id %d does not match with dto id %d", id, collectibleDto.getId()));
+        }
+        Collectible collectible = mapToEntity(collectibleDto);
+        collectibleRepository.save(collectible);
+    }
+
+    private Collectible mapToEntity(CollectibleDto collectibleDto) {
         Collectible collectible = new Collectible();
         collectible.setVerbatim(collectibleDto.getVerbatim());
 
@@ -39,9 +60,12 @@ public class CollectibleService {
         Optional.ofNullable(collectibleDto.getTags())
                 .ifPresent(tagsString -> collectible.setTags(tagService.getTagsFromString(tagsString)));
 
-        collectibleRepository.save(collectible);
+        Optional.ofNullable(collectibleDto.getId()).ifPresent(collectible::setId);
+
+        return collectible;
     }
 
+    @Transactional
     public void delete(Long id) {
         collectibleRepository.delete(id);
     }
@@ -67,5 +91,4 @@ public class CollectibleService {
         Collectible collectible = collectibleRepository.findOne(collectibleId);
         return imageService.getCollectibleThumbnail(collectible);
     }
-
 }
