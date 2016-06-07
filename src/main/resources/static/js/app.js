@@ -84,21 +84,27 @@
     app.controller('EditController', function($http){
         var self = this;
 
-        $http.get('/collectibles', []).then(
-            function(response) {
-                self.collectibles = response.data;
-            },
-            function() {
-            }
-        );
+        this.initialize = function(apipath) {
+            this.apipath = apipath;
+        };
 
-        this.newCollectible = {};
-
-        this.addCollectible = function() {
-            $http.post('/admin/collectibles', self.newCollectible, []).then(
+        this.getItems = function() {
+            $http.get('/'+this.apipath, []).then(
                 function(response) {
-                    self.collectibles.push(self.newCollectible);
-                    self.newCollectible = {};
+                    self.items = response.data;
+                },
+                function() {
+                }
+            );
+        };
+
+        this.newItem = {};
+
+        this.addItem = function() {
+            $http.post('/admin/'+this.apipath, self.newItem, []).then(
+                function(response) {
+                    self.items.push(self.newItem);
+                    self.newItem = {};
                 },
                 function() {
                     alert("Something went wrong!");
@@ -106,11 +112,11 @@
             );
         };
 
-        this.deleteCollectible = function(item) {
-            $http.delete('/admin/collectibles/'+item.id, []).then(
+        this.deleteItem = function(item) {
+            $http.delete('/admin/'+this.apipath+'/'+item.id, []).then(
                 function(response) {
-                    var index = self.collectibles.indexOf(item);
-                    self.collectibles.splice(index, 1);
+                    var index = self.items.indexOf(item);
+                    self.items.splice(index, 1);
                 },
                 function() {
                     alert("Something went wrong!");
