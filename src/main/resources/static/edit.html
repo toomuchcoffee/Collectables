@@ -5,11 +5,11 @@
                     <strong>{{collectible.verbatim}}</strong>, {{collectible.productLine}}
                     <span class="pull-right">
                         <a class="btn btn-default" href="" ng-click="ctrl.editItem(collectible)">
-                            <i class="icon-edit"></i>
+                            <i class="glyphicon glyphicon-pencil"></i>
                             Edit
                         </a>
                         <a class="btn btn-danger" href="" ng-click="ctrl.deleteItem(collectible)">
-                            <i class="icon-trash icon-white"></i>
+                            <i class="glyphicon glyphicon-trash"></i>
                             Delete
                         </a>
                     </span>
@@ -31,7 +31,9 @@
                 <textarea class="form-control" placeholder="Tags, e.g. #hoth #echobase #theempirestrikesback" ng-model="ctrl.selectedItem.tags"></textarea>
             </div>
             <div class="form-group">
-                <input type="submit" class="btn btn-default" value="Save" ng-disabled="!collectibleForm.$valid"/>
+                <button class="btn btn-primary icon-save"  ng-disabled="!collectibleForm.$valid">
+                    <span class="glyphicon glyphicon-ok"></span> Save
+                </button>
             </div>
         </form>
     </div>

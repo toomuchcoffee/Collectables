@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -22,7 +23,9 @@ public class ProductLineController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public List<String> allProductLines() {
         List<ProductLine> tags = productLineRepository.findAll();
-        return tags.stream().map(ProductLine::getAbbreviation).collect(Collectors.toList());
+        return tags.stream()
+                .map(l -> Optional.ofNullable(l.getDescription()).orElse(l.getAbbreviation()))
+                .collect(Collectors.toList());
     }
 
 }

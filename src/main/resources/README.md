@@ -6,11 +6,13 @@ Database setup for local development
   * # CREATE USER collectables WITH PASSWORD 'geheim1';
   * # GRANT ALL PRIVILEGES ON DATABASE "collectables" TO collectables;
   
-  
-AngularJS and Spring Security
-=============================
-see https://spring.io/blog/2015/01/12/spring-and-angular-js-a-secure-single-page-application
 
+Next steps
+==========
+* Provide editor for product line and remove cascade for product line from collectible entity
+* Change to select (maybe auto complete) input field for product line in collectible editor
+  
 WIP: Swagger config
 ===================
 see http://www.baeldung.com/swagger-2-documentation-for-spring-rest-api
+

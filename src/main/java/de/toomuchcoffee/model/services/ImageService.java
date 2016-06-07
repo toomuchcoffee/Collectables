@@ -1,45 +1,46 @@
 package de.toomuchcoffee.model.services;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.jayway.jsonpath.JsonPath;
 import de.toomuchcoffee.model.entites.Collectible;
 import de.toomuchcoffee.model.entites.Tag;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class ImageService {
 
-    @Value("${de.toomuchcoffee.collectables.tumblr-api-key}")
-    private String tumblrApiKey;
-
     public byte[] getWelcomeImage() throws IOException {
-        JsonPath jsonPath = JsonPath.compile("$.response.posts[0].photos[0].original_size.url");
-        TumblrResponseWrapper tumblrResponse = getTumblrResponse("starwars");
-        String url = tumblrResponse.response.posts[0].photos[0].original_size.url;
+        List<TumblrPost> tumblrPosts = getTumblrResponse("starwars", true);
+        String url = tumblrPosts.get(0).photoUrl1280;
         return new RestTemplate().getForObject(url, byte[].class);
     }
 
     public byte[] getCollectibleThumbnail(Collectible collectible) {
-        String tag = collectible.getVerbatim().replaceAll("[^a-zA-Z0-9]", "").trim().toLowerCase();
+        List<String> tags = Arrays.stream(collectible.getVerbatim().split("\\(", 2))
+                .map(t -> t.replaceAll("[^a-zA-Z0-9]", "").trim().toLowerCase())
+                .collect(Collectors.toList());
         try {
-            TumblrResponseWrapper tumblrResponse = getTumblrResponse(tag);
-
-            Set<String> queryTags = Sets.newHashSet(tag);
+            List<TumblrPost> tumblrPosts = getTumblrResponse(tags.get(0), false);
+            Set<String> queryTags = Sets.newHashSet(tags);
             queryTags.add(collectible.getProductLine().getAbbreviation());
             queryTags.addAll(collectible.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
 
-            for (TumblrPost post : tumblrResponse.response.posts) {
-                for (int threshold = 5; threshold > 0; threshold--) {
+            for (int threshold = 7; threshold > 0; threshold--) {
+                for (TumblrPost post : tumblrPosts) {
                     Set<String> itemTags = Arrays.stream(post.tags).collect(Collectors.toSet());
                     if (Sets.intersection(queryTags, itemTags).size() > threshold) {
-                        String url = post.photos[0].alt_sizes[5].url;
+                        String url = post.photoUrl75;
                         return new RestTemplate().getForObject(url, byte[].class);
                     }
                 }
@@ -50,34 +51,55 @@ public class ImageService {
         return new byte[0];
     }
 
-    private TumblrResponseWrapper getTumblrResponse(String tag) {
-        String tumblrUrl = "https://api.tumblr.com/v2/blog/yaswb.tumblr.com/posts/photo?api_key=" + tumblrApiKey + "&tag=" + tag;
-        return new RestTemplate().getForObject(tumblrUrl, TumblrResponseWrapper.class);
+    private List<TumblrPost> getTumblrResponse(String tag, boolean limit) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        List<TumblrPost> tumblrPosts = Lists.newArrayList();
+
+        boolean stop = limit;
+        int page = 1;
+        do {
+            String tumblrUrl;
+            if (page == 1)
+                tumblrUrl = String.format("http://yaswb.tumblr.com/tagged/%s/json", tag);
+            else
+                tumblrUrl = String.format("http://yaswb.tumblr.com/tagged/%s/page/%d/json", tag, page);
+
+            String jsonString = new RestTemplate().getForObject(tumblrUrl, String.class);
+            jsonString = jsonString.replaceFirst("var tumblr_api_read =", "").trim();
+
+            TumblrResponse tumblrResponse = objectMapper.readValue(jsonString, TumblrResponse.class);
+            if (tumblrResponse.posts.length == 0) {
+                stop = true;
+            } else {
+                tumblrPosts.addAll(Arrays.asList(tumblrResponse.posts));
+                page++;
+            }
+        } while (!stop);
+
+        return tumblrPosts;
     }
 
-    public static class TumblrResponseWrapper {
-        public TumblrResponse response;
-    }
-
+    @JsonIgnoreProperties
     public static class TumblrResponse {
         public TumblrPost[] posts;
     }
 
+    @JsonIgnoreProperties
     public static class TumblrPost {
         public String[] tags;
-        public TumblrPhoto[] photos;
-    }
 
-    public static class TumblrPhoto {
-        public String caption;
-        public TumblrPhotoSource[] alt_sizes;
-        public TumblrPhotoSource original_size;
-    }
+        @JsonProperty("photo-url-1280")
+        public String photoUrl1280;
 
-    public static class TumblrPhotoSource {
-        public String url;
-        public Integer width;
-        public Integer height;
+        @JsonProperty("photo-url-75")
+        public String photoUrl75;
+
+        // photo-url-500
+        // photo-url-400
+        // photo-url-250
+        // photo-url-100
     }
 
 }
