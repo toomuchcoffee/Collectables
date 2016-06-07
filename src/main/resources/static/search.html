@@ -16,7 +16,7 @@
         <div class="list-group" ng-show="ctrl.collectibles">
             <h2>Found collectibles</h2>
             <div ng-repeat="collectible in ctrl.collectibles" class="list-group-item">
-                <p><img ng-src="collectibles/{{collectible.id}}/thumb" /> <strong>{{collectible.verbatim}}</strong> <em>by</em> {{collectible.productLine}}</p>
+                <p><img ng-src="collectibles/{{collectible.id}}/thumb" /> <strong>{{collectible.verbatim}}</strong>, {{collectible.productLine}}</p>
             </div>
         </div>
     </div>

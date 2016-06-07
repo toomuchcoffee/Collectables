@@ -1,17 +1,20 @@
     <div ng-controller="EditController as ctrl" ng-init="ctrl.initialize('collectibles'); ctrl.getItems()">
         <div class="list-group">
-            <div ng-repeat="collectible in ctrl.items" class="list-group-item">
-                <h4>{{collectible.verbatim}}</h4>
-                <p>{{collectible.productLine}}</p>
-                <p>{{collectible.tags}}</p>
-                <p></p><a class="btn btn-default" href="" ng-click="ctrl.editItem(collectible)">
-                    <i class="icon-edit"></i>
-                    Edit
-                </a>
-                <p></p><a class="btn btn-danger" href="" ng-click="ctrl.deleteItem(collectible)">
-                    <i class="icon-trash icon-white"></i>
-                    Delete
-                </a>
+            <div ng-repeat="collectible in ctrl.items" class="list-group-item clearfix">
+                <p>
+                    <strong>{{collectible.verbatim}}</strong>, {{collectible.productLine}}
+                    <span class="pull-right">
+                        <a class="btn btn-default" href="" ng-click="ctrl.editItem(collectible)">
+                            <i class="icon-edit"></i>
+                            Edit
+                        </a>
+                        <a class="btn btn-danger" href="" ng-click="ctrl.deleteItem(collectible)">
+                            <i class="icon-trash icon-white"></i>
+                            Delete
+                        </a>
+                    </span>
+                </p>
+                <small>{{collectible.tags}}</small>
             </div>
         </div>
 
