@@ -9,6 +9,7 @@ import com.google.common.collect.Sets;
 import de.toomuchcoffee.model.entites.Collectible;
 import de.toomuchcoffee.model.entites.Tag;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -20,6 +21,9 @@ import java.util.stream.Collectors;
 @Service
 public class ImageService {
 
+    public static final String REGEX_EXCLUDING_WHITESPACE = "[^a-zA-Z0-9]";
+    public static final String REGEX_INCLUDING_WHITESPACE = "[^a-zA-Z0-9 ]";
+
     public byte[] getWelcomeImage() throws IOException {
         List<TumblrPost> tumblrPosts = getTumblrPosts("starwars", true);
         String url = tumblrPosts.get(0).photoUrl1280;
@@ -27,11 +31,24 @@ public class ImageService {
     }
 
     public byte[] getCollectibleThumbnail(Collectible collectible) {
-        List<String> tags = Arrays.stream(collectible.getVerbatim().split("\\(", 2))
-                .map(t -> t.replaceAll("[^a-zA-Z0-9]", "").trim().toLowerCase())
-                .collect(Collectors.toList());
+        List<String> tags;
         try {
-            List<TumblrPost> tumblrPosts = getTumblrPosts(tags.get(0), false);
+            List<TumblrPost> tumblrPosts;
+            try {
+                tags = Arrays.stream(collectible.getVerbatim().split("\\(", 2))
+                        .map(t -> t.replaceAll(REGEX_EXCLUDING_WHITESPACE, "").trim().toLowerCase())
+                        .collect(Collectors.toList());
+                tumblrPosts = getTumblrPosts(tags.get(0), false);
+            } catch (HttpClientErrorException ex) {
+                if (ex.getStatusCode().value() == 404) {
+                    tags = Arrays.stream(collectible.getVerbatim().split("\\(", 2))
+                            .map(t -> t.replaceAll(REGEX_INCLUDING_WHITESPACE, "").trim().toLowerCase())
+                            .collect(Collectors.toList());
+                    tumblrPosts = getTumblrPosts(tags.get(0), false);
+                } else {
+                    throw ex;
+                }
+            }
             Set<String> queryTags = Sets.newHashSet(tags);
             queryTags.add(collectible.getProductLine().getAbbreviation());
             queryTags.addAll(collectible.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
@@ -39,7 +56,7 @@ public class ImageService {
             for (int threshold = 7; threshold > 0; threshold--) {
                 for (TumblrPost post : tumblrPosts) {
                     Set<String> itemTags = Arrays.stream(post.tags).collect(Collectors.toSet());
-                    if (Sets.intersection(queryTags, itemTags).size() > threshold) {
+                    if (Sets.intersection(queryTags, itemTags).size() >= threshold) {
                         String url = post.photoUrl75;
                         return new RestTemplate().getForObject(url, byte[].class);
                     }

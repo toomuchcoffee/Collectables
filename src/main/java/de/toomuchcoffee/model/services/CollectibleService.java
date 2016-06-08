@@ -73,7 +73,7 @@ public class CollectibleService {
     }
 
     public List<CollectibleDto> findByQuery(String query) {
-        List<Collectible> collectibles = collectibleRepository.findByVerbatimContaining(query);
+        List<Collectible> collectibles = collectibleRepository.findByVerbatimIgnoreCaseContaining(query);
         return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
     }
 
