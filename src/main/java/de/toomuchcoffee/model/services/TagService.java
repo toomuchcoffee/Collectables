@@ -2,12 +2,11 @@ package de.toomuchcoffee.model.services;
 
 import de.toomuchcoffee.model.entites.Tag;
 import de.toomuchcoffee.model.repositories.TagRepository;
+import de.toomuchcoffee.view.TagDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,13 +19,12 @@ public class TagService {
         return tagRepository.findOne(tagId.toLowerCase());
     }
 
-    public Set<Tag> getTagsFromString(String tagsString) {
-        return Arrays.asList(tagsString.split("#")).stream()
-            .map(String::trim)
-            .filter(s -> s.length() > 0)
-                    .map(t -> Optional.ofNullable(tagRepository
-                    .findOne(t.toLowerCase()))
-                    .orElse(new Tag(t.toLowerCase())))
-                    .collect(Collectors.toSet());
+    public List<TagDto> findAll() {
+        List<Tag> tags = tagRepository.findAll();
+        List<TagDto> tagDtos = tags.stream()
+                .map(t -> new TagDto(t.getName()))
+                .collect(Collectors.toList());
+        tagDtos.forEach(dto -> dto.setTaggingCount(tagRepository.getTaggingCount(dto.getName())));
+        return tagDtos;
     }
 }

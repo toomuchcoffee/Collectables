@@ -2,11 +2,12 @@ package de.toomuchcoffee.model.services;
 
 import de.toomuchcoffee.model.entites.ProductLine;
 import de.toomuchcoffee.model.repositories.ProductLineRepository;
+import de.toomuchcoffee.view.ProductLineDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductLineService {
@@ -14,16 +15,18 @@ public class ProductLineService {
     @Autowired
     private ProductLineRepository productLineRepository;
 
-    public List<ProductLine> findAll() {
-        return productLineRepository.findAll();
+    public List<ProductLineDto> findAll() {
+         List<ProductLine> productLines = productLineRepository.findAll();
+        List<ProductLineDto> productLineDtos = productLines.stream()
+                .map(p -> new ProductLineDto(p.getAbbreviation(), p.getDescription()))
+                .collect(Collectors.toList());
+        productLineDtos.forEach(dto ->
+                dto.setCollectiblesCount(productLineRepository.getCollectiblesCount(dto.getAbbreviation())));
+        return productLineDtos;
     }
 
     public ProductLine find(String abbreviation) {
         return productLineRepository.findOne(abbreviation.toLowerCase());
     }
 
-    public ProductLine getProductLineFromAbbreviation(String abbreviation) {
-        return Optional.ofNullable(find(abbreviation))
-                .orElse(new ProductLine(abbreviation.toLowerCase()));
-    }
 }

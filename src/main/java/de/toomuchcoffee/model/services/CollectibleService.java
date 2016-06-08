@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,14 +49,29 @@ public class CollectibleService {
         Collectible collectible = new Collectible();
         collectible.setVerbatim(collectibleDto.getVerbatim());
 
-        collectible.setProductLine(productLineService.getProductLineFromAbbreviation(collectibleDto.getProductLine()));
+        collectible.setProductLine(getProductLineFromAbbreviation(collectibleDto.getProductLine()));
 
         Optional.ofNullable(collectibleDto.getTags())
-                .ifPresent(tagsString -> collectible.setTags(tagService.getTagsFromString(tagsString)));
+                .ifPresent(tagsString -> collectible.setTags(getTagsFromString(tagsString)));
 
         Optional.ofNullable(collectibleDto.getId()).ifPresent(collectible::setId);
 
         return collectible;
+    }
+
+    private ProductLine getProductLineFromAbbreviation(String abbreviation) {
+        return Optional.ofNullable(productLineService.find(abbreviation))
+                .orElse(new ProductLine(abbreviation.toLowerCase()));
+    }
+
+    private Set<Tag> getTagsFromString(String tagsString) {
+        return Arrays.asList(tagsString.split("#")).stream()
+                .map(String::trim)
+                .filter(s -> s.length() > 0)
+                .map(t -> Optional.ofNullable(tagService
+                        .find(t.toLowerCase()))
+                        .orElse(new Tag(t.toLowerCase())))
+                .collect(Collectors.toSet());
     }
 
     @Transactional

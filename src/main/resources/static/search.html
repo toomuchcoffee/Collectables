@@ -1,15 +1,15 @@
     <div ng-controller="SearchController as ctrl">
         <h4>Product Lines</h4>
         <ul class="nav nav-pills" role="tablist">
-            <li ng-repeat="line in ctrl.lines">
-                <a href="" ng-click="ctrl.searchByLine(line)">{{line}}</a>
+            <li ng-repeat="line in ctrl.lines | orderBy:'collectiblesCount':true">
+                <a href="" ng-click="ctrl.searchByLine(line.abbreviation)">{{line.abbreviation}} ({{line.collectiblesCount}})</a>
             </li>
         </ul>
 
         <h4>Tags</h4>
         <ul class="nav nav-pills" role="tablist">
-            <li ng-repeat="tag in ctrl.tags">
-                <a href="" ng-click="ctrl.searchByTag(tag)">{{tag}}</a>
+            <li ng-repeat="tag in ctrl.tags | orderBy:'taggingCount':true">
+                <a href="" ng-click="ctrl.searchByTag(tag.name)">{{tag.name}} ({{tag.taggingCount}})</a>
             </li>
         </ul>
 
