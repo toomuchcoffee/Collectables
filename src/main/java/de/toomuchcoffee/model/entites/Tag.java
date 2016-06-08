@@ -1,6 +1,9 @@
 package de.toomuchcoffee.model.entites;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import java.util.Set;
 
 @Entity
@@ -8,7 +11,7 @@ public class Tag {
     @Id
     private String name;
 
-    @ManyToMany(mappedBy="tags", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy="tags", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Collectible> collectibles;
 
     public Tag() {}

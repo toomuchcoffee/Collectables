@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class ImageService {
 
     public byte[] getWelcomeImage() throws IOException {
-        List<TumblrPost> tumblrPosts = getTumblrResponse("starwars", true);
+        List<TumblrPost> tumblrPosts = getTumblrPosts("starwars", true);
         String url = tumblrPosts.get(0).photoUrl1280;
         return new RestTemplate().getForObject(url, byte[].class);
     }
@@ -31,7 +31,7 @@ public class ImageService {
                 .map(t -> t.replaceAll("[^a-zA-Z0-9]", "").trim().toLowerCase())
                 .collect(Collectors.toList());
         try {
-            List<TumblrPost> tumblrPosts = getTumblrResponse(tags.get(0), false);
+            List<TumblrPost> tumblrPosts = getTumblrPosts(tags.get(0), false);
             Set<String> queryTags = Sets.newHashSet(tags);
             queryTags.add(collectible.getProductLine().getAbbreviation());
             queryTags.addAll(collectible.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
@@ -46,12 +46,12 @@ public class ImageService {
                 }
             }
         } catch (Exception e){
-            // TODO handle exception
+            e.printStackTrace();
         }
         return new byte[0];
     }
 
-    private List<TumblrPost> getTumblrResponse(String tag, boolean limit) throws IOException {
+    private List<TumblrPost> getTumblrPosts(String tag, boolean limit) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 

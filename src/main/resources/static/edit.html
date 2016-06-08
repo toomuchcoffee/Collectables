@@ -1,6 +1,17 @@
-    <div ng-controller="EditController as ctrl" ng-init="ctrl.initialize('collectibles'); ctrl.getItems()">
+    <div ng-controller="EditController as ctrl" ng-init="ctrl.initialize('collectibles')">
+        <form class="form-inline" name="searchForm" ng-submit="ctrl.searchItems()">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Query" ng-model="ctrl.query" />
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary"  ng-disabled="!searchForm.$valid">
+                    <span class="glyphicon glyphicon-ok"></span> Search
+                </button>
+            </div>
+        </form>
+
         <div class="list-group">
-            <div ng-repeat="collectible in ctrl.items" class="list-group-item clearfix">
+            <div ng-repeat="collectible in ctrl.items | orderBy:'id':true | limitTo: 5" class="list-group-item clearfix">
                 <p>
                     <strong>{{collectible.verbatim}}</strong>, {{collectible.productLine}}
                     <span class="pull-right">
@@ -16,6 +27,8 @@
                 </p>
                 <small>{{collectible.tags}}</small>
             </div>
+            <p ng-if="ctrl.items.length == 0">No items found</p>
+            <p ng-if="ctrl.items.length > 5">Only <strong>5</strong> of <strong>{{ctrl.items.length}}</strong> found items are shown</p>
         </div>
 
         <form class="form-inline" name="collectibleForm" ng-submit="collectibleForm.$valid && ctrl.saveItem()" novalidate>
@@ -31,7 +44,7 @@
                 <textarea class="form-control" placeholder="Tags, e.g. #hoth #echobase #theempirestrikesback" ng-model="ctrl.selectedItem.tags"></textarea>
             </div>
             <div class="form-group">
-                <button class="btn btn-primary icon-save"  ng-disabled="!collectibleForm.$valid">
+                <button class="btn btn-primary"  ng-disabled="!collectibleForm.$valid">
                     <span class="glyphicon glyphicon-ok"></span> Save
                 </button>
             </div>

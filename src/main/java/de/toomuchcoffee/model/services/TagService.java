@@ -16,8 +16,8 @@ public class TagService {
     @Autowired
     private TagRepository tagRepository;
 
-    public Tag find(String tagName) {
-        return tagRepository.findByNameIgnoreCase(tagName);
+    public Tag find(String tagId) {
+        return tagRepository.findOne(tagId.toLowerCase());
     }
 
     public Set<Tag> getTagsFromString(String tagsString) {

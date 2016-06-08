@@ -5,7 +5,6 @@ import de.toomuchcoffee.model.entites.Collectible;
 import de.toomuchcoffee.model.entites.ProductLine;
 import de.toomuchcoffee.model.entites.Tag;
 import de.toomuchcoffee.model.repositories.CollectibleRepository;
-import de.toomuchcoffee.model.repositories.ProductLineRepository;
 import de.toomuchcoffee.view.CollectibleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,10 +25,10 @@ public class CollectibleService {
     private TagService tagService;
 
     @Autowired
-    private ImageService imageService;
+    private ProductLineService productLineService;
 
     @Autowired
-    private ProductLineRepository productLineRepository;
+    private ImageService imageService;
 
     @Transactional
     public void add(CollectibleDto collectibleDto) {
@@ -53,9 +52,7 @@ public class CollectibleService {
         Collectible collectible = new Collectible();
         collectible.setVerbatim(collectibleDto.getVerbatim());
 
-        collectible.setProductLine(
-                Optional.ofNullable(productLineRepository.findOne(collectibleDto.getProductLine().toLowerCase()))
-                .orElse(new ProductLine(collectibleDto.getProductLine().toLowerCase())));
+        collectible.setProductLine(productLineService.getProductLineFromAbbreviation(collectibleDto.getProductLine()));
 
         Optional.ofNullable(collectibleDto.getTags())
                 .ifPresent(tagsString -> collectible.setTags(tagService.getTagsFromString(tagsString)));
@@ -75,14 +72,19 @@ public class CollectibleService {
         return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
     }
 
-    public List<CollectibleDto> findByTagName(String tagName) {
-        Tag tag = tagService.find(tagName);
+    public List<CollectibleDto> findByQuery(String query) {
+        List<Collectible> collectibles = collectibleRepository.findByVerbatimContaining(query);
+        return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
+    }
+
+    public List<CollectibleDto> findByTag(String tagId) {
+        Tag tag = tagService.find(tagId);
         List<Collectible> collectibles = collectibleRepository.findByTags(Sets.newHashSet(tag));
         return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
     }
 
-    public List<CollectibleDto> findByProductLineName(String productLineName) {
-        ProductLine productLine = productLineRepository.findByAbbreviationIgnoreCase(productLineName);
+    public List<CollectibleDto> findByProductLine(String abbreviation) {
+        ProductLine productLine = productLineService.find(abbreviation);
         List<Collectible> collectibles = collectibleRepository.findByProductLine(productLine);
         return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
     }

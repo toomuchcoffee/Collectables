@@ -1,5 +1,6 @@
 package de.toomuchcoffee.controller;
 
+import com.google.common.base.Strings;
 import de.toomuchcoffee.model.services.CollectibleService;
 import de.toomuchcoffee.view.CollectibleDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +19,21 @@ public class CollectibleController {
     private CollectibleService collectibleService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<CollectibleDto> allCollectibles() {
+    public List<CollectibleDto> findByQuery(@RequestParam(name = "q", required = false) String query) {
+        if (!Strings.isNullOrEmpty(query)) {
+            return collectibleService.findByQuery(query);
+        }
         return collectibleService.find();
     }
 
-    @RequestMapping(value = "tag/{tagName}", method = RequestMethod.GET)
-    public List<CollectibleDto> collectiblesByTag(@PathVariable String tagName) {
-        return collectibleService.findByTagName(tagName);
+    @RequestMapping(value = "tag/{tag}", method = RequestMethod.GET)
+    public List<CollectibleDto> findByTag(@PathVariable String tag) {
+        return collectibleService.findByTag(tag);
     }
 
-    @RequestMapping(value = "line/{productLineName}", method = RequestMethod.GET)
-    public List<CollectibleDto> collectiblesByLine(@PathVariable String productLineName) {
-        return collectibleService.findByProductLineName(productLineName);
+    @RequestMapping(value = "line/{productLine}", method = RequestMethod.GET)
+    public List<CollectibleDto> findByProductLine(@PathVariable String productLine) {
+        return collectibleService.findByProductLine(productLine);
     }
 
     @ResponseBody

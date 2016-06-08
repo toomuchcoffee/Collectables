@@ -1,7 +1,7 @@
 package de.toomuchcoffee.controller;
 
 import de.toomuchcoffee.model.entites.ProductLine;
-import de.toomuchcoffee.model.repositories.ProductLineRepository;
+import de.toomuchcoffee.model.services.ProductLineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,13 +18,13 @@ import java.util.stream.Collectors;
 public class ProductLineController {
 
     @Autowired
-    private ProductLineRepository productLineRepository;
+    private ProductLineService productLineService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public List<String> allProductLines() {
-        List<ProductLine> tags = productLineRepository.findAll();
-        return tags.stream()
-                .map(l -> Optional.ofNullable(l.getDescription()).orElse(l.getAbbreviation()))
+        List<ProductLine> productLines = productLineService.findAll();
+        return productLines.stream()
+                .map(p -> Optional.ofNullable(p.getDescription()).orElse(p.getAbbreviation()))
                 .collect(Collectors.toList());
     }
 

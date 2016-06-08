@@ -88,10 +88,13 @@
             this.apipath = apipath;
         };
 
-        this.getItems = function() {
-            $http.get('/'+this.apipath, []).then(
+        this.query = '';
+        
+        this.searchItems = function() {
+            $http.get('/'+this.apipath+'?q='+self.query, []).then(
                 function(response) {
                     self.items = response.data;
+                    self.query = '';
                 },
                 function() {
                 }
@@ -111,7 +114,7 @@
         this.addItem = function(item) {
             $http.post('/admin/'+this.apipath, item, []).then(
                 function(response) {
-                    self.getItems();
+                    self.searchItems();
                     self.selectedItem = {};
                 },
                 function() {
@@ -120,11 +123,10 @@
             );
         };
 
-
         this.modifyItem = function(item) {
             $http.put('/admin/'+this.apipath+'/'+item.id, item, []).then(
                 function(response) {
-                    self.getItems();
+                    self.searchItems();
                     self.selectedItem = {};
                 },
                 function() {
@@ -136,7 +138,7 @@
         this.deleteItem = function(item) {
             $http.delete('/admin/'+this.apipath+'/'+item.id, []).then(
                 function(response) {
-                    self.getItems();
+                    self.searchItems();
                 },
                 function() {
                     alert("Something went wrong!");
