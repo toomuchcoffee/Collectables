@@ -1,20 +1,21 @@
-    <div ng-controller="SearchController as ctrl">
+    <div ng-controller="BrowseController as ctrl">
         <h4>Product Lines</h4>
         <ul class="nav nav-pills" role="tablist">
             <li ng-repeat="line in ctrl.lines | orderBy:'collectiblesCount':true">
-                <a href="" ng-click="ctrl.searchByLine(line.abbreviation)">{{line.abbreviation}} ({{line.collectiblesCount}})</a>
+                <a href="" ng-click="ctrl.findByLine(line.abbreviation)">{{line.abbreviation}} ({{line.collectiblesCount}})</a>
             </li>
         </ul>
 
         <h4>Tags</h4>
         <ul class="nav nav-pills" role="tablist">
             <li ng-repeat="tag in ctrl.tags | orderBy:'taggingCount':true">
-                <a href="" ng-click="ctrl.searchByTag(tag.name)">{{tag.name}} ({{tag.taggingCount}})</a>
+                <a href="" ng-click="ctrl.findByTag(tag.name)">{{tag.name}} ({{tag.taggingCount}})</a>
             </li>
         </ul>
 
-        <div class="list-group" ng-show="ctrl.collectibles">
-            <h2>Found collectibles</h2>
+        <p ng-if="ctrl.collectibles.length == 0"><span class="label label-info">No items found</span></p>
+        <div class="list-group" ng-if="ctrl.collectibles.length > 0">
+            <h4>Found collectibles</h4>
             <div ng-repeat="collectible in ctrl.collectibles" class="list-group-item">
                 <p><img ng-src="collectibles/{{collectible.id}}/thumb" /> <strong>{{collectible.verbatim}}</strong>, {{collectible.productLine}}</p>
             </div>

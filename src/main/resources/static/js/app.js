@@ -4,9 +4,9 @@
             $routeProvider.when('/', {
                 templateUrl: 'home.html',
                 controller: 'HomeController'
-                }).when('/search', {
-                     templateUrl: 'search.html',
-                     controller: 'SearchController'
+                }).when('/browse', {
+                     templateUrl: 'browse.html',
+                     controller: 'BrowseController'
                 }).when('/edit', {
                      templateUrl: 'edit.html',
                      controller: 'EditController'
@@ -94,7 +94,6 @@
             $http.get('/'+this.apipath+'?q='+self.query, []).then(
                 function(response) {
                     self.items = response.data;
-                    self.query = '';
                 },
                 function() {
                 }
@@ -114,8 +113,9 @@
         this.addItem = function(item) {
             $http.post('/admin/'+this.apipath, item, []).then(
                 function(response) {
-                    self.searchItems();
                     self.selectedItem = {};
+                    self.query = '';
+                    self.searchItems();
                 },
                 function() {
                     alert("Something went wrong!");
@@ -126,8 +126,8 @@
         this.modifyItem = function(item) {
             $http.put('/admin/'+this.apipath+'/'+item.id, item, []).then(
                 function(response) {
-                    self.searchItems();
                     self.selectedItem = {};
+                    self.searchItems();
                 },
                 function() {
                     alert("Something went wrong!");
@@ -151,7 +151,7 @@
         }
     });
 
-    app.controller('SearchController', function($http){
+    app.controller('BrowseController', function($http){
         var self = this;
 
         $http.get('/tags', []).then(
@@ -170,7 +170,7 @@
             }
         );
         
-        this.searchByTag = function(tag) {
+        this.findByTag = function(tag) {
             $http.get('/collectibles/tag/'+tag, []).then(
                 function(response) {
                     self.collectibles = response.data;
@@ -180,7 +180,7 @@
             );
         };
         
-        this.searchByLine = function(line) {
+        this.findByLine = function(line) {
             $http.get('/collectibles/line/'+line, []).then(
                 function(response) {
                     self.collectibles = response.data;
