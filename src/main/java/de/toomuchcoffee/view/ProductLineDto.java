@@ -1,8 +1,5 @@
 package de.toomuchcoffee.view;
 
-/**
- * Created by gerald on 08/06/16.
- */
 public class ProductLineDto {
     private String abbreviation;
     private String description;
