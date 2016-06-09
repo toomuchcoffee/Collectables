@@ -18,6 +18,6 @@ management:
 spring:
     profiles: heroku
     datasource:
-        url: jdbc:postgresql://ec2-23-21-255-14.compute-1.amazonaws.com:5432/d3m08ag2bi8g8o
-        username: ofshvoqtzunatz
-        password: LSVJxChVBSjMPfyOtnIMVz3lRQ
+        url: ${JDBC_DATABASE_URL}
+        username: ${JDBC_DATABASE_USERNAME}
+        password: ${JDBC_DATABASE_PASSWORD}
