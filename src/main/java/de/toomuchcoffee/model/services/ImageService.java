@@ -10,17 +10,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class ImageService {
 
-    public static final String REGEX_EXCLUDING_WHITESPACE = "[^a-zA-Z0-9]";
-    public static final String REGEX_INCLUDING_WHITESPACE = "[^a-zA-Z0-9 ]";
-
     @Autowired
     private TumblrService tumblrService;
+
+    @Autowired
+    private TagService tagService;
 
     public byte[] getWelcomeImage() throws IOException {
         String url = tumblrService.getAnyPost().photoUrl500;
@@ -29,24 +32,13 @@ public class ImageService {
 
     public byte[] getCollectibleThumbnail(Collectible collectible) {
         // gather tags
-        String[] verbatimTerms = collectible.getVerbatim().toLowerCase().split("\\(", 2);
+        Pair<Set<String>, Set<String>> verbatimTags = tagService.getVerbatimTags(collectible.getVerbatim());
 
-        String verbatimNoWhitespace = verbatimTerms[0].replaceAll(REGEX_EXCLUDING_WHITESPACE, "").trim();
-        String verbatimWithWhitespace = verbatimTerms[0].replaceAll(REGEX_INCLUDING_WHITESPACE, "").trim();
-
-        HashSet<String> verbatimQuery = Sets.newHashSet();
+        Set<String> verbatimQuery = verbatimTags.getLeft();
         Set<String> tagQuery = Sets.newHashSet();
+        tagQuery.addAll(verbatimTags.getLeft());
+        tagQuery.addAll(verbatimTags.getRight());
 
-        verbatimQuery.add(verbatimNoWhitespace);
-        verbatimQuery.add(verbatimWithWhitespace);
-
-        tagQuery.add(verbatimNoWhitespace);
-        tagQuery.add(verbatimWithWhitespace);
-
-        if (verbatimTerms.length > 1) {
-            tagQuery.add(verbatimTerms[1].replaceAll(REGEX_EXCLUDING_WHITESPACE, "").trim());
-            tagQuery.add(verbatimTerms[1].replaceAll(REGEX_INCLUDING_WHITESPACE, "").trim());
-        }
         tagQuery.add(collectible.getProductLine().getAbbreviation());
         tagQuery.addAll(collectible.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
 
