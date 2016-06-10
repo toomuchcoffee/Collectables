@@ -153,22 +153,31 @@
 
     app.controller('BrowseController', function($http){
         var self = this;
-
-        $http.get('/tags', []).then(
-            function(response) {
-                self.tags = response.data;
-            },
-            function() {
-            }
-        );
         
-        $http.get('/lines', []).then(
-            function(response) {
-                self.lines = response.data;
-            },
-            function() {
-            }
-        );
+        this.initialize= function() {
+            this.getLines();
+            this.getTags();
+        };
+
+        this.getTags = function() {
+            $http.get('/tags', []).then(
+                function(response) {
+                    self.tags = response.data;
+                },
+                function() {
+                }
+            );
+        };
+
+        this.getLines = function() {
+            $http.get('/lines', []).then(
+                function(response) {
+                    self.lines = response.data;
+                },
+                function() {
+                }
+            );
+        };
         
         this.findByTag = function(tag) {
             $http.get('/collectibles/tag/'+tag, []).then(
@@ -188,6 +197,28 @@
                 function() {
                 }
             );
+        };
+
+        this.deleteTag = function(tag) {
+            $http.delete('/admin/tags/'+tag.name, []).then(
+                function(response) {
+                    self.getTags();
+                },
+                function() {
+                    alert("Something went wrong!");
+                }
+            )
+        };
+        
+        this.deleteLine = function(line) {
+            $http.delete('/admin/lines/'+line.abbreviation, []).then(
+                function(response) {
+                    self.getLines();
+                },
+                function() {
+                    alert("Something went wrong!");
+                }
+            )
         };
     });
 

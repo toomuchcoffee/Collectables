@@ -7,6 +7,7 @@ import de.toomuchcoffee.view.TagDto;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -63,5 +64,10 @@ public class TagService {
         }
 
         return Pair.of(leftTags, rightTags);
+    }
+
+    @Transactional
+    public void delete(String id) {
+        tagRepository.delete(id);
     }
 }

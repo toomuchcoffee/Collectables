@@ -1,15 +1,25 @@
-    <div ng-controller="BrowseController as ctrl">
+    <div ng-controller="BrowseController as ctrl" ng-init="ctrl.initialize()">
         <h4>Product Lines</h4>
         <ul class="nav nav-pills" role="tablist">
             <li ng-repeat="line in ctrl.lines | orderBy:'collectiblesCount':true">
-                <a href="" ng-click="ctrl.findByLine(line.abbreviation)">{{line.abbreviation}} ({{line.collectiblesCount}})</a>
+                <a href="" ng-click="ctrl.findByLine(line.abbreviation)">
+                    {{line.abbreviation}} ({{line.collectiblesCount}})
+                    <span ng-if="!line.collectiblesCount" class="btn btn-danger" ng-click="ctrl.deleteLine(line)">
+                        X
+                    </span>
+                </a>
             </li>
         </ul>
 
         <h4>Tags</h4>
         <ul class="nav nav-pills" role="tablist">
             <li ng-repeat="tag in ctrl.tags | orderBy:'taggingCount':true">
-                <a href="" ng-click="ctrl.findByTag(tag.name)">{{tag.name}} ({{tag.taggingCount}})</a>
+                <a href="" ng-click="ctrl.findByTag(tag.name)">
+                    {{tag.name}} ({{tag.taggingCount}})
+                    <span ng-if="!tag.taggingCount" class="btn btn-danger" ng-click="ctrl.deleteTag(tag)">
+                        X
+                    </span>
+                </a>
             </li>
         </ul>
 

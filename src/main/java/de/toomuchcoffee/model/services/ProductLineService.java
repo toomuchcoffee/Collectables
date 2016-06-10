@@ -29,4 +29,7 @@ public class ProductLineService {
         return productLineRepository.findOne(abbreviation.toLowerCase());
     }
 
+    public void delete(String id) {
+        productLineRepository.delete(id);
+    }
 }
