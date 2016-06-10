@@ -84,14 +84,8 @@
     app.controller('EditController', function($http){
         var self = this;
 
-        this.initialize = function(apipath) {
-            this.apipath = apipath;
-        };
-
-        this.query = '';
-        
-        this.searchItems = function() {
-            $http.get('/'+this.apipath+'?q='+self.query, []).then(
+        this.searchExisting = function() {
+            $http.get('/collectibles?q='+self.selectedItem.verbatim, []).then(
                 function(response) {
                     self.items = response.data;
                 },
@@ -99,6 +93,16 @@
                 }
             );
         };
+
+        this.getItem = function(id) {
+            $http.get('/collectibles/'+id, []).then(
+                function(response) {
+                    self.selectedItem = response.data;
+                },
+                function() {
+                }
+            );
+        }
 
         this.selectedItem = {};
         
@@ -111,11 +115,10 @@
         };
 
         this.addItem = function(item) {
-            $http.post('/admin/'+this.apipath, item, []).then(
+            $http.post('/admin/collectibles', item, []).then(
                 function(response) {
+                    self.searchExisting();
                     self.selectedItem = {};
-                    self.query = '';
-                    self.searchItems();
                 },
                 function() {
                     alert("Something went wrong!");
@@ -124,10 +127,10 @@
         };
 
         this.modifyItem = function(item) {
-            $http.put('/admin/'+this.apipath+'/'+item.id, item, []).then(
+            $http.put('/admin/collectibles/'+item.id, item, []).then(
                 function(response) {
+                    self.searchExisting();
                     self.selectedItem = {};
-                    self.searchItems();
                 },
                 function() {
                     alert("Something went wrong!");
@@ -136,9 +139,10 @@
         };
 
         this.deleteItem = function(item) {
-            $http.delete('/admin/'+this.apipath+'/'+item.id, []).then(
+            $http.delete('/admin/collectibles/'+item.id, []).then(
                 function(response) {
-                    self.searchItems();
+                    self.searchExisting();
+                    self.selectedItem = {};
                 },
                 function() {
                     alert("Something went wrong!");
@@ -148,6 +152,10 @@
         
         this.editItem = function(item) {
             self.selectedItem = item;
+        }
+
+        this.cancel = function(item) {
+            self.selectedItem = {};
         }
     });
 
@@ -198,6 +206,19 @@
                 }
             );
         };
+
+        this.query = '';
+
+        this.findByName = function() {
+            $http.get('/collectibles?q='+self.query, []).then(
+                function(response) {
+                    self.collectibles = response.data;
+                },
+                function() {
+                }
+            );
+        };
+
 
         this.deleteTag = function(tag) {
             $http.delete('/admin/tags/'+tag.name, []).then(

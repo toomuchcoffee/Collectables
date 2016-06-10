@@ -23,11 +23,27 @@
             </li>
         </ul>
 
+        <h4>Find by name</h4>
+        <form class="form-inline" name="searchForm">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Query" ng-model="ctrl.query" ng-change="ctrl.findByName()"/>
+            </div>
+        </form>
+
         <p ng-if="ctrl.collectibles.length == 0"><span class="label label-info">No items found</span></p>
-        <div class="list-group" ng-if="ctrl.collectibles.length > 0">
-            <h4>Found collectibles</h4>
-            <div ng-repeat="collectible in ctrl.collectibles" class="list-group-item">
-                <p><img ng-src="collectibles/{{collectible.id}}/thumb" /> <strong>{{collectible.verbatim}}</strong>, {{collectible.productLine}}</p>
+        <p ng-if="ctrl.collectibles.length > 0"><span class="label label-success"><strong>{{ctrl.collectibles.length}}</strong> items found</span></p>
+
+
+        <div class="list-group container-fluid">
+            <div ng-repeat="collectible in ctrl.collectibles" class="list-group-item row">
+                <div class="col-sm-2">
+                    <img ng-src="collectibles/{{collectible.id}}/thumb" />
+                </div>
+                <div class="col-sm-10">
+                    <p><strong>{{collectible.verbatim}}</strong></p>
+                    <p>{{collectible.productLine}}</p>
+                </div>
             </div>
         </div>
+
     </div>

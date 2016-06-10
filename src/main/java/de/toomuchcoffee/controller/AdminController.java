@@ -22,8 +22,8 @@ public class AdminController {
     private ProductLineService productLineService;
 
     @RequestMapping(value = "/collectibles", method = RequestMethod.POST)
-    public void addToCollectibles(@RequestBody CollectibleDto collectible) {
-        collectibleService.add(collectible);
+    public Long addToCollectibles(@RequestBody CollectibleDto collectible) {
+        return collectibleService.add(collectible);
     }
 
     @RequestMapping(value = "/collectibles/{id}", method = RequestMethod.PUT)

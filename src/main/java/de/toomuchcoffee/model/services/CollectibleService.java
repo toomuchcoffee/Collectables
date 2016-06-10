@@ -28,9 +28,10 @@ public class CollectibleService {
     private ImageService imageService;
 
     @Transactional
-    public void add(CollectibleDto collectibleDto) {
+    public Long add(CollectibleDto collectibleDto) {
         Collectible collectible = mapToEntity(collectibleDto);
         collectibleRepository.save(collectible);
+        return collectible.getId();
     }
 
     @Transactional
@@ -77,6 +78,11 @@ public class CollectibleService {
     @Transactional
     public void delete(Long id) {
         collectibleRepository.delete(id);
+    }
+
+    public CollectibleDto findOne(Long id) {
+        Collectible collectible = collectibleRepository.findOne(id);
+        return CollectibleDto.toDto(collectible);
     }
 
     public List<CollectibleDto> find() {

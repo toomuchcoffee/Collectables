@@ -18,6 +18,11 @@ public class CollectibleController {
     @Autowired
     private CollectibleService collectibleService;
 
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public CollectibleDto findOne(@PathVariable Long id) {
+        return collectibleService.findOne(id);
+    }
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public List<CollectibleDto> findByQuery(@RequestParam(name = "q", required = false) String query) {
         if (!Strings.isNullOrEmpty(query)) {
