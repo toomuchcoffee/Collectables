@@ -32,19 +32,15 @@ public class ImageService {
 
     public byte[] getCollectibleThumbnail(Collectible collectible) {
         // gather tags
-        Pair<Set<String>, Set<String>> verbatimTags = tagService.getVerbatimTags(collectible.getVerbatim());
+        Set<String> verbatimTags = tagService.getVerbatimPermutations(collectible.getVerbatim());
 
-        Set<String> verbatimQuery = verbatimTags.getLeft();
-        Set<String> tagQuery = Sets.newHashSet();
-        tagQuery.addAll(verbatimTags.getLeft());
-        tagQuery.addAll(verbatimTags.getRight());
-
+        Set<String> tagQuery = Sets.newHashSet(verbatimTags);
         tagQuery.add(collectible.getProductLine().getAbbreviation());
         tagQuery.addAll(collectible.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
 
         // filter posts by tags
         List<Pair<TumblrPost, Integer>> rankedPosts = tumblrService.getPosts().stream()
-                .filter(tp -> Sets.intersection(verbatimQuery, Sets.newHashSet(tp.tags)).size() > 0)
+                .filter(tp -> Sets.intersection(verbatimTags, Sets.newHashSet(tp.tags)).size() > 0)
                 .map(tp -> Pair.of(tp, Sets.intersection(tagQuery, Sets.newHashSet(tp.tags)).size()))
                 .sorted(Collections.reverseOrder(Comparator.comparing(Pair::getRight)))
                 .collect(Collectors.toList());
