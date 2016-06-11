@@ -5,6 +5,7 @@
                 <a href="" ng-click="ctrl.findByLine(line.abbreviation)">
                     {{line.abbreviation}} ({{line.collectiblesCount}})
                     <span ng-if="!line.collectiblesCount" class="btn btn-danger" ng-click="ctrl.deleteLine(line)">
+                        <i class="glyphicon glyphicon-trash"></i>
                         X
                     </span>
                 </a>
@@ -17,6 +18,7 @@
                 <a href="" ng-click="ctrl.findByTag(tag.name)">
                     {{tag.name}} ({{tag.taggingCount}})
                     <span ng-if="!tag.taggingCount" class="btn btn-danger" ng-click="ctrl.deleteTag(tag)">
+                        <i class="glyphicon glyphicon-trash"></i>
                         X
                     </span>
                 </a>
