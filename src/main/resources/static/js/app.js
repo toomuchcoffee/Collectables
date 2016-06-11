@@ -13,7 +13,21 @@
                 }).otherwise('/');
 
             $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
-        });
+        })
+        .run(
+            function($rootScope, $location, $http) {
+                $rootScope.$on("$routeChangeStart", function(event, next, current) {
+                    $http.get('user').then(
+                        function(data) {
+                        },
+                        function() {
+                            $rootScope.authenticated = false;
+                            $location.path("/");
+                        }
+                    );
+                });
+            }
+        );
 
     app.directive('login', function() {
         return {

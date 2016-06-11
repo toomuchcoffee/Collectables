@@ -28,7 +28,7 @@
         <div class="list-group container-fluid">
             <div ng-repeat="collectible in ctrl.items | orderBy:'id':true | limitTo: 5" class="list-group-item row">
                 <div class="col-sm-2">
-                    <img ng-src="collectibles/{{collectible.id}}/thumb" />
+                    <img ng-src="collectibles/{{collectible.id}}/thumb" alt="no image" />
                 </div>
                 <div class="col-sm-7">
                     <p><strong>{{collectible.verbatim}}</strong></p>
