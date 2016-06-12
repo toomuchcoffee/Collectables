@@ -21,11 +21,6 @@ public class AdminController {
     @Autowired
     private ProductLineService productLineService;
 
-    @RequestMapping(value = "/collectibles", method = RequestMethod.POST)
-    public Long addToCollectibles(@RequestBody CollectibleDto collectible) {
-        return collectibleService.add(collectible);
-    }
-
     @RequestMapping(value = "/collectibles/{id}", method = RequestMethod.PUT)
     public void modifyCollectible(@PathVariable Long id, @RequestBody CollectibleDto collectible) {
         collectibleService.update(id, collectible);

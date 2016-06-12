@@ -33,6 +33,11 @@ public class CollectibleController {
         return collectibleService.find();
     }
 
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public Long addToCollectibles(@RequestBody CollectibleDto collectible) {
+        return collectibleService.add(collectible);
+    }
+
     @RequestMapping(value = "tag/{tag}", method = RequestMethod.GET)
     public List<CollectibleDto> findByTag(@PathVariable String tag) {
         return collectibleService.findByTag(tag);

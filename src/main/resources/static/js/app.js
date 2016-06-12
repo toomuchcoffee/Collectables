@@ -2,9 +2,9 @@
     var app = angular.module('collectables', [ 'ngRoute' ])
         .config(function($routeProvider, $httpProvider) {
             $routeProvider.when('/', {
-                templateUrl: 'home.html',
+                templateUrl: 'partials/home.html',
             }).when('/browse', {
-                 templateUrl: 'browse.html',
+                 templateUrl: 'partials/browse.html',
                  controller: 'BrowseController'
             }).otherwise('/');
 
@@ -28,7 +28,7 @@
     app.directive('login', function() {
         return {
             restrict: 'E',
-            templateUrl: 'login.html',
+            templateUrl: 'partials/login.html',
             controller: 'NavigationController'
         }
     });
@@ -36,7 +36,7 @@
     app.directive('navigation', function() {
         return {
             restrict: 'E',
-            templateUrl: 'navigation.html',
+            templateUrl: 'partials/navigation.html',
             controller: 'NavigationController'
         }
     });
@@ -114,7 +114,7 @@
         };
 
         this.addItem = function(item) {
-            $http.post('/admin/collectibles', item, []).then(
+            $http.post('/collectibles', item, []).then(
                 function(response) {
                     self.initialize();
                     self.searchExisting();
