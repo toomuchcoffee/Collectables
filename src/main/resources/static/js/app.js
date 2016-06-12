@@ -6,6 +6,9 @@
             }).when('/browse', {
                  templateUrl: 'partials/browse.html',
                  controller: 'BrowseController'
+            }).when('/admin', {
+                 templateUrl: 'partials/admin.html',
+                 controller: 'AdminController'
             }).otherwise('/');
 
             $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
@@ -17,7 +20,7 @@
                         function(data) {
                         },
                         function() {
-                            $rootScope.authenticated = false;
+                            $rootScope.authenticated = null;
                             $location.path("/");
                         }
                     );
@@ -48,14 +51,10 @@
             } : {};
 
             $http.get('user', {headers : headers}).success(function(data) {
-                if (data.name) {
-                    $rootScope.authenticated = true;
-                } else {
-                    $rootScope.authenticated = false;
-                }
+                $rootScope.authenticated = data.name;
                 callback && callback();
             }).error(function() {
-                $rootScope.authenticated = false;
+                $rootScope.authenticated = null;
                 callback && callback();
             });
         };
@@ -76,19 +75,23 @@
 
         $scope.logout = function() {
             $http.post('logout', {}).success(function() {
-                $rootScope.authenticated = false;
+                $rootScope.authenticated = null;
                 $location.path("/");
             }).error(function(data) {
-                $rootScope.authenticated = false;
+                $rootScope.authenticated = null;
             });
         };
 
         $scope.isActive = function (viewLocation) {
             return viewLocation === $location.path();
         };
+
+        $scope.isAdmin = function() {
+            return $rootScope.authenticated === 'admin';
+        }
     });
 
-    app.controller('BrowseController', function($http){
+    app.controller('BrowseController', function($http, $rootScope){
         var self = this;
         this.selectedItem = {};
 
@@ -172,23 +175,12 @@
 
         this.initialize = function() {
             this.getTags();
-            this.getLines();
         };
 
         this.getTags = function() {
             $http.get('/tags', []).then(
                 function(response) {
                     self.tags = response.data;
-                },
-                function() {
-                }
-            );
-        };
-
-        this.getLines = function() {
-            $http.get('/lines', []).then(
-                function(response) {
-                    self.lines = response.data;
                 },
                 function() {
                 }
@@ -205,7 +197,29 @@
                 }
             )
         };
-        
+
+        this.isAdmin = function() {
+            return $rootScope.authenticated === 'admin';
+        }
+    });
+
+    app.controller('AdminController', function($http){
+        var self = this;
+
+        this.initialize = function() {
+            this.getLines();
+        };
+
+        this.getLines = function() {
+            $http.get('/lines', []).then(
+                function(response) {
+                    self.lines = response.data;
+                },
+                function() {
+                }
+            );
+        };
+
         this.deleteLine = function(line) {
             $http.delete('/admin/lines/'+line.abbreviation, []).then(
                 function(response) {
