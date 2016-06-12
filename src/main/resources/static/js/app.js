@@ -99,7 +99,10 @@
         var self = this;
 
         this.searchExisting = function() {
-            $http.get('/collectibles?q='+self.selectedItem.verbatim, []).then(
+            var verbatim = self.selectedItem.verbatim ? self.selectedItem.verbatim : '';
+            var line = self.selectedItem.productLine ? self.selectedItem.productLine : '';
+            var queryString = '?verbatim='+verbatim+'&line='+line;
+            $http.get('/collectibles'+queryString, []).then(
                 function(response) {
                     self.items = response.data;
                 },
@@ -177,8 +180,8 @@
         var self = this;
         
         this.initialize= function() {
-            this.getLines();
             this.getTags();
+            this.getLines();
         };
 
         this.getTags = function() {
@@ -201,8 +204,8 @@
             );
         };
         
-        this.findByTag = function(tag) {
-            $http.get('/collectibles/tag/'+tag, []).then(
+        this.findBy = function(relation, qualifier) {
+            $http.get('/collectibles/'+relation+'/'+qualifier, []).then(
                 function(response) {
                     self.collectibles = response.data;
                 },
@@ -211,20 +214,10 @@
             );
         };
         
-        this.findByLine = function(line) {
-            $http.get('/collectibles/line/'+line, []).then(
-                function(response) {
-                    self.collectibles = response.data;
-                },
-                function() {
-                }
-            );
-        };
-
         this.query = '';
 
         this.findByName = function() {
-            $http.get('/collectibles?q='+self.query, []).then(
+            $http.get('/collectibles?verbatim='+self.query, []).then(
                 function(response) {
                     self.collectibles = response.data;
                 },

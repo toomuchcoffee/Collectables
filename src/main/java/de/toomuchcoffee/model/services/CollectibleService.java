@@ -1,5 +1,6 @@
 package de.toomuchcoffee.model.services;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import de.toomuchcoffee.model.entites.Collectible;
 import de.toomuchcoffee.model.entites.ProductLine;
@@ -90,8 +91,20 @@ public class CollectibleService {
         return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
     }
 
-    public List<CollectibleDto> findByQuery(String query) {
-        List<Collectible> collectibles = collectibleRepository.findByVerbatimIgnoreCaseContaining(query);
+    public List<CollectibleDto> findByFilter(String verbatim, String productLine) {
+        List<Collectible> collectibles;
+        if (!Strings.isNullOrEmpty(productLine) && !Strings.isNullOrEmpty(verbatim)) {
+            collectibles = collectibleRepository.findByProductLineAbbreviationAndVerbatimIgnoreCaseContaining(productLine, verbatim);
+        }
+        else if (!Strings.isNullOrEmpty(productLine)) {
+            collectibles = collectibleRepository.findByProductLineAbbreviation(productLine);
+        }
+        else if (!Strings.isNullOrEmpty(verbatim)) {
+            collectibles = collectibleRepository.findByVerbatimIgnoreCaseContaining(verbatim);
+        }
+        else {
+            collectibles = collectibleRepository.findAll();
+        }
         return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
     }
 

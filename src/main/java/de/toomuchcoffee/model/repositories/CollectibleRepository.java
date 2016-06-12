@@ -11,5 +11,8 @@ import java.util.Set;
 public interface CollectibleRepository extends JpaRepository<Collectible, Long>{
     List<Collectible> findByTags(Set<Tag> tags);
     List<Collectible> findByProductLine(ProductLine productLine);
+
+    List<Collectible> findByProductLineAbbreviation(String productLineAbbreviation);
     List<Collectible> findByVerbatimIgnoreCaseContaining(String verbatim);
+    List<Collectible> findByProductLineAbbreviationAndVerbatimIgnoreCaseContaining(String productLineAbbreviation, String verbatim);
 }

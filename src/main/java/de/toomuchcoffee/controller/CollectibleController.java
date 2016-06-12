@@ -24,9 +24,11 @@ public class CollectibleController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<CollectibleDto> findByQuery(@RequestParam(name = "q", required = false) String query) {
-        if (!Strings.isNullOrEmpty(query)) {
-            return collectibleService.findByQuery(query);
+    public List<CollectibleDto> find(
+            @RequestParam(name = "verbatim", required = false) String verbatim,
+            @RequestParam(name = "line", required = false) String line) {
+        if (!Strings.isNullOrEmpty(verbatim) || !Strings.isNullOrEmpty(line)) {
+            return collectibleService.findByFilter(verbatim, line);
         }
         return collectibleService.find();
     }

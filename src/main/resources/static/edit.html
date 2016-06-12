@@ -2,15 +2,15 @@
 
         <form class="form-inline" name="collectibleForm" ng-submit="collectibleForm.$valid && ctrl.saveItem()" novalidate>
             <h4 ng-show="ctrl.selectedItem.id">Update existing collectible with ID: {{ctrl.selectedItem.id}}</h4>
-            <h4 ng-hide="ctrl.selectedItem.id">Create new collectible</h4>
+            <h4 ng-hide="ctrl.selectedItem.id">Search / Create new collectible</h4>
             <div class="form-group">
                 <input type="text" class="form-control" placeholder="Verbatim, e.g. Han Solo (Hoth Outfit)" ng-model="ctrl.selectedItem.verbatim" ng-change="ctrl.searchExisting()" required class="ng-dirty ng-invalid" />
             </div>
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="Product line, e.g. Kenner, TLC, TVC, ..." ng-model="ctrl.selectedItem.productLine" required class="ng-dirty ng-invalid" />
+                <input type="text" class="form-control" placeholder="Product line, e.g. Kenner, TLC, TVC, ..." ng-model="ctrl.selectedItem.productLine" ng-change="ctrl.searchExisting()" required class="ng-dirty ng-invalid" />
             </div>
             <div class="form-group">
-                <textarea class="form-control" placeholder="Tags, e.g. #hoth #echobase #theempirestrikesback" ng-model="ctrl.selectedItem.tags"></textarea>
+                <textarea class="form-control" placeholder="Tags, e.g. #hoth #echobase #theempirestrikesback" ng-model="ctrl.selectedItem.tags" ng-disabled="!ctrl.selectedItem.verbatim"></textarea>
             </div>
             <div class="form-group">
                 <button class="btn btn-primary" ng-disabled="!collectibleForm.$valid">
