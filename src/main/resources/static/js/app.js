@@ -3,14 +3,10 @@
         .config(function($routeProvider, $httpProvider) {
             $routeProvider.when('/', {
                 templateUrl: 'home.html',
-                controller: 'HomeController'
-                }).when('/browse', {
-                     templateUrl: 'browse.html',
-                     controller: 'BrowseController'
-                }).when('/edit', {
-                     templateUrl: 'edit.html',
-                     controller: 'EditController'
-                }).otherwise('/');
+            }).when('/browse', {
+                 templateUrl: 'browse.html',
+                 controller: 'BrowseController'
+            }).otherwise('/');
 
             $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
         })
@@ -91,12 +87,10 @@
             return viewLocation === $location.path();
         };
     });
-    
-    app.controller('HomeController', function($http){
-    });
 
-    app.controller('EditController', function($http){
+    app.controller('BrowseController', function($http){
         var self = this;
+        this.selectedItem = {};
 
         this.searchExisting = function() {
             var verbatim = self.selectedItem.verbatim ? self.selectedItem.verbatim : '';
@@ -111,18 +105,6 @@
             );
         };
 
-        this.getItem = function(id) {
-            $http.get('/collectibles/'+id, []).then(
-                function(response) {
-                    self.selectedItem = response.data;
-                },
-                function() {
-                }
-            );
-        }
-
-        this.selectedItem = {};
-        
         this.saveItem = function() {
             if (self.selectedItem.id) {
                 self.modifyItem(self.selectedItem);
@@ -134,6 +116,7 @@
         this.addItem = function(item) {
             $http.post('/admin/collectibles', item, []).then(
                 function(response) {
+                    self.initialize();
                     self.searchExisting();
                     self.selectedItem = {};
                 },
@@ -146,6 +129,7 @@
         this.modifyItem = function(item) {
             $http.put('/admin/collectibles/'+item.id, item, []).then(
                 function(response) {
+                    self.initialize();
                     self.searchExisting();
                     self.selectedItem = {};
                 },
@@ -158,6 +142,7 @@
         this.deleteItem = function(item) {
             $http.delete('/admin/collectibles/'+item.id, []).then(
                 function(response) {
+                    self.initialize();
                     self.searchExisting();
                     self.selectedItem = {};
                 },
@@ -174,12 +159,18 @@
         this.cancel = function(item) {
             self.selectedItem = {};
         }
-    });
 
-    app.controller('BrowseController', function($http){
-        var self = this;
-        
-        this.initialize= function() {
+        this.findBy = function(relation, qualifier) {
+            $http.get('/collectibles/'+relation+'/'+qualifier, []).then(
+                function(response) {
+                    self.items = response.data;
+                },
+                function() {
+                }
+            );
+        };
+
+        this.initialize = function() {
             this.getTags();
             this.getLines();
         };
@@ -203,29 +194,6 @@
                 }
             );
         };
-        
-        this.findBy = function(relation, qualifier) {
-            $http.get('/collectibles/'+relation+'/'+qualifier, []).then(
-                function(response) {
-                    self.collectibles = response.data;
-                },
-                function() {
-                }
-            );
-        };
-        
-        this.query = '';
-
-        this.findByName = function() {
-            $http.get('/collectibles?verbatim='+self.query, []).then(
-                function(response) {
-                    self.collectibles = response.data;
-                },
-                function() {
-                }
-            );
-        };
-
 
         this.deleteTag = function(tag) {
             $http.delete('/admin/tags/'+tag.name, []).then(
