@@ -3,7 +3,7 @@
         <h4>Product Lines</h4>
         <ul class="nav nav-pills" role="tablist">
             <li ng-repeat="line in ctrl.lines | orderBy:'collectiblesCount':true">
-                <a href="" ng-click="ctrl.findBy('line', line.abbreviation)">
+                <a href="">
                     {{line.abbreviation}} ({{line.collectiblesCount}})
                     <span ng-if="!line.collectiblesCount" class="btn btn-danger" ng-click="ctrl.deleteLine(line)">
                         <i class="glyphicon glyphicon-trash"></i>

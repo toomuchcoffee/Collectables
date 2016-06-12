@@ -2,7 +2,7 @@
         <h4>Tags</h4>
         <ul class="nav nav-pills" role="tablist">
             <li ng-repeat="tag in ctrl.tags | orderBy:'taggingCount':true">
-                <a href="" ng-click="ctrl.findBy('tag', tag.name)">
+                <a href="" ng-click="ctrl.findByTag(tag.name)">
                     {{tag.name}} ({{tag.taggingCount}})
                     <span ng-if="isAdmin() && !tag.taggingCount" class="btn btn-danger" ng-click="ctrl.deleteTag(tag)">
                         <i class="glyphicon glyphicon-trash"></i>
@@ -15,22 +15,27 @@
         <form class="form-inline" name="collectibleForm" ng-submit="collectibleForm.$valid && ctrl.saveItem()" novalidate>
             <h4 ng-show="ctrl.selectedItem.id">Update existing collectible with ID: {{ctrl.selectedItem.id}}</h4>
             <h4 ng-hide="ctrl.selectedItem.id">Search / Create new collectible</h4>
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="Verbatim, e.g. Han Solo (Hoth Outfit)" ng-model="ctrl.selectedItem.verbatim" ng-change="ctrl.searchExisting()" required class="ng-dirty ng-invalid" />
-            </div>
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="Product line, e.g. Kenner, TLC, TVC, ..." ng-model="ctrl.selectedItem.productLine" ng-change="ctrl.searchExisting()" required class="ng-dirty ng-invalid" />
-            </div>
-            <div class="form-group">
-                <textarea class="form-control" placeholder="Tags, e.g. #hoth #echobase #theempirestrikesback" ng-model="ctrl.selectedItem.tags" ng-disabled="!ctrl.selectedItem.verbatim"></textarea>
-            </div>
-            <div class="form-group">
-                <button class="btn btn-primary" ng-disabled="!collectibleForm.$valid">
-                    <span class="glyphicon glyphicon-ok"></span> Save
-                </button>
-                <button class="btn btn-default" ng-click="ctrl.cancel()">
-                    Cancel
-                </button>
+            <div class="container-fluid">
+                <div class="form-group col-sm-3">
+                    <input type="text" class="form-control" placeholder="Verbatim, e.g. Han Solo (Hoth Outfit)"
+                           ng-model="ctrl.selectedItem.verbatim" ng-change="ctrl.searchExisting()" required class="ng-dirty ng-invalid" />
+                </div>
+                <div class="form-group col-sm-3">
+                    <input type="text" class="form-control" placeholder="Line, e.g. Kenner, TLC, TVC, ..."
+                           ng-model="ctrl.selectedItem.productLine" ng-change="ctrl.searchExisting()" required class="ng-dirty ng-invalid" />
+                </div>
+                <div class="form-group col-sm-4">
+                    <input type="text" class="form-control" placeholder="Tags, e.g. #hoth #echobase #theempirestrikesback"
+                              ng-model="ctrl.selectedItem.tags" ng-disabled="!ctrl.selectedItem.verbatim" ng-keyup="ctrl.insertHashtag($event)" />
+                </div>
+                <div class="form-group col-sm-2">
+                    <button class="btn btn-primary" ng-disabled="!collectibleForm.$valid">
+                        <span class="glyphicon glyphicon-ok"></span> Save
+                    </button>
+                    <button class="btn btn-default" ng-click="ctrl.cancel()">
+                        Cancel
+                    </button>
+                </div>
             </div>
         </form>
 
@@ -41,17 +46,17 @@
                 <div class="col-sm-2">
                     <img ng-src="collectibles/{{collectible.id}}/thumb" alt="no image" />
                 </div>
-                <div class="col-sm-7">
+                <div class="col-sm-8">
                     <p><strong>{{collectible.verbatim}}</strong></p>
                     <p>{{collectible.productLine}}</p>
                     <small>{{collectible.tags}}</small>
                 </div>
-                <div class="col-sm-3">
-                    <a class="btn btn-default" href="" ng-click="ctrl.editItem(collectible)">
+                <div class="col-sm-2">
+                    <a ng-if="isAdmin()" class="btn btn-default" href="" ng-click="ctrl.editItem(collectible)">
                         <i class="glyphicon glyphicon-pencil"></i>
                         Edit
                     </a>
-                    <a class="btn btn-danger" href="" ng-click="ctrl.deleteItem(collectible)">
+                    <a ng-if="isAdmin()" class="btn btn-danger" href="" ng-click="ctrl.deleteItem(collectible)">
                         <i class="glyphicon glyphicon-trash"></i>
                         Delete
                     </a>

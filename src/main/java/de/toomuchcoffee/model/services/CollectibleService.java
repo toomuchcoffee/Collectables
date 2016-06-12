@@ -94,10 +94,10 @@ public class CollectibleService {
     public List<CollectibleDto> findByFilter(String verbatim, String productLine) {
         List<Collectible> collectibles;
         if (!Strings.isNullOrEmpty(productLine) && !Strings.isNullOrEmpty(verbatim)) {
-            collectibles = collectibleRepository.findByProductLineAbbreviationAndVerbatimIgnoreCaseContaining(productLine, verbatim);
+            collectibles = collectibleRepository.findByProductLineAbbreviationIgnoreCaseContainingAndVerbatimIgnoreCaseContaining(productLine, verbatim);
         }
         else if (!Strings.isNullOrEmpty(productLine)) {
-            collectibles = collectibleRepository.findByProductLineAbbreviation(productLine);
+            collectibles = collectibleRepository.findByProductLineAbbreviationIgnoreCaseContaining(productLine);
         }
         else if (!Strings.isNullOrEmpty(verbatim)) {
             collectibles = collectibleRepository.findByVerbatimIgnoreCaseContaining(verbatim);
@@ -111,12 +111,6 @@ public class CollectibleService {
     public List<CollectibleDto> findByTag(String tagId) {
         Tag tag = tagService.find(tagId);
         List<Collectible> collectibles = collectibleRepository.findByTags(Sets.newHashSet(tag));
-        return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
-    }
-
-    public List<CollectibleDto> findByProductLine(String abbreviation) {
-        ProductLine productLine = productLineService.find(abbreviation);
-        List<Collectible> collectibles = collectibleRepository.findByProductLine(productLine);
         return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
     }
 

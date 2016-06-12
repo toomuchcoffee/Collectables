@@ -43,11 +43,6 @@ public class CollectibleController {
         return collectibleService.findByTag(tag);
     }
 
-    @RequestMapping(value = "line/{productLine}", method = RequestMethod.GET)
-    public List<CollectibleDto> findByProductLine(@PathVariable String productLine) {
-        return collectibleService.findByProductLine(productLine);
-    }
-
     @ResponseBody
     @RequestMapping(value= "/{collectibleId}/thumb", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getCollectibleThumbnail(@PathVariable Long collectibleId) throws IOException {

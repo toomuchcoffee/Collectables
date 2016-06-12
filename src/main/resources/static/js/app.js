@@ -143,6 +143,7 @@
         };
 
         this.deleteItem = function(item) {
+            if (!confirm("Are you sure?")) return;
             $http.delete('/admin/collectibles/'+item.id, []).then(
                 function(response) {
                     self.initialize();
@@ -163,8 +164,8 @@
             self.selectedItem = {};
         }
 
-        this.findBy = function(relation, qualifier) {
-            $http.get('/collectibles/'+relation+'/'+qualifier, []).then(
+        this.findByTag = function(qualifier) {
+            $http.get('/collectibles/tag/'+qualifier, []).then(
                 function(response) {
                     self.items = response.data;
                 },
@@ -197,6 +198,17 @@
                 }
             )
         };
+
+        this.insertHashtag = function (event) {
+             if (event.keyCode === 32) {
+                var s = self.selectedItem.tags;
+                if (s.indexOf('#', s.length - 1) == -1) {
+                    self.selectedItem.tags += ' #';
+                } else {
+                    return false;
+                }
+             }
+         };
 
         this.isAdmin = function() {
             return $rootScope.authenticated === 'admin';
