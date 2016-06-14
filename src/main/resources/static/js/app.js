@@ -158,11 +158,11 @@
         
         this.editItem = function(item) {
             self.selectedItem = item;
-        }
+        };
 
         this.cancel = function(item) {
             self.selectedItem = {};
-        }
+        };
 
         this.findByTag = function(qualifier) {
             $http.get('/collectibles/tag/'+qualifier, []).then(
@@ -210,8 +210,65 @@
              }
          };
 
+        this.getUsername = function() {
+            return $rootScope.authenticated;
+        };
+
         this.isAdmin = function() {
             return $rootScope.authenticated === 'admin';
+        };
+
+    });
+
+    app.component('ownershipWidget', {
+        bindings: {
+            username: '=',
+            collectibleId: '='
+        },
+        templateUrl: 'partials/ownershipWidget.html',
+        controllerAs: 'ctrl',
+        controller: function($http) {
+            var self = this;
+
+            this.$onInit = function () {
+                this.findOwnerships();
+            };
+
+            this.findOwnerships = function() {
+                $http.get('/ownerships?username='+this.username+'&collectible_id='+this.collectibleId, []).then(
+                    function(response) {
+                        self.ownerships = response.data;
+                    },
+                    function() {
+                    }
+                );
+            };
+
+            this.addOwnership = function() {
+                var newOwnership = {
+                    collectorId: this.username,
+                    collectibleId: this.collectibleId
+                };
+                $http.post('/ownerships', newOwnership, []).then(
+                    function(response) {
+                        self.findOwnerships();
+                    },
+                    function() {
+                    }
+                );
+            };
+
+            this.removeOwnership = function() {
+                var toDelete = self.ownerships.pop();
+                $http.delete('/ownerships/'+toDelete.id, []).then(
+                    function(response) {
+                        self.findOwnerships();
+                    },
+                    function() {
+                    }
+                );
+            }
+
         }
     });
 

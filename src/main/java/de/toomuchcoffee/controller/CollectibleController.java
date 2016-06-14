@@ -34,7 +34,7 @@ public class CollectibleController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Long addToCollectibles(@RequestBody CollectibleDto collectible) {
+    public Long addCollectible(@RequestBody CollectibleDto collectible) {
         return collectibleService.add(collectible);
     }
 

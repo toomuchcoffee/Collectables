@@ -27,17 +27,17 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/collectibles/{id}", method = RequestMethod.DELETE)
-    public void deleteFromCollectibles(@PathVariable Long id) {
+    public void deleteCollectible(@PathVariable Long id) {
         collectibleService.delete(id);
     }
 
     @RequestMapping(value = "/tags/{id}", method = RequestMethod.DELETE)
-    public void deleteFromTags(@PathVariable String id) {
+    public void deleteTag(@PathVariable String id) {
         tagService.delete(id);
     }
 
     @RequestMapping(value = "/lines/{id}", method = RequestMethod.DELETE)
-    public void deleteFromLines(@PathVariable String id) {
+    public void deleteProductLine(@PathVariable String id) {
         productLineService.delete(id);
     }
 }

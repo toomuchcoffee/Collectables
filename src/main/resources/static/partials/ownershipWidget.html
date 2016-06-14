@@ -1,0 +1,9 @@
+<span class="badge">{{ctrl.ownerships.length}}</span>
+<a class="btn btn-success" href="" ng-click="ctrl.addOwnership()">
+    <i class="glyphicon glyphicon-plus"></i>
+    Add
+</a>
+<a ng-if="ctrl.ownerships.length" class="btn btn-warning" href="" ng-click="ctrl.removeOwnership()">
+    <i class="glyphicon glyphicon-minus"></i>
+    Remove
+</a>
