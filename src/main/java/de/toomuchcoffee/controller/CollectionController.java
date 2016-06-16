@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/collectors")
+@RequestMapping(value = "/collections")
 @CrossOrigin
-public class CollectorController {
+public class CollectionController {
     @Autowired
     private OwnershipService ownershipService;
 
-    @RequestMapping(value = "{collectorId}/collection", method = RequestMethod.GET)
-    public CollectionDto getCollection(@PathVariable String collectorId) {
-        return ownershipService.getCollection(collectorId);
+    @RequestMapping(value = "{username}", method = RequestMethod.GET)
+    public CollectionDto getCollection(@PathVariable String username) {
+        return ownershipService.getCollection(username);
     }
 }

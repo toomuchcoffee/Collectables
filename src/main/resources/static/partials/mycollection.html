@@ -16,10 +16,16 @@
                     <p>{{ownership.collectible.productLine}}</p>
                 </div>
                 <div class="col-sm-3">
-                    <a href="" ng-if="!ctrl.isSelected(ownership)" ng-click="ctrl.selectOwnership(ownership)">
-                        <span ng-if="ownership.price">{{ownership.price | currency }}</span>
-                        <span ng-if="!ownership.price">add price</span>
-                    </a>
+                    <div ng-if="!ctrl.isSelected(ownership)">
+                        <a href="" ng-click="ctrl.selectOwnership(ownership)">
+                            <span ng-if="ownership.price">{{ownership.price | currency }}</span>
+                            <span ng-if="!ownership.price">add price</span>
+                        </a>
+                        <a class="btn btn-danger" href="" ng-click="ctrl.deleteOwnership(ownership.id)">
+                            <i class="glyphicon glyphicon-trash"></i>
+                            X
+                        </a>
+                    </div>
                     <form ng-if="ctrl.isSelected(ownership)" ng-submit="ctrl.modifyOwnership(ownership)">
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="price" ng-model="ctrl.selected.price" />

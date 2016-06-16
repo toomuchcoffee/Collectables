@@ -34,6 +34,6 @@ public class OwnershipController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public List<OwnershipDto> find(@RequestParam String username, @RequestParam(name = "collectible_id", required = false) Long collectibleId) {
-        return ownershipService.findByCollectorIdAndCollectibleId(username, collectibleId);
+        return ownershipService.findByUsernameAndCollectibleId(username, collectibleId);
     }
 }

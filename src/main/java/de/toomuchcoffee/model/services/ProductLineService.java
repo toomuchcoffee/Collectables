@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class ProductLineService {
@@ -19,7 +20,7 @@ public class ProductLineService {
          List<ProductLine> productLines = productLineRepository.findAll();
         List<ProductLineDto> productLineDtos = productLines.stream()
                 .map(p -> new ProductLineDto(p.getAbbreviation(), p.getDescription()))
-                .collect(Collectors.toList());
+                .collect(toList());
         productLineDtos.forEach(dto ->
                 dto.setCollectiblesCount(productLineRepository.getCollectiblesCount(dto.getAbbreviation())));
         return productLineDtos;

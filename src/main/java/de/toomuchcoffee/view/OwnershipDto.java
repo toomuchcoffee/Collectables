@@ -7,18 +7,18 @@ import java.math.BigDecimal;
 public class OwnershipDto {
     private Long id;
 
-    private String collectorId;
+    private String username;
 
     private BigDecimal price;
 
     private CollectibleDto collectible;
 
-    public String getCollectorId() {
-        return collectorId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setCollectorId(String collectorId) {
-        this.collectorId = collectorId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public BigDecimal getPrice() {
@@ -49,7 +49,7 @@ public class OwnershipDto {
         OwnershipDto dto = new OwnershipDto();
         dto.setId(ownership.getId());
         dto.setCollectible(CollectibleDto.toDto(ownership.getCollectible()));
-        dto.setCollectorId(ownership.getCollector().getUsername());
+        dto.setUsername(ownership.getUser().getUsername());
         dto.setPrice(ownership.getPrice());
         return dto;
     }

@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 @Service
 public class CollectibleService {
@@ -73,7 +75,7 @@ public class CollectibleService {
                 .map(t -> Optional.ofNullable(tagService
                         .find(t.toLowerCase()))
                         .orElse(new Tag(t.toLowerCase())))
-                .collect(Collectors.toSet());
+                .collect(toSet());
     }
 
     @Transactional
@@ -88,7 +90,7 @@ public class CollectibleService {
 
     public List<CollectibleDto> find() {
         List<Collectible> collectibles = collectibleRepository.findAll();
-        return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
+        return collectibles.stream().map(CollectibleDto::toDto).collect(toList());
     }
 
     public List<CollectibleDto> findByFilter(String verbatim, String productLine) {
@@ -105,13 +107,13 @@ public class CollectibleService {
         else {
             collectibles = collectibleRepository.findAll();
         }
-        return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
+        return collectibles.stream().map(CollectibleDto::toDto).collect(toList());
     }
 
     public List<CollectibleDto> findByTag(String tagId) {
         Tag tag = tagService.find(tagId);
         List<Collectible> collectibles = collectibleRepository.findByTags(Sets.newHashSet(tag));
-        return collectibles.stream().map(CollectibleDto::toDto).collect(Collectors.toList());
+        return collectibles.stream().map(CollectibleDto::toDto).collect(toList());
     }
 
     public byte[] getCollectibleThumbnail(Long collectibleId) {

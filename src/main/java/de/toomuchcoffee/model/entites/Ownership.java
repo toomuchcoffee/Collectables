@@ -10,8 +10,8 @@ public class Ownership {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "collector_id")
-    private Collector collector;
+    @JoinColumn(name = "username")
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "collectible_id")
@@ -28,12 +28,12 @@ public class Ownership {
         this.id = id;
     }
 
-    public Collector getCollector() {
-        return collector;
+    public User getUser() {
+        return user;
     }
 
-    public void setCollector(Collector collector) {
-        this.collector = collector;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Collectible getCollectible() {

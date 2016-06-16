@@ -11,7 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class TagService {
@@ -27,7 +28,7 @@ public class TagService {
         List<Tag> tags = tagRepository.findAll();
         List<TagDto> tagDtos = tags.stream()
                 .map(t -> new TagDto(t.getName()))
-                .collect(Collectors.toList());
+                .collect(toList());
         tagDtos.forEach(dto -> dto.setTaggingCount(tagRepository.getTaggingCount(dto.getName())));
         return tagDtos;
     }

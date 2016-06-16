@@ -1,16 +1,16 @@
 package de.toomuchcoffee.view;
 
 public class NewOwnershipDto {
-    private String collectorId;
+    private String username;
 
     private Long collectibleId;
 
-    public String getCollectorId() {
-        return collectorId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setCollectorId(String collectorId) {
-        this.collectorId = collectorId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Long getCollectibleId() {

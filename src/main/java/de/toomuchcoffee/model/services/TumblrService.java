@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class TumblrService {
@@ -29,7 +30,7 @@ public class TumblrService {
     public List<TumblrPost> getPosts() {
         return posts.stream()
                 .filter(tp -> tp.tags != null)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     public TumblrPost getAnyPost() {
@@ -46,7 +47,7 @@ public class TumblrService {
         TumblrResponse tumblrFirstResponse = getTumblrResponse(tumblrFirstPageUrl);
         posts = Lists.newArrayList(tumblrFirstResponse.posts).stream()
                 .filter(tp -> tp.tags != null)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         int offset = 20;
         int maxPage = (int) Math.ceil(((double) tumblrFirstResponse.postsTotal) / offset);

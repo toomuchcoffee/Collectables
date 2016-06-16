@@ -4,7 +4,8 @@ import de.toomuchcoffee.model.entites.Collectible;
 import de.toomuchcoffee.model.entites.Tag;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class CollectibleDto {
     private Long id;
@@ -59,7 +60,7 @@ public class CollectibleDto {
 
         dto.setTags(
                 (collectible.getTags().size()>0 ? "#" : "")
-              + String.join(" #", collectible.getTags().stream().map(Tag::getName).collect(Collectors.toList()))
+              + String.join(" #", collectible.getTags().stream().map(Tag::getName).collect(toList()))
         );
 
         return dto;

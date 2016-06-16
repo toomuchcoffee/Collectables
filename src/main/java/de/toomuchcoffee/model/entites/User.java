@@ -8,10 +8,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
-@Entity
-public class Collector implements UserDetails{
+import static java.util.stream.Collectors.toList;
+
+@Entity(name = "app_user")
+public class User implements UserDetails{
     @Id
     private String username;
 
@@ -47,7 +48,7 @@ public class Collector implements UserDetails{
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Arrays.stream(getRoles().split(","))
                 .map(r -> new SimpleGrantedAuthority(r.trim().toUpperCase()))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override

@@ -249,7 +249,7 @@
 
             this.addOwnership = function() {
                 var newOwnership = {
-                    collectorId: this.username,
+                    username: this.username,
                     collectibleId: this.collectibleId
                 };
                 $http.post('/ownerships', newOwnership, []).then(
@@ -280,12 +280,12 @@
 
         this.initialize = function() {
             self.username = $rootScope.authenticated;
-            self.findCollection(self.username);
+            self.findCollection();
         };
 
 
-        this.findCollection = function(username) {
-            $http.get('/collectors/'+self.username+'/collection', []).then(
+        this.findCollection = function() {
+            $http.get('/collections/'+self.username, []).then(
                 function(response) {
                     self.collection = response.data;
                 },
@@ -299,12 +299,23 @@
             $http.put('/ownerships/'+ownership.id, item, []).then(
                 function(response) {
                     self.selected = null;
-                    self.findCollection(self.username);
+                    self.findCollection();
                 },
                 function() {
                 }
             );
         };
+
+        this.deleteOwnership = function(id) {
+            if (!confirm("Are you sure?")) return;
+            $http.delete('/ownerships/'+id, []).then(
+                function(response) {
+                    self.findCollection();
+                },
+                function() {
+                }
+            );
+        }
 
         this.selectOwnership = function(ownership) {
             self.selected = ownership;

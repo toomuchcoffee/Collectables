@@ -1,8 +1,8 @@
 package de.toomuchcoffee.model.services;
 
 import de.toomuchcoffee.model.entites.Collectible;
-import de.toomuchcoffee.model.entites.Collector;
 import de.toomuchcoffee.model.entites.Ownership;
+import de.toomuchcoffee.model.entites.User;
 import de.toomuchcoffee.model.repositories.CollectibleRepository;
 import de.toomuchcoffee.model.repositories.OwnershipRepository;
 import de.toomuchcoffee.model.repositories.UserRepository;
@@ -15,7 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class OwnershipService {
@@ -43,20 +44,20 @@ public class OwnershipService {
         ownershipRepository.delete(id);
     }
 
-    public List<OwnershipDto> findByCollectorIdAndCollectibleId(String collectorId, Long collectibleId) {
+    public List<OwnershipDto> findByUsernameAndCollectibleId(String username, Long collectibleId) {
         List<Ownership> ownerships;
-        Collector collector = userRepository.findOne(collectorId);
+        User user = userRepository.findOne(username);
         if (collectibleId != null) {
             Collectible collectible = collectibleRepository.findOne(collectibleId);
-            ownerships = ownershipRepository.findByCollectorAndCollectible(collector, collectible);
+            ownerships = ownershipRepository.findByUserAndCollectible(user, collectible);
         } else {
-            ownerships = ownershipRepository.findByCollector(collector);
+            ownerships = ownershipRepository.findByUser(user);
         }
-        return ownerships.stream().map(OwnershipDto::toDto).collect(Collectors.toList());
+        return ownerships.stream().map(OwnershipDto::toDto).collect(toList());
     }
 
     public CollectionDto getCollection(String username) {
-        List<OwnershipDto> ownerships = findByCollectorIdAndCollectibleId(username, null);
+        List<OwnershipDto> ownerships = findByUsernameAndCollectibleId(username, null);
 
         CollectionDto collection = new CollectionDto();
 
@@ -74,7 +75,7 @@ public class OwnershipService {
     private Ownership mapToEntity(NewOwnershipDto ownershipDto) {
         Ownership ownership = new Ownership();
         ownership.setCollectible(collectibleRepository.findOne(ownershipDto.getCollectibleId()));
-        ownership.setCollector(userRepository.getOne(ownershipDto.getCollectorId()));
+        ownership.setUser(userRepository.getOne(ownershipDto.getUsername()));
         return ownership;
     }
 }
