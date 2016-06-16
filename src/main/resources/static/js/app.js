@@ -113,14 +113,14 @@
 
         this.saveItem = function() {
             if (self.selectedItem.id) {
-                self.modifyItem(self.selectedItem);
+                self.modifyItem();
             } else {
-                self.addItem(self.selectedItem);
+                self.addItem();
             }
         };
 
-        this.addItem = function(item) {
-            $http.post('/collectibles', item, []).then(
+        this.addItem = function() {
+            $http.post('/collectibles', self.selectedItem, []).then(
                 function(response) {
                     self.initialize();
                     self.searchExisting();
@@ -132,8 +132,8 @@
             );
         };
 
-        this.modifyItem = function(item) {
-            $http.put('/admin/collectibles/'+item.id, item, []).then(
+        this.modifyItem = function() {
+            $http.put('/admin/collectibles/'+self.selectedItem.id, item, []).then(
                 function(response) {
                     self.initialize();
                     self.searchExisting();
@@ -330,14 +330,27 @@
     app.controller('AdminController', function($http){
         var self = this;
 
+        this.newUser = {};
+
         this.initialize = function() {
             this.getLines();
+            this.getUsers();
         };
 
         this.getLines = function() {
             $http.get('/lines', []).then(
                 function(response) {
                     self.lines = response.data;
+                },
+                function() {
+                }
+            );
+        };
+
+        this.getUsers = function() {
+            $http.get('/admin/users', []).then(
+                function(response) {
+                    self.users = response.data;
                 },
                 function() {
                 }
@@ -354,6 +367,19 @@
                 }
             )
         };
+
+        this.saveUser = function() {
+            $http.post('/admin/users', self.newUser, []).then(
+                function(response) {
+                    self.initialize();
+                    self.newUser = {};
+                },
+                function() {
+                    alert("Something went wrong!");
+                }
+            );
+        };
+
     });
 
 })();
