@@ -278,21 +278,42 @@
     app.controller('MyCollectionController', function($http, $rootScope){
         var self = this;
 
-        this.findOwnerships = function() {
-            $http.get('/ownerships?username='+self.username, []).then(
+        this.initialize = function() {
+            self.username = $rootScope.authenticated;
+            self.findCollection(self.username);
+        };
+
+
+        this.findCollection = function(username) {
+            $http.get('/collectors/'+self.username+'/collection', []).then(
                 function(response) {
-                    self.items = response.data;
+                    self.collection = response.data;
                 },
                 function() {
                 }
             );
         };
 
-        this.initialize = function() {
-            self.username = $rootScope.authenticated;
-            self.findOwnerships();
+        this.modifyOwnership = function(ownership) {
+            var item = { price: ownership.price };
+            $http.put('/ownerships/'+ownership.id, item, []).then(
+                function(response) {
+                    self.selected = null;
+                    self.findCollection(self.username);
+                },
+                function() {
+                }
+            );
         };
 
+        this.selectOwnership = function(ownership) {
+            self.selected = ownership;
+        };
+
+        this.isSelected = function(ownership) {
+            return self.selected && ownership.id === self.selected.id;
+        };
+    
     });
 
     app.controller('AdminController', function($http){

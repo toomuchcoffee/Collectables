@@ -1,10 +1,13 @@
     <div ng-controller="MyCollectionController as ctrl" ng-init="ctrl.initialize()">
         <h4>{{ctrl.username}}'s Collection</h4>
 
-        <p ng-if="!ctrl.items"><span class="label label-warning">You don't have any items marked as owned, yet. Start adding items on the "Browse" page.</span></p>
+        <p ng-if="!ctrl.collection.ownerships"><span class="label label-warning">You don't have any items marked as owned, yet. Start adding items on the "Browse" page.</span></p>
+        <p ng-if="ctrl.collection.ownerships">
+            <span class="label label-success">You own <strong>{{ctrl.collection.size}}</strong> collectibles and their total value is <strong>{{ctrl.collection.value | currency}}</strong></span>
+        </p>
 
         <div class="list-group container-fluid">
-            <div ng-repeat="ownership in ctrl.items | orderBy:'id':true" class="list-group-item row">
+            <div ng-repeat="ownership in ctrl.collection.ownerships | orderBy:'id':true" class="list-group-item row">
                 <div class="col-sm-2">
                     <img ng-src="collectibles/{{ownership.collectible.id}}/thumb" alt="no image" />
                 </div>
@@ -13,7 +16,20 @@
                     <p>{{ownership.collectible.productLine}}</p>
                 </div>
                 <div class="col-sm-3">
-                    {{ownership.price}}
+                    <a href="" ng-if="!ctrl.isSelected(ownership)" ng-click="ctrl.selectOwnership(ownership)">
+                        <span ng-if="ownership.price">{{ownership.price | currency }}</span>
+                        <span ng-if="!ownership.price">add price</span>
+                    </a>
+                    <form ng-if="ctrl.isSelected(ownership)" ng-submit="ctrl.modifyOwnership(ownership)">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="price" ng-model="ctrl.selected.price" />
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success">
+                                <span class="glyphicon glyphicon-success"></span> OK
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
