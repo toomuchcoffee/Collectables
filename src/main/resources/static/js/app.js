@@ -133,7 +133,7 @@
         };
 
         this.modifyItem = function() {
-            $http.put('/admin/collectibles/'+self.selectedItem.id, item, []).then(
+            $http.put('/admin/collectibles/'+self.selectedItem.id, self.selectedItem, []).then(
                 function(response) {
                     self.initialize();
                     self.searchExisting();
