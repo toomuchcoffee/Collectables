@@ -6,6 +6,9 @@
             }).when('/browse', {
                  templateUrl: 'partials/browse.html',
                  controller: 'BrowseController'
+            }).when('/mycollection', {
+                 templateUrl: 'partials/mycollection.html',
+                 controller: 'MyCollectionController'
             }).when('/admin', {
                  templateUrl: 'partials/admin.html',
                  controller: 'AdminController'
@@ -175,7 +178,7 @@
         };
 
         this.initialize = function() {
-            this.getTags();
+            self.getTags();
         };
 
         this.getTags = function() {
@@ -270,6 +273,26 @@
             }
 
         }
+    });
+
+    app.controller('MyCollectionController', function($http, $rootScope){
+        var self = this;
+
+        this.findOwnerships = function() {
+            $http.get('/ownerships?username='+self.username, []).then(
+                function(response) {
+                    self.items = response.data;
+                },
+                function() {
+                }
+            );
+        };
+
+        this.initialize = function() {
+            self.username = $rootScope.authenticated;
+            self.findOwnerships();
+        };
+
     });
 
     app.controller('AdminController', function($http){

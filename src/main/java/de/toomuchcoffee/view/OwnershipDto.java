@@ -9,9 +9,9 @@ public class OwnershipDto {
 
     private String collectorId;
 
-    private Long collectibleId;
-
     private BigDecimal price;
+
+    private CollectibleDto collectible;
 
     public String getCollectorId() {
         return collectorId;
@@ -19,14 +19,6 @@ public class OwnershipDto {
 
     public void setCollectorId(String collectorId) {
         this.collectorId = collectorId;
-    }
-
-    public Long getCollectibleId() {
-        return collectibleId;
-    }
-
-    public void setCollectibleId(Long collectibleId) {
-        this.collectibleId = collectibleId;
     }
 
     public BigDecimal getPrice() {
@@ -45,10 +37,18 @@ public class OwnershipDto {
         this.id = id;
     }
 
+    public CollectibleDto getCollectible() {
+        return collectible;
+    }
+
+    public void setCollectible(CollectibleDto collectible) {
+        this.collectible = collectible;
+    }
+
     public static OwnershipDto toDto(Ownership ownership) {
         OwnershipDto dto = new OwnershipDto();
         dto.setId(ownership.getId());
-        dto.setCollectibleId(ownership.getCollectible().getId());
+        dto.setCollectible(CollectibleDto.toDto(ownership.getCollectible()));
         dto.setCollectorId(ownership.getCollector().getUsername());
         dto.setPrice(ownership.getPrice());
         return dto;

@@ -1,0 +1,21 @@
+    <div ng-controller="MyCollectionController as ctrl" ng-init="ctrl.initialize()">
+        <h4>{{ctrl.username}}'s Collection</h4>
+
+        <p ng-if="!ctrl.items"><span class="label label-warning">You don't have any items marked as owned, yet. Start adding items on the "Browse" page.</span></p>
+
+        <div class="list-group container-fluid">
+            <div ng-repeat="ownership in ctrl.items | orderBy:'id':true" class="list-group-item row">
+                <div class="col-sm-2">
+                    <img ng-src="collectibles/{{ownership.collectible.id}}/thumb" alt="no image" />
+                </div>
+                <div class="col-sm-7">
+                    <p><strong>{{ownership.collectible.verbatim}}</strong></p>
+                    <p>{{ownership.collectible.productLine}}</p>
+                </div>
+                <div class="col-sm-3">
+                    {{ownership.price}}
+                </div>
+            </div>
+        </div>
+
+    </div>

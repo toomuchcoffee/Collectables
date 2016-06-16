@@ -1,6 +1,7 @@
 package de.toomuchcoffee.controller;
 
 import de.toomuchcoffee.model.services.OwnershipService;
+import de.toomuchcoffee.view.NewOwnershipDto;
 import de.toomuchcoffee.view.OwnershipDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class OwnershipController {
     private OwnershipService ownershipService;
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public void addOwnership(@RequestBody OwnershipDto ownership) {
+    public void addOwnership(@RequestBody NewOwnershipDto ownership) {
         ownershipService.add(ownership);
     }
 
@@ -26,7 +27,7 @@ public class OwnershipController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<OwnershipDto> find(@RequestParam String username, @RequestParam(name = "collectible_id") Long collectibleId) {
+    public List<OwnershipDto> find(@RequestParam String username, @RequestParam(name = "collectible_id", required = false) Long collectibleId) {
         return ownershipService.findByCollectorIdAndCollectibleId(username, collectibleId);
     }
 }

@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface OwnershipRepository extends JpaRepository<Ownership, Long> {
     List<Ownership> findByCollectorAndCollectible(Collector collector, Collectible collectible);
+    List<Ownership> findByCollector(Collector collector);
 }

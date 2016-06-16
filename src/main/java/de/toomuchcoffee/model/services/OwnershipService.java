@@ -6,6 +6,7 @@ import de.toomuchcoffee.model.entites.Ownership;
 import de.toomuchcoffee.model.repositories.CollectibleRepository;
 import de.toomuchcoffee.model.repositories.OwnershipRepository;
 import de.toomuchcoffee.model.repositories.UserRepository;
+import de.toomuchcoffee.view.NewOwnershipDto;
 import de.toomuchcoffee.view.OwnershipDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class OwnershipService {
     @Autowired
     private CollectibleRepository collectibleRepository;
 
-    public void add(OwnershipDto ownershipDto) {
+    public void add(NewOwnershipDto ownershipDto) {
         Ownership ownership = mapToEntity(ownershipDto);
         ownershipRepository.save(ownership);
     }
@@ -34,16 +35,19 @@ public class OwnershipService {
     }
 
     public List<OwnershipDto> findByCollectorIdAndCollectibleId(String collectorId, Long collectibleId) {
+        List<Ownership> ownerships;
         Collector collector = userRepository.findOne(collectorId);
-        Collectible collectible = collectibleRepository.findOne(collectibleId);
-        List<Ownership> ownerships = ownershipRepository.findByCollectorAndCollectible(collector, collectible);
+        if (collectibleId != null) {
+            Collectible collectible = collectibleRepository.findOne(collectibleId);
+            ownerships = ownershipRepository.findByCollectorAndCollectible(collector, collectible);
+        } else {
+            ownerships = ownershipRepository.findByCollector(collector);
+        }
         return ownerships.stream().map(OwnershipDto::toDto).collect(Collectors.toList());
     }
 
-    private Ownership mapToEntity(OwnershipDto ownershipDto) {
+    private Ownership mapToEntity(NewOwnershipDto ownershipDto) {
         Ownership ownership = new Ownership();
-        ownership.setId(ownershipDto.getId());
-        ownership.setPrice(ownershipDto.getPrice());
         ownership.setCollectible(collectibleRepository.findOne(ownershipDto.getCollectibleId()));
         ownership.setCollector(userRepository.getOne(ownershipDto.getCollectorId()));
         return ownership;
