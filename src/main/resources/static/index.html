@@ -4,21 +4,15 @@
         <title>Collectables</title>
         <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
         <link href="css/app.css" rel="stylesheet" type="text/css" />
-
-        <style type="text/css">
-            [ng\:cloak], [ng-cloak], .ng-cloak {
-                display: none !important;
-            }
-        </style>
     </head>
 
-    <body ng-app="collectables" ng-controller="NavigationController" ng-cloak class="ng-cloak">
+    <body ng-app="collectables" ng-cloak class="ng-cloak">
+        <login ng-if="!authenticated"></login>
+
         <div ng-if="authenticated">
             <navigation></navigation>
             <div ng-view class="container"></div>
         </div>
-
-        <login ng-if="!authenticated"></login>
 
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-route.min.js"></script>

@@ -21,6 +21,7 @@
                 $rootScope.$on("$routeChangeStart", function(event, next, current) {
                     $http.get('user').then(
                         function(data) {
+                            $rootScope.authenticated = data.name;
                         },
                         function() {
                             $rootScope.authenticated = null;
@@ -28,69 +29,66 @@
                         }
                     );
                 });
+
+                $rootScope.isAdmin = function() {
+                    return $rootScope.authenticated === 'admin';
+                };
             }
         );
 
-    app.directive('login', function() {
-        return {
-            restrict: 'E',
-            templateUrl: 'partials/login.html',
-            controller: 'NavigationController'
+    app.component('login', {
+        templateUrl: 'partials/login.html',
+        controllerAs: 'ctrl',
+        controller: function($rootScope, $scope, $http, $location) {
+            var authenticate = function (credentials, callback) {
+                var headers = credentials ? {
+                    authorization: "Basic " + btoa(credentials.username + ":" + credentials.password)
+                } : {};
+
+                $http.get('user', {headers: headers}).success(function (data) {
+                    $rootScope.authenticated = data.name;
+                    callback && callback();
+                }).error(function () {
+                    $rootScope.authenticated = null;
+                    callback && callback();
+                });
+            };
+
+            authenticate();
+            $scope.credentials = {};
+            $scope.login = function () {
+                authenticate($scope.credentials, function () {
+                    if ($rootScope.authenticated) {
+                        $location.path("/");
+                        $scope.error = false;
+                    } else {
+                        $location.path("/");
+                        $scope.error = true;
+                    }
+                });
+            };
+
         }
     });
 
-    app.directive('navigation', function() {
-        return {
-            restrict: 'E',
-            templateUrl: 'partials/navigation.html',
-            controller: 'NavigationController'
-        }
-    });
-
-    app.controller('NavigationController', function($rootScope, $scope, $http, $location) {
-        var authenticate = function(credentials, callback) {
-            var headers = credentials ? {authorization : "Basic "
-            + btoa(credentials.username + ":" + credentials.password)
-            } : {};
-
-            $http.get('user', {headers : headers}).success(function(data) {
-                $rootScope.authenticated = data.name;
-                callback && callback();
-            }).error(function() {
-                $rootScope.authenticated = null;
-                callback && callback();
-            });
-        };
-
-        authenticate();
-        $scope.credentials = {};
-        $scope.login = function() {
-            authenticate($scope.credentials, function() {
-                if ($rootScope.authenticated) {
+    app.component('navigation', {
+        templateUrl: 'partials/navigation.html',
+        controllerAs: 'ctrl',
+        controller: function($rootScope, $scope, $http, $location) {
+            $scope.logout = function () {
+                $http.post('logout', {}).success(function () {
+                    $rootScope.authenticated = null;
                     $location.path("/");
-                    $scope.error = false;
-                } else {
-                    $location.path("/");
-                    $scope.error = true;
-                }
-            });
-        };
+                }).error(function (data) {
+                    $rootScope.authenticated = null;
+                });
+            };
 
-        $scope.logout = function() {
-            $http.post('logout', {}).success(function() {
-                $rootScope.authenticated = null;
-                $location.path("/");
-            }).error(function(data) {
-                $rootScope.authenticated = null;
-            });
-        };
+            $scope.isActive = function (viewLocation) {
+                return viewLocation === $location.path();
+            };
 
-        $scope.isActive = function (viewLocation) {
-            return viewLocation === $location.path();
-        };
-
-        $scope.isAdmin = function() {
-            return $rootScope.authenticated === 'admin';
+            $scope.isAdmin = $rootScope.isAdmin;
         }
     });
 
@@ -217,10 +215,6 @@
             return $rootScope.authenticated;
         };
 
-        this.isAdmin = function() {
-            return $rootScope.authenticated === 'admin';
-        };
-
     });
 
     app.component('ownershipWidget', {
@@ -315,7 +309,7 @@
                 function() {
                 }
             );
-        }
+        };
 
         this.selectOwnership = function(ownership) {
             self.selected = ownership;
