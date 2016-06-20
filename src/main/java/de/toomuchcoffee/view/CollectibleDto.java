@@ -58,6 +58,23 @@ public class CollectibleDto {
         this.placementNo = placementNo;
     }
 
+    public String getPrimarySorting() {
+        if (placementNo != null) {
+            return placementNo.replaceAll("[0-9]", "").trim();
+        }
+        return null;
+    }
+
+    public Integer getSecondarySorting() {
+        if (placementNo != null) {
+            try {
+                return Integer.valueOf(placementNo.replaceAll("[^0-9]", ""));
+            } catch (NumberFormatException e) {
+            }
+        }
+        return null;
+    }
+
     public static CollectibleDto toDto(Collectible collectible) {
         CollectibleDto dto = new CollectibleDto();
 

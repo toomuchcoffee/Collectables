@@ -46,7 +46,7 @@
         <p ng-if="ctrl.items"><span class="label label-success"><strong>{{ctrl.items.length}}</strong> items found</span></p>
 
         <div class="list-group container-fluid">
-            <div ng-repeat="collectible in ctrl.items | orderBy:'id':true" class="list-group-item row">
+            <div ng-repeat="collectible in ctrl.items" class="list-group-item row">
                 <div class="col-sm-2">
                     <img ng-src="collectibles/{{collectible.id}}/thumb" alt="no image" />
                 </div>

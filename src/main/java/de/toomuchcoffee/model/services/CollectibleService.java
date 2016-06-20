@@ -91,7 +91,7 @@ public class CollectibleService {
 
     public List<CollectibleDto> find() {
         List<Collectible> collectibles = collectibleRepository.findAll();
-        return collectibles.stream().map(CollectibleDto::toDto).collect(toList());
+        return sortedCollectibleDtos(collectibles);
     }
 
     public List<CollectibleDto> findByFilter(String verbatim, String productLine) {
@@ -108,7 +108,16 @@ public class CollectibleService {
         else {
             collectibles = collectibleRepository.findAll();
         }
-        return collectibles.stream().map(CollectibleDto::toDto).collect(toList());
+        return sortedCollectibleDtos(collectibles);
+    }
+
+    private List<CollectibleDto> sortedCollectibleDtos(List<Collectible> collectibles) {
+        return collectibles.stream()
+                .map(CollectibleDto::toDto)
+                .sorted(Comparator.comparing(CollectibleDto::getId))
+                .sorted(Comparator.comparing(CollectibleDto::getSecondarySorting, Comparator.nullsLast(Integer::compareTo)))
+                .sorted(Comparator.comparing(CollectibleDto::getPrimarySorting, Comparator.nullsLast(String::compareTo)))
+                .collect(toList());
     }
 
     public List<CollectibleDto> findByTag(String tagId) {
