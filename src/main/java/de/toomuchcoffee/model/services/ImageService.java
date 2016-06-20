@@ -3,7 +3,6 @@ package de.toomuchcoffee.model.services;
 import com.google.common.collect.Sets;
 import de.toomuchcoffee.model.entites.Collectible;
 import de.toomuchcoffee.model.services.TumblrService.TumblrPost;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -38,18 +37,46 @@ public class ImageService {
         tagQuery.add(collectible.getProductLine().getAbbreviation());
 
         // filter posts by tags
-        List<Pair<TumblrPost, Integer>> rankedPosts = tumblrService.getPosts().stream()
+        List<RankedPost> rankedPosts = tumblrService.getPosts().stream()
                 .filter(tp -> Sets.intersection(verbatimTags, Sets.newHashSet(tp.tags)).size() > 0)
-                .map(tp -> Pair.of(tp, Sets.intersection(tagQuery, Sets.newHashSet(tp.tags)).size()))
-                .sorted(Collections.reverseOrder(Comparator.comparing(Pair::getRight)))
+                .map(tp -> new RankedPost(
+                        Sets.intersection(tagQuery, Sets.newHashSet(tp.tags)).size(),
+                        Sets.difference(Sets.newHashSet(tp.tags), tagQuery).size(),
+                        tp))
+                .sorted(Comparator.comparing(RankedPost::getMisses))
+                .sorted(Collections.reverseOrder(Comparator.comparing(RankedPost::getHits)))
                 .collect(toList());
 
         // get the image
         if (rankedPosts.size() > 0) {
-            String url = rankedPosts.get(0).getLeft().photoUrl75;
+            String url = rankedPosts.get(0).getPost().photoUrl75;
             return new RestTemplate().getForObject(url, byte[].class);
         }
         return new byte[0];
+    }
+
+    private class RankedPost {
+        private int hits;
+        private int misses;
+        private TumblrPost post;
+
+        public RankedPost(int hits, int misses, TumblrPost post) {
+            this.hits = hits;
+            this.misses = misses;
+            this.post = post;
+        }
+
+        public int getHits() {
+            return hits;
+        }
+
+        public int getMisses() {
+            return misses;
+        }
+
+        public TumblrPost getPost() {
+            return post;
+        }
     }
 
 }
