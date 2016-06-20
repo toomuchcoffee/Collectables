@@ -11,6 +11,8 @@ public class Collectible {
 
     private String verbatim;
 
+    private String placementNo;
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private ProductLine productLine;
 
@@ -50,4 +52,11 @@ public class Collectible {
         this.tags = tags;
     }
 
+    public String getPlacementNo() {
+        return placementNo;
+    }
+
+    public void setPlacementNo(String placementNo) {
+        this.placementNo = placementNo;
+    }
 }

@@ -16,6 +16,8 @@ public class CollectibleDto {
 
     private String tags;
 
+    private String placementNo;
+
     public Long getId() {
         return id;
     }
@@ -48,12 +50,22 @@ public class CollectibleDto {
         this.tags = tags;
     }
 
+    public String getPlacementNo() {
+        return placementNo;
+    }
+
+    public void setPlacementNo(String placementNo) {
+        this.placementNo = placementNo;
+    }
+
     public static CollectibleDto toDto(Collectible collectible) {
         CollectibleDto dto = new CollectibleDto();
 
         dto.setId(collectible.getId());
 
         dto.setVerbatim(collectible.getVerbatim());
+
+        dto.setPlacementNo(collectible.getPlacementNo());
 
         Optional.ofNullable(collectible.getProductLine())
                 .ifPresent(p -> dto.setProductLine(p.getAbbreviation()));

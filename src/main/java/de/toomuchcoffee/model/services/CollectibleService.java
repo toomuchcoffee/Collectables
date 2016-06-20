@@ -52,6 +52,7 @@ public class CollectibleService {
     private Collectible mapToEntity(CollectibleDto collectibleDto) {
         Collectible collectible = new Collectible();
         collectible.setVerbatim(collectibleDto.getVerbatim());
+        collectible.setPlacementNo(collectibleDto.getPlacementNo());
 
         collectible.setProductLine(getProductLineFromAbbreviation(collectibleDto.getProductLine()));
 
