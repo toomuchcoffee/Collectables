@@ -1,10 +1,7 @@
 package de.toomuchcoffee.controller;
 
 import de.toomuchcoffee.model.entites.User;
-import de.toomuchcoffee.model.services.CollectibleService;
-import de.toomuchcoffee.model.services.ProductLineService;
-import de.toomuchcoffee.model.services.TagService;
-import de.toomuchcoffee.model.services.UserService;
+import de.toomuchcoffee.model.services.*;
 import de.toomuchcoffee.view.CollectibleDto;
 import de.toomuchcoffee.view.NewUserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +26,9 @@ public class AdminController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TumblrService tumblrService;
+
 
     @RequestMapping(value = "/collectibles/{id}", method = RequestMethod.PUT)
     public void modifyCollectible(@PathVariable Long id, @RequestBody CollectibleDto collectible) {
@@ -51,12 +51,22 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
-    public List<User> findAll() {
+    public List<User> findUsers() {
         return userService.findAll();
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.POST)
-    public void create(@RequestBody NewUserDto newUser) {
+    public void createUser(@RequestBody NewUserDto newUser) {
         userService.create(newUser);
+    }
+
+    @RequestMapping(value = "/tumblr/refresh", method = RequestMethod.GET)
+    public void readTumblrPosts() {
+        tumblrService.readPosts();
+    }
+
+    @RequestMapping(value = "/tumblr/timestamp", method = RequestMethod.GET)
+    public Long readTumblrTimestamp() {
+        return tumblrService.getTimestamp();
     }
 }

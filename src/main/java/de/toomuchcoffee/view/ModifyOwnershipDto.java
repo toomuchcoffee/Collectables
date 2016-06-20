@@ -6,6 +6,8 @@ public class ModifyOwnershipDto {
 
     private BigDecimal price;
 
+    private Boolean moc;
+
     public BigDecimal getPrice() {
         return price;
     }
@@ -14,4 +16,11 @@ public class ModifyOwnershipDto {
         this.price = price;
     }
 
+    public Boolean isMoc() {
+        return moc;
+    }
+
+    public void setMoc(Boolean moc) {
+        this.moc = moc;
+    }
 }

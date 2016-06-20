@@ -20,6 +20,8 @@ public class Ownership {
     @Column(precision=8, scale=2)
     private BigDecimal price;
 
+    private Boolean moc;
+
     public Long getId() {
         return id;
     }
@@ -50,5 +52,13 @@ public class Ownership {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public Boolean isMoc() {
+        return moc;
+    }
+
+    public void setMoc(Boolean moc) {
+        this.moc = moc;
     }
 }

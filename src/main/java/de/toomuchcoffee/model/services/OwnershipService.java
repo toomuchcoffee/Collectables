@@ -37,6 +37,7 @@ public class OwnershipService {
     public void modify(Long id, ModifyOwnershipDto modifyOwnership) {
         Ownership ownership = ownershipRepository.findOne(id);
         ownership.setPrice(modifyOwnership.getPrice());
+        ownership.setMoc(modifyOwnership.isMoc());
         ownershipRepository.save(ownership);
     }
 

@@ -289,7 +289,10 @@
         };
 
         this.modifyOwnership = function(ownership) {
-            var item = { price: ownership.price };
+            var item = { 
+                price: ownership.price,
+                moc: ownership.moc
+            };
             $http.put('/ownerships/'+ownership.id, item, []).then(
                 function(response) {
                     self.selected = null;
@@ -329,6 +332,7 @@
         this.initialize = function() {
             this.getLines();
             this.getUsers();
+            this.getTumblrTimestamp();
         };
 
         this.getLines = function() {
@@ -349,6 +353,26 @@
                 function() {
                 }
             );
+        };
+
+        this.getTumblrTimestamp = function() {
+            $http.get('/admin/tumblr/timestamp', []).then(
+                function(response) {
+                    self.tumblrTimestamp = response.data;
+                },
+                function() {
+                }
+            )
+        };
+
+        this.refreshTumblr = function() {
+            $http.get('/admin/tumblr/refresh', []).then(
+                function(response) {
+                    self.getTumblrTimestamp();
+                },
+                function() {
+                }
+            )
         };
 
         this.deleteLine = function(line) {

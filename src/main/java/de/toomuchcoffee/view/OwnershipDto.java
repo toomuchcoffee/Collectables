@@ -11,6 +11,8 @@ public class OwnershipDto {
 
     private BigDecimal price;
 
+    private Boolean moc;
+
     private CollectibleDto collectible;
 
     public String getUsername() {
@@ -27,6 +29,14 @@ public class OwnershipDto {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public Boolean isMoc() {
+        return moc;
+    }
+
+    public void setMoc(Boolean moc) {
+        this.moc = moc;
     }
 
     public Long getId() {
@@ -51,6 +61,7 @@ public class OwnershipDto {
         dto.setCollectible(CollectibleDto.toDto(ownership.getCollectible()));
         dto.setUsername(ownership.getUser().getUsername());
         dto.setPrice(ownership.getPrice());
+        dto.setMoc(ownership.isMoc());
         return dto;
     }
 }

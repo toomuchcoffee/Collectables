@@ -21,14 +21,18 @@
                             <span ng-if="ownership.price">{{ownership.price | currency }}</span>
                             <span ng-if="!ownership.price">add price</span>
                         </a>
+                        <span ng-if="ownership.moc" class="badge">MOC</span>
                         <a class="btn btn-danger" href="" ng-click="ctrl.deleteOwnership(ownership.id)">
                             <i class="glyphicon glyphicon-trash"></i>
-                            X
                         </a>
                     </div>
                     <form ng-if="ctrl.isSelected(ownership)" ng-submit="ctrl.modifyOwnership(ownership)">
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="price" ng-model="ctrl.selected.price" />
+                            <label>
+                                <input type="checkbox" class="form-control" ng-model="ctrl.selected.moc" />
+                                MOC
+                            </label>
                         </div>
                         <div class="form-group">
                             <button class="btn btn-success">

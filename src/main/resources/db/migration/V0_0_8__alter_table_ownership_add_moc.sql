@@ -1,0 +1,1 @@
+ALTER TABLE ownership ADD moc BOOLEAN;
