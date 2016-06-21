@@ -273,13 +273,36 @@
         var self = this;
 
         this.initialize = function() {
+            self.filterByLine = null;
+            self.filterByVerbatim = null;
             self.username = $rootScope.authenticated;
             self.findCollection();
         };
-
-
+        
         this.findCollection = function() {
             $http.get('/collections/'+self.username, []).then(
+                function(response) {
+                    self.collection = response.data;
+                },
+                function() {
+                }
+            );
+        };
+
+        this.filterCollectionByLine = function() {
+            self.filterByVerbatim = null;
+            $http.get('/collections/'+self.username+'/line/'+self.filterByLine, []).then(
+                function(response) {
+                    self.collection = response.data;
+                },
+                function() {
+                }
+            );
+        };
+
+        this.filterCollectionByVerbatim = function() {
+            self.filterByLine = null;
+            $http.get('/collections/'+self.username+'?verbatim='+self.filterByVerbatim, []).then(
                 function(response) {
                     self.collection = response.data;
                 },

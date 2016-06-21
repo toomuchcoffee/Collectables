@@ -46,22 +46,36 @@ public class OwnershipService {
     }
 
     public List<OwnershipDto> findByUsernameAndCollectibleId(String username, Long collectibleId) {
-        List<Ownership> ownerships;
         User user = userRepository.findOne(username);
-        if (collectibleId != null) {
-            Collectible collectible = collectibleRepository.findOne(collectibleId);
-            ownerships = ownershipRepository.findByUserAndCollectible(user, collectible);
-        } else {
-            ownerships = ownershipRepository.findByUser(user);
-        }
+        Collectible collectible = collectibleRepository.findOne(collectibleId);
+        List<Ownership> ownerships = ownershipRepository.findByUserAndCollectible(user, collectible);
         return ownerships.stream().map(OwnershipDto::toDto).collect(toList());
     }
 
     public CollectionDto getCollection(String username) {
-        List<OwnershipDto> ownerships = findByUsernameAndCollectibleId(username, null);
+        User user = userRepository.findOne(username);
+        List<OwnershipDto> ownerships = ownershipRepository.findByUser(user).stream()
+                .map(OwnershipDto::toDto)
+                .collect(toList());
+        return getCollection(ownerships);
+    }
 
+    public CollectionDto getCollectionByVerbatimLike(String username, String verbatim) {
+        List<OwnershipDto> ownerships = ownershipRepository.findByUserUsernameAndCollectibleVerbatimIgnoreCaseContaining(username, verbatim).stream()
+                .map(OwnershipDto::toDto)
+                .collect(toList());
+        return getCollection(ownerships);
+    }
+
+    public CollectionDto getCollectionByProductLine(String username, String productLine) {
+        List<OwnershipDto> ownerships = ownershipRepository.findByUserUsernameAndCollectibleProductLineAbbreviationIgnoreCaseContaining(username, productLine).stream()
+                .map(OwnershipDto::toDto)
+                .collect(toList());
+        return getCollection(ownerships);
+    }
+
+    private CollectionDto getCollection(List<OwnershipDto> ownerships) {
         CollectionDto collection = new CollectionDto();
-
         collection.setOwnerships(ownerships);
         collection.setSize(ownerships.size());
 

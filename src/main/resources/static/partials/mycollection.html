@@ -1,9 +1,29 @@
     <div ng-controller="MyCollectionController as ctrl" ng-init="ctrl.initialize()">
+
+        <form class="form-inline" name="searchForm" novalidate>
+            <h4>Filter your collection</h4>
+            <div class="container-fluid">
+                <div class="form-group col-sm-5">
+                    <input type="text" class="form-control" placeholder="Line, e.g. Kenner, TLC, TVC, ..."
+                           ng-model="ctrl.filterByLine" ng-change="ctrl.filterCollectionByLine()" />
+                </div>
+                <div class="form-group col-sm-5">
+                    <input type="text" class="form-control" placeholder="Verbatim, e.g. Han Solo (Hoth Outfit)"
+                           ng-model="ctrl.filterByVerbatim" ng-change="ctrl.filterCollectionByVerbatim()" />
+                </div>
+                <div class="form-group col-sm-2">
+                    <button class="btn btn-default" ng-click="ctrl.initialize()">
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </form>
+
         <h4>{{ctrl.username}}'s Collection</h4>
 
         <p ng-if="!ctrl.collection.ownerships"><span class="label label-warning">You don't have any items marked as owned, yet. Start adding items on the "Browse" page.</span></p>
         <p ng-if="ctrl.collection.ownerships">
-            <span class="label label-success">You own <strong>{{ctrl.collection.size}}</strong> collectibles and their total value is <strong>{{ctrl.collection.value | currency}}</strong></span>
+            <span class="label label-success"><strong>{{ctrl.collection.size}}</strong> collectibles with a total value of <strong>{{ctrl.collection.value | currency}}</strong></span>
         </p>
 
         <div class="list-group container-fluid">
