@@ -13,16 +13,11 @@ public class CollectionController {
     private OwnershipService ownershipService;
 
     @RequestMapping(value = "{username}", method = RequestMethod.GET)
-    public CollectionDto getCollection(@PathVariable String username, @RequestParam(required = false) String verbatim) {
-        if (verbatim != null) {
-            return ownershipService.getCollectionByVerbatimLike(username, verbatim);
-        }
-        return ownershipService.getCollection(username);
-    }
-
-    @RequestMapping(value = "{username}/line/{productLine}", method = RequestMethod.GET)
-    public CollectionDto getCollectionByProductLine(@PathVariable String username, @PathVariable String productLine) {
-        return ownershipService.getCollectionByProductLine(username, productLine);
+    public CollectionDto getCollection(
+            @PathVariable String username,
+            @RequestParam(name="line", required = false) String productLine,
+            @RequestParam(required = false) String verbatim) {
+        return ownershipService.getCollection(username, productLine, verbatim);
     }
 
 }

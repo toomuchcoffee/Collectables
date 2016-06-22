@@ -5,11 +5,11 @@
             <div class="container-fluid">
                 <div class="form-group col-sm-5">
                     <input type="text" class="form-control" placeholder="Line, e.g. Kenner, TLC, TVC, ..."
-                           ng-model="ctrl.filterByLine" ng-change="ctrl.filterCollectionByLine()" />
+                           ng-model="ctrl.filterByLine" ng-change="ctrl.findCollection()" />
                 </div>
                 <div class="form-group col-sm-5">
                     <input type="text" class="form-control" placeholder="Verbatim, e.g. Han Solo (Hoth Outfit)"
-                           ng-model="ctrl.filterByVerbatim" ng-change="ctrl.filterCollectionByVerbatim()" />
+                           ng-model="ctrl.filterByVerbatim" ng-change="ctrl.findCollection()" />
                 </div>
                 <div class="form-group col-sm-2">
                     <button class="btn btn-default" ng-click="ctrl.initialize()">

@@ -1,5 +1,6 @@
 package de.toomuchcoffee.model.services;
 
+import com.google.common.base.Strings;
 import de.toomuchcoffee.model.entites.Collectible;
 import de.toomuchcoffee.model.entites.Ownership;
 import de.toomuchcoffee.model.entites.User;
@@ -52,31 +53,30 @@ public class OwnershipService {
         return ownerships.stream().map(OwnershipDto::toDto).collect(toList());
     }
 
-    public CollectionDto getCollection(String username) {
-        User user = userRepository.findOne(username);
-        List<OwnershipDto> ownerships = ownershipRepository.findByUser(user).stream()
-                .map(OwnershipDto::toDto)
-                .collect(toList());
+    public CollectionDto getCollection(String username, String productLine, String verbatim) {
+        List<Ownership> ownerships;
+        if (!Strings.isNullOrEmpty(productLine) && !Strings.isNullOrEmpty(verbatim)) {
+            ownerships = ownershipRepository
+                    .findByUserUsernameAndCollectibleProductLineAbbreviationIgnoreCaseContainingAndCollectibleVerbatimIgnoreCaseContaining(
+                    username, productLine, verbatim);
+        } else if (!Strings.isNullOrEmpty(productLine)) {
+            ownerships = ownershipRepository
+                    .findByUserUsernameAndCollectibleProductLineAbbreviationIgnoreCaseContaining(username, productLine);
+        } else if (!Strings.isNullOrEmpty(verbatim)) {
+            ownerships = ownershipRepository
+                    .findByUserUsernameAndCollectibleVerbatimIgnoreCaseContaining(username, verbatim);
+        } else {
+            ownerships = ownershipRepository.findByUserUsername(username);
+        }
         return getCollection(ownerships);
     }
 
-    public CollectionDto getCollectionByVerbatimLike(String username, String verbatim) {
-        List<OwnershipDto> ownerships = ownershipRepository.findByUserUsernameAndCollectibleVerbatimIgnoreCaseContaining(username, verbatim).stream()
-                .map(OwnershipDto::toDto)
-                .collect(toList());
-        return getCollection(ownerships);
-    }
-
-    public CollectionDto getCollectionByProductLine(String username, String productLine) {
-        List<OwnershipDto> ownerships = ownershipRepository.findByUserUsernameAndCollectibleProductLineAbbreviationIgnoreCaseContaining(username, productLine).stream()
-                .map(OwnershipDto::toDto)
-                .collect(toList());
-        return getCollection(ownerships);
-    }
-
-    private CollectionDto getCollection(List<OwnershipDto> ownerships) {
+    private CollectionDto getCollection(List<Ownership> ownerships) {
         CollectionDto collection = new CollectionDto();
-        collection.setOwnerships(ownerships);
+        List<OwnershipDto> ownershipDtos = ownerships.stream()
+                .map(OwnershipDto::toDto)
+                .collect(toList());
+        collection.setOwnerships(ownershipDtos);
         collection.setSize(ownerships.size());
 
         BigDecimal value = ownerships.stream()
