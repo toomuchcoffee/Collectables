@@ -52,7 +52,9 @@ public class CollectibleService {
     private Collectible mapToEntity(CollectibleDto collectibleDto) {
         Collectible collectible = new Collectible();
         collectible.setVerbatim(collectibleDto.getVerbatim());
-        collectible.setPlacementNo(collectibleDto.getPlacementNo());
+
+        Optional.ofNullable(collectibleDto.getPlacementNo())
+                .ifPresent(pn -> collectible.setPlacementNo(pn.toUpperCase()));
 
         collectible.setProductLine(getProductLineFromCode(collectibleDto.getProductLine()));
 
@@ -64,9 +66,9 @@ public class CollectibleService {
         return collectible;
     }
 
-    private ProductLine getProductLineFromCode(String abbreviation) {
-        return Optional.ofNullable(productLineService.find(abbreviation))
-                .orElse(new ProductLine(abbreviation.toLowerCase()));
+    private ProductLine getProductLineFromCode(String code) {
+        return Optional.ofNullable(productLineService.find(code))
+                .orElse(new ProductLine(code.toUpperCase()));
     }
 
     private Set<Tag> getTagsFromString(String tagsString) {
@@ -74,8 +76,8 @@ public class CollectibleService {
                 .map(String::trim)
                 .filter(s -> s.length() > 0)
                 .map(t -> Optional.ofNullable(tagService
-                        .find(t.toLowerCase()))
-                        .orElse(new Tag(t.toLowerCase())))
+                        .find(t.toUpperCase()))
+                        .orElse(new Tag(t.toUpperCase())))
                 .collect(toSet());
     }
 

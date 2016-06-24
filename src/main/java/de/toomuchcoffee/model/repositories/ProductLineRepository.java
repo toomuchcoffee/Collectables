@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ProductLineRepository extends JpaRepository<ProductLine, String> {
-    @Query(value = "SELECT count(c) FROM collectible c WHERE c.product_line_abbreviation = :abbreviation", nativeQuery = true)
-    Integer getCollectiblesCount(@Param("abbreviation") String abbreviation);
+    @Query(value = "SELECT count(c) FROM collectible c WHERE c.product_line_code = :code", nativeQuery = true)
+    Integer getCollectiblesCount(@Param("code") String code);
 }

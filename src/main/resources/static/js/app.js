@@ -380,7 +380,7 @@
         };
 
         this.deleteLine = function(line) {
-            $http.delete('/admin/lines/'+line.abbreviation, []).then(
+            $http.delete('/admin/lines/'+line.code, []).then(
                 function(response) {
                     self.getLines();
                 },

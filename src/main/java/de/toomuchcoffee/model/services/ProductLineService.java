@@ -26,8 +26,8 @@ public class ProductLineService {
         return productLineDtos;
     }
 
-    public ProductLine find(String abbreviation) {
-        return productLineRepository.findOne(abbreviation.toLowerCase());
+    public ProductLine find(String code) {
+        return productLineRepository.findOne(code.toUpperCase());
     }
 
     public void delete(String id) {
