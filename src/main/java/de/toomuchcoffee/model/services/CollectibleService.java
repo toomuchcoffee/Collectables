@@ -42,29 +42,36 @@ public class CollectibleService {
 
     @Transactional
     public void update(Long id, CollectibleDto collectibleDto) {
-        if (!collectibleRepository.exists(id)) {
+        Collectible collectible = collectibleRepository.findOne(id);
+        if (collectible == null) {
             throw new NoSuchElementException(String.format("Collectible with id %d does not exist", id));
         }
         if (!Objects.equals(id, collectibleDto.getId())) {
             throw new IllegalArgumentException(String.format("Id %d does not match with dto id %d", id, collectibleDto.getId()));
         }
-        Collectible collectible = mapToEntity(collectibleDto);
-        collectibleRepository.save(collectible);
+        Collectible mergedCollectible = mergeWithEntity(collectibleDto, collectible);
+        collectibleRepository.save(mergedCollectible);
     }
 
     private Collectible mapToEntity(CollectibleDto collectibleDto) {
-        Collectible collectible = new Collectible();
+        return mergeWithEntity(collectibleDto, new Collectible());
+    }
+    private Collectible mergeWithEntity(CollectibleDto collectibleDto, Collectible collectible) {
         collectible.setVerbatim(collectibleDto.getVerbatim());
 
-        ofNullable(collectibleDto.getPlacementNo())
-                .ifPresent(pn -> collectible.setPlacementNo(pn.toUpperCase()));
+        if (collectibleDto.getPlacementNo() != null) {
+            collectible.setPlacementNo(collectibleDto.getPlacementNo().toUpperCase());
+        } else {
+            collectible.setPlacementNo(null);
+        }
 
         collectible.setProductLine(getProductLineFromCode(collectibleDto.getProductLine()));
 
-        ofNullable(collectibleDto.getTags())
-                .ifPresent(tagsString -> collectible.setTags(getTagsFromString(tagsString)));
-
-        ofNullable(collectibleDto.getId()).ifPresent(collectible::setId);
+        if (collectibleDto.getTags() != null) {
+            collectible.setTags(getTagsFromString(collectibleDto.getTags()));
+        } else {
+            collectible.setTags(Sets.newHashSet());
+        }
 
         return collectible;
     }
@@ -79,8 +86,8 @@ public class CollectibleService {
                 .map(String::trim)
                 .filter(s -> s.length() > 0)
                 .map(t -> ofNullable(tagService
-                        .find(t.toUpperCase()))
-                        .orElse(new Tag(t.toUpperCase())))
+                        .find(t.toLowerCase()))
+                        .orElse(new Tag(t.toLowerCase())))
                 .collect(toSet());
     }
 

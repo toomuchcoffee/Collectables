@@ -7,7 +7,7 @@ import javax.persistence.ManyToMany;
 import java.util.Set;
 
 @Entity
-public class Tag {
+public class Tag extends AbstractEntity {
     @Id
     private String name;
 

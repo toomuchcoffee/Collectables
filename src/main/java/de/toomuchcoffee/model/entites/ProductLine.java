@@ -7,7 +7,7 @@ import javax.persistence.OneToMany;
 import java.util.List;
 
 @Entity
-public class ProductLine {
+public class ProductLine extends AbstractEntity {
     @Id
     private String code;
 

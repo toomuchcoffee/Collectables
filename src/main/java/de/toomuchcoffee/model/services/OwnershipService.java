@@ -31,7 +31,9 @@ public class OwnershipService {
     private CollectibleRepository collectibleRepository;
 
     public void add(NewOwnershipDto ownershipDto) {
-        Ownership ownership = mapToEntity(ownershipDto);
+        Ownership ownership = new Ownership();
+        ownership.setCollectible(collectibleRepository.findOne(ownershipDto.getCollectibleId()));
+        ownership.setUser(userRepository.getOne(ownershipDto.getUsername()));
         ownershipRepository.save(ownership);
     }
 
@@ -87,10 +89,4 @@ public class OwnershipService {
         return collection;
     }
 
-    private Ownership mapToEntity(NewOwnershipDto ownershipDto) {
-        Ownership ownership = new Ownership();
-        ownership.setCollectible(collectibleRepository.findOne(ownershipDto.getCollectibleId()));
-        ownership.setUser(userRepository.getOne(ownershipDto.getUsername()));
-        return ownership;
-    }
 }

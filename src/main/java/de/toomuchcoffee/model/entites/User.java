@@ -12,7 +12,7 @@ import java.util.Collection;
 import static java.util.stream.Collectors.toList;
 
 @Entity(name = "app_user")
-public class User implements UserDetails{
+public class User extends AbstractEntity implements UserDetails{
     @Id
     private String username;
 
