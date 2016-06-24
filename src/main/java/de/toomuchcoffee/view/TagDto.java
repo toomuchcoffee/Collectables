@@ -4,8 +4,9 @@ public class TagDto {
     private String name;
     private Integer taggingCount;
 
-    public TagDto(String name) {
+    public TagDto(String name, Integer taggingCount) {
         this.name = name;
+        this.taggingCount = taggingCount;
     }
 
     public String getName() {

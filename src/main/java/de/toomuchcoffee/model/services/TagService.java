@@ -26,11 +26,9 @@ public class TagService {
 
     public List<TagDto> findAll() {
         List<Tag> tags = tagRepository.findAll();
-        List<TagDto> tagDtos = tags.stream()
-                .map(t -> new TagDto(t.getName()))
+        return tags.stream()
+                .map(t -> new TagDto(t.getName(), t.getCollectibles().size()))
                 .collect(toList());
-        tagDtos.forEach(dto -> dto.setTaggingCount(tagRepository.getTaggingCount(dto.getName())));
-        return tagDtos;
     }
 
     public Set<String> getVerbatimPermutations(String verbatim) {
