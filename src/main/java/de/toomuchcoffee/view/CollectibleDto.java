@@ -85,7 +85,7 @@ public class CollectibleDto {
         dto.setPlacementNo(collectible.getPlacementNo());
 
         Optional.ofNullable(collectible.getProductLine())
-                .ifPresent(p -> dto.setProductLine(p.getAbbreviation()));
+                .ifPresent(p -> dto.setProductLine(p.getCode()));
 
         dto.setTags(
                 (collectible.getTags().size()>0 ? "#" : "")

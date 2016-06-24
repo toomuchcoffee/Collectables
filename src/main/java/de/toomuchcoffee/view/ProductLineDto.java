@@ -1,21 +1,21 @@
 package de.toomuchcoffee.view;
 
 public class ProductLineDto {
-    private String abbreviation;
+    private String code;
     private String description;
     private Integer collectiblesCount;
 
-    public ProductLineDto(String abbreviation, String description) {
-        this.abbreviation = abbreviation;
+    public ProductLineDto(String code, String description) {
+        this.code = code;
         this.description = description;
     }
 
-    public String getAbbreviation() {
-        return abbreviation;
+    public String getCode() {
+        return code;
     }
 
-    public void setAbbreviation(String abbreviation) {
-        this.abbreviation = abbreviation;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getDescription() {

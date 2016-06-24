@@ -4,7 +4,7 @@
         <ul class="nav nav-pills" role="tablist">
             <li ng-repeat="line in ctrl.lines | orderBy:'collectiblesCount':true">
                 <a href="">
-                    {{line.abbreviation}} ({{line.collectiblesCount}})
+                    {{line.code}} ({{line.collectiblesCount}})
                     <span ng-if="!line.collectiblesCount" class="btn btn-danger" ng-click="ctrl.deleteLine(line)">
                         <i class="glyphicon glyphicon-trash"></i>
                         X

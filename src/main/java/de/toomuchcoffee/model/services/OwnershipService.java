@@ -57,11 +57,11 @@ public class OwnershipService {
         List<Ownership> ownerships;
         if (!Strings.isNullOrEmpty(productLine) && !Strings.isNullOrEmpty(verbatim)) {
             ownerships = ownershipRepository
-                    .findByUserUsernameAndCollectibleProductLineAbbreviationIgnoreCaseContainingAndCollectibleVerbatimIgnoreCaseContaining(
+                    .findByUserUsernameAndCollectibleProductLineCodeIgnoreCaseContainingAndCollectibleVerbatimIgnoreCaseContaining(
                     username, productLine, verbatim);
         } else if (!Strings.isNullOrEmpty(productLine)) {
             ownerships = ownershipRepository
-                    .findByUserUsernameAndCollectibleProductLineAbbreviationIgnoreCaseContaining(username, productLine);
+                    .findByUserUsernameAndCollectibleProductLineCodeIgnoreCaseContaining(username, productLine);
         } else if (!Strings.isNullOrEmpty(verbatim)) {
             ownerships = ownershipRepository
                     .findByUserUsernameAndCollectibleVerbatimIgnoreCaseContaining(username, verbatim);

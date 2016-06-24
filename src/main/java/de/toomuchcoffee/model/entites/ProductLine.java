@@ -6,23 +6,23 @@ import javax.persistence.Id;
 @Entity
 public class ProductLine {
     @Id
-    private String abbreviation;
+    private String code;
 
     private String description;
 
     public ProductLine() {
     }
 
-    public ProductLine(String abbreviation) {
-        this.abbreviation = abbreviation;
+    public ProductLine(String code) {
+        this.code = code;
     }
 
-    public String getAbbreviation() {
-        return abbreviation;
+    public String getCode() {
+        return code;
     }
 
-    public void setAbbreviation(String abbreviation) {
-        this.abbreviation = abbreviation;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getDescription() {

@@ -54,7 +54,7 @@ public class CollectibleService {
         collectible.setVerbatim(collectibleDto.getVerbatim());
         collectible.setPlacementNo(collectibleDto.getPlacementNo());
 
-        collectible.setProductLine(getProductLineFromAbbreviation(collectibleDto.getProductLine()));
+        collectible.setProductLine(getProductLineFromCode(collectibleDto.getProductLine()));
 
         Optional.ofNullable(collectibleDto.getTags())
                 .ifPresent(tagsString -> collectible.setTags(getTagsFromString(tagsString)));
@@ -64,7 +64,7 @@ public class CollectibleService {
         return collectible;
     }
 
-    private ProductLine getProductLineFromAbbreviation(String abbreviation) {
+    private ProductLine getProductLineFromCode(String abbreviation) {
         return Optional.ofNullable(productLineService.find(abbreviation))
                 .orElse(new ProductLine(abbreviation.toLowerCase()));
     }
@@ -97,10 +97,10 @@ public class CollectibleService {
     public List<CollectibleDto> findByFilter(String verbatim, String productLine) {
         List<Collectible> collectibles;
         if (!Strings.isNullOrEmpty(productLine) && !Strings.isNullOrEmpty(verbatim)) {
-            collectibles = collectibleRepository.findByProductLineAbbreviationIgnoreCaseContainingAndVerbatimIgnoreCaseContaining(productLine, verbatim);
+            collectibles = collectibleRepository.findByProductLineCodeIgnoreCaseContainingAndVerbatimIgnoreCaseContaining(productLine, verbatim);
         }
         else if (!Strings.isNullOrEmpty(productLine)) {
-            collectibles = collectibleRepository.findByProductLineAbbreviationIgnoreCaseContaining(productLine);
+            collectibles = collectibleRepository.findByProductLineCodeIgnoreCaseContaining(productLine);
         }
         else if (!Strings.isNullOrEmpty(verbatim)) {
             collectibles = collectibleRepository.findByVerbatimIgnoreCaseContaining(verbatim);

@@ -11,8 +11,8 @@ public interface OwnershipRepository extends JpaRepository<Ownership, Long> {
     List<Ownership> findByUserAndCollectible(User user, Collectible collectible);
 
     List<Ownership> findByUserUsername(String username);
-    List<Ownership> findByUserUsernameAndCollectibleProductLineAbbreviationIgnoreCaseContaining(String username, String productLine);
+    List<Ownership> findByUserUsernameAndCollectibleProductLineCodeIgnoreCaseContaining(String username, String productLine);
     List<Ownership> findByUserUsernameAndCollectibleVerbatimIgnoreCaseContaining(String username, String verbatim);
-    List<Ownership> findByUserUsernameAndCollectibleProductLineAbbreviationIgnoreCaseContainingAndCollectibleVerbatimIgnoreCaseContaining(
+    List<Ownership> findByUserUsernameAndCollectibleProductLineCodeIgnoreCaseContainingAndCollectibleVerbatimIgnoreCaseContaining(
             String username, String productLine, String verbatim);
 }

@@ -34,7 +34,7 @@ public class ImageService {
         Set<String> verbatimTags = tagService.getVerbatimPermutations(collectible.getVerbatim());
 
         Set<String> tagQuery = Sets.newHashSet(verbatimTags);
-        tagQuery.add(collectible.getProductLine().getAbbreviation());
+        tagQuery.add(collectible.getProductLine().getCode());
 
         // filter posts by tags
         List<RankedPost> rankedPosts = tumblrService.getPosts().stream()
