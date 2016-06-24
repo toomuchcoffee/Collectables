@@ -1,15 +1,16 @@
     <div ng-controller="AdminController as ctrl" ng-init="ctrl.initialize()">
 
         <h4>Product Lines</h4>
-        <ul class="nav nav-pills" role="tablist">
-            <li ng-repeat="line in ctrl.lines | orderBy:'collectiblesCount':true">
-                <a href="">
-                    {{line.code}} ({{line.collectiblesCount}})
-                    <span ng-if="!line.collectiblesCount" class="btn btn-danger" ng-click="ctrl.deleteLine(line)">
-                        <i class="glyphicon glyphicon-trash"></i>
-                        X
-                    </span>
-                </a>
+        <ul class="list-group">
+            <li class="list-group-item clearfix" ng-repeat="line in ctrl.lines | orderBy:'collectiblesCount':true">
+                {{line.code}}
+                <span class="label label-default label-pill">
+                    {{line.collectiblesCount}}
+                </span>
+                <span ng-if="!line.collectiblesCount" class="btn btn-danger pull-right" ng-click="ctrl.deleteLine(line)">
+                    <i class="glyphicon glyphicon-trash"></i>
+                    Delete
+                </span>
             </li>
         </ul>
 

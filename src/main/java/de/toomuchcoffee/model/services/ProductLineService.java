@@ -18,12 +18,9 @@ public class ProductLineService {
 
     public List<ProductLineDto> findAll() {
          List<ProductLine> productLines = productLineRepository.findAll();
-        List<ProductLineDto> productLineDtos = productLines.stream()
-                .map(p -> new ProductLineDto(p.getCode(), p.getDescription()))
+        return productLines.stream()
+                .map(p -> new ProductLineDto(p.getCode(), p.getDescription(), p.getCollectibles().size()))
                 .collect(toList());
-        productLineDtos.forEach(dto ->
-                dto.setCollectiblesCount(productLineRepository.getCollectiblesCount(dto.getCode())));
-        return productLineDtos;
     }
 
     public ProductLine find(String code) {

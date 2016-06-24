@@ -5,9 +5,10 @@ public class ProductLineDto {
     private String description;
     private Integer collectiblesCount;
 
-    public ProductLineDto(String code, String description) {
+    public ProductLineDto(String code, String description, Integer collectiblesCount) {
         this.code = code;
         this.description = description;
+        this.collectiblesCount = collectiblesCount;
     }
 
     public String getCode() {
