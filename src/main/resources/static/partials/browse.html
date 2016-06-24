@@ -1,7 +1,7 @@
     <div ng-controller="BrowseController as ctrl" ng-init="ctrl.initialize()">
         <h4>Tags</h4>
         <ul class="nav nav-pills" role="tablist">
-            <li ng-repeat="tag in ctrl.tags | orderBy:'taggingCount':true">
+            <li ng-repeat="tag in ctrl.tags | orderBy:'name' | limitTo: ctrl.tagsLimit">
                 <a href="" ng-click="ctrl.findByTag(tag.name)">
                     {{tag.name}} ({{tag.taggingCount}})
                     <span ng-if="isAdmin() && !tag.taggingCount" class="btn btn-danger" ng-click="ctrl.deleteTag(tag)">
@@ -9,6 +9,9 @@
                         X
                     </span>
                 </a>
+            </li>
+            <li ng-if="ctrl.hasMoreTags">
+                <a href="" ng-click="ctrl.showMoreTags()">show more ...</a>
             </li>
         </ul>
 

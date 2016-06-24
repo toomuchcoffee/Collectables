@@ -95,6 +95,8 @@
     app.controller('BrowseController', function($http, $rootScope){
         var self = this;
         this.selectedItem = {};
+        this.tagsLimit = 10;
+        this.hasMoreTags = false;
 
         this.searchExisting = function() {
             var verbatim = self.selectedItem.verbatim ? self.selectedItem.verbatim : '';
@@ -183,6 +185,7 @@
             $http.get('/tags', []).then(
                 function(response) {
                     self.tags = response.data;
+                    self.checkHasMoreTags();
                 },
                 function() {
                 }
@@ -198,6 +201,15 @@
                     alert("Something went wrong!");
                 }
             )
+        };
+
+        this.checkHasMoreTags = function() {
+            self.hasMoreTags = self.tags.length > self.tagsLimit;
+        };
+
+        this.showMoreTags = function() {
+            self.tagsLimit += 20;
+            self.checkHasMoreTags();
         };
 
         this.insertHashtag = function (event) {
