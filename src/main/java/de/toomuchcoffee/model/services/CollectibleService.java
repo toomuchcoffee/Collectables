@@ -1,6 +1,5 @@
 package de.toomuchcoffee.model.services;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import de.toomuchcoffee.model.entites.Collectible;
 import de.toomuchcoffee.model.entites.ProductLine;
@@ -13,6 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.nullsLast;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -53,21 +56,21 @@ public class CollectibleService {
         Collectible collectible = new Collectible();
         collectible.setVerbatim(collectibleDto.getVerbatim());
 
-        Optional.ofNullable(collectibleDto.getPlacementNo())
+        ofNullable(collectibleDto.getPlacementNo())
                 .ifPresent(pn -> collectible.setPlacementNo(pn.toUpperCase()));
 
         collectible.setProductLine(getProductLineFromCode(collectibleDto.getProductLine()));
 
-        Optional.ofNullable(collectibleDto.getTags())
+        ofNullable(collectibleDto.getTags())
                 .ifPresent(tagsString -> collectible.setTags(getTagsFromString(tagsString)));
 
-        Optional.ofNullable(collectibleDto.getId()).ifPresent(collectible::setId);
+        ofNullable(collectibleDto.getId()).ifPresent(collectible::setId);
 
         return collectible;
     }
 
     private ProductLine getProductLineFromCode(String code) {
-        return Optional.ofNullable(productLineService.find(code))
+        return ofNullable(productLineService.find(code))
                 .orElse(new ProductLine(code.toUpperCase()));
     }
 
@@ -75,7 +78,7 @@ public class CollectibleService {
         return Arrays.asList(tagsString.split("#")).stream()
                 .map(String::trim)
                 .filter(s -> s.length() > 0)
-                .map(t -> Optional.ofNullable(tagService
+                .map(t -> ofNullable(tagService
                         .find(t.toUpperCase()))
                         .orElse(new Tag(t.toUpperCase())))
                 .collect(toSet());
@@ -98,13 +101,13 @@ public class CollectibleService {
 
     public List<CollectibleDto> findByFilter(String verbatim, String productLine) {
         List<Collectible> collectibles;
-        if (!Strings.isNullOrEmpty(productLine) && !Strings.isNullOrEmpty(verbatim)) {
+        if (!isNullOrEmpty(productLine) && !isNullOrEmpty(verbatim)) {
             collectibles = collectibleRepository.findByProductLineCodeIgnoreCaseContainingAndVerbatimIgnoreCaseContaining(productLine, verbatim);
         }
-        else if (!Strings.isNullOrEmpty(productLine)) {
+        else if (!isNullOrEmpty(productLine)) {
             collectibles = collectibleRepository.findByProductLineCodeIgnoreCaseContaining(productLine);
         }
-        else if (!Strings.isNullOrEmpty(verbatim)) {
+        else if (!isNullOrEmpty(verbatim)) {
             collectibles = collectibleRepository.findByVerbatimIgnoreCaseContaining(verbatim);
         }
         else {
@@ -116,9 +119,9 @@ public class CollectibleService {
     private List<CollectibleDto> sortedCollectibleDtos(List<Collectible> collectibles) {
         return collectibles.stream()
                 .map(CollectibleDto::toDto)
-                .sorted(Comparator.comparing(CollectibleDto::getId))
-                .sorted(Comparator.comparing(CollectibleDto::getSecondarySorting, Comparator.nullsLast(Integer::compareTo)))
-                .sorted(Comparator.comparing(CollectibleDto::getPrimarySorting, Comparator.nullsLast(String::compareTo)))
+                .sorted(comparing(CollectibleDto::getId))
+                .sorted(comparing(CollectibleDto::getSecondarySorting, nullsLast(Integer::compareTo)))
+                .sorted(comparing(CollectibleDto::getPrimarySorting, nullsLast(String::compareTo)))
                 .collect(toList());
     }
 

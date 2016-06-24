@@ -32,7 +32,7 @@
                     <img ng-src="collectibles/{{ownership.collectible.id}}/thumb" alt="no image" />
                 </div>
                 <div class="col-sm-7">
-                    <p><strong>{{ownership.collectible.verbatim}}</strong></p>
+                    <p><strong>{{ownership.collectible.verbatim}}</strong><span ng-if="ownership.collectible.placementNo">, {{ownership.collectible.placementNo}}</span></p>
                     <p>{{ownership.collectible.productLine}}</p>
                 </div>
                 <div class="col-sm-3">

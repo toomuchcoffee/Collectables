@@ -1,6 +1,5 @@
 package de.toomuchcoffee.model.services;
 
-import com.google.common.base.Strings;
 import de.toomuchcoffee.model.entites.Collectible;
 import de.toomuchcoffee.model.entites.Ownership;
 import de.toomuchcoffee.model.entites.User;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -55,14 +55,14 @@ public class OwnershipService {
 
     public CollectionDto getCollection(String username, String productLine, String verbatim) {
         List<Ownership> ownerships;
-        if (!Strings.isNullOrEmpty(productLine) && !Strings.isNullOrEmpty(verbatim)) {
+        if (!isNullOrEmpty(productLine) && !isNullOrEmpty(verbatim)) {
             ownerships = ownershipRepository
                     .findByUserUsernameAndCollectibleProductLineCodeIgnoreCaseContainingAndCollectibleVerbatimIgnoreCaseContaining(
                     username, productLine, verbatim);
-        } else if (!Strings.isNullOrEmpty(productLine)) {
+        } else if (!isNullOrEmpty(productLine)) {
             ownerships = ownershipRepository
                     .findByUserUsernameAndCollectibleProductLineCodeIgnoreCaseContaining(username, productLine);
-        } else if (!Strings.isNullOrEmpty(verbatim)) {
+        } else if (!isNullOrEmpty(verbatim)) {
             ownerships = ownershipRepository
                     .findByUserUsernameAndCollectibleVerbatimIgnoreCaseContaining(username, verbatim);
         } else {

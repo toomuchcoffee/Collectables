@@ -1,6 +1,5 @@
 package de.toomuchcoffee.controller;
 
-import com.google.common.base.Strings;
 import de.toomuchcoffee.model.services.CollectibleService;
 import de.toomuchcoffee.view.CollectibleDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 @RestController
 @RequestMapping(value = "/collectibles")
@@ -27,7 +28,7 @@ public class CollectibleController {
     public List<CollectibleDto> find(
             @RequestParam(name = "verbatim", required = false) String verbatim,
             @RequestParam(name = "line", required = false) String line) {
-        if (!Strings.isNullOrEmpty(verbatim) || !Strings.isNullOrEmpty(line)) {
+        if (!isNullOrEmpty(verbatim) || !isNullOrEmpty(line)) {
             return collectibleService.findByFilter(verbatim, line);
         }
         return collectibleService.find();

@@ -3,8 +3,7 @@ package de.toomuchcoffee.view;
 import de.toomuchcoffee.model.entites.Collectible;
 import de.toomuchcoffee.model.entites.Tag;
 
-import java.util.Optional;
-
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 public class CollectibleDto {
@@ -84,7 +83,7 @@ public class CollectibleDto {
 
         dto.setPlacementNo(collectible.getPlacementNo());
 
-        Optional.ofNullable(collectible.getProductLine())
+        ofNullable(collectible.getProductLine())
                 .ifPresent(p -> dto.setProductLine(p.getCode()));
 
         dto.setTags(
