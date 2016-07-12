@@ -56,6 +56,7 @@ public class CollectibleService {
     private Collectible mapToEntity(CollectibleDto collectibleDto) {
         return mergeWithEntity(collectibleDto, new Collectible());
     }
+
     private Collectible mergeWithEntity(CollectibleDto collectibleDto, Collectible collectible) {
         collectible.setVerbatim(collectibleDto.getVerbatim());
 
