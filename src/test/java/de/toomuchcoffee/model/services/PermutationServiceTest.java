@@ -12,14 +12,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TagServiceTest {
+public class PermutationServiceTest {
 
     @InjectMocks
-    private TagService tagService = new TagService();
+    private PermutationService permutationService = new PermutationService();
 
     @Test
     public void testGetVerbatimPermutations() throws Exception {
-        Set<String> verbatimPermutations = tagService.getVerbatimPermutations("Imperial TIE Fighter Pilot");
+        Set<String> permutations = permutationService.getPermutations("Imperial TIE Fighter Pilot");
         assertEquals(Sets.newHashSet(
                 "imperial tie fighter pilot",
                 "imperial tie fighter",
@@ -41,13 +41,13 @@ public class TagServiceTest {
                         "tie",
                            "fighter",
                                   "pilot"
-        ), verbatimPermutations);
+        ), permutations);
     }
 
     @Test
     public void testGetVerbatimPermutationsWithParenthesis() throws Exception {
-        Set<String> verbatimPermutations = tagService.getVerbatimPermutations("(Twin Pod) Cloud Car Pilot");
-        assertTrue(verbatimPermutations.containsAll(Sets.newHashSet("cloudcar", "cloudcarpilot")));
+        Set<String> permutations = permutationService.getPermutations("(Twin Pod) Cloud Car Pilot");
+        assertTrue(permutations.containsAll(Sets.newHashSet("cloudcar", "cloudcarpilot")));
     }
 
 }

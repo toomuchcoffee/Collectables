@@ -83,7 +83,7 @@ public class CollectibleService {
     }
 
     private Set<Tag> getTagsFromString(String tagsString) {
-        return Arrays.asList(tagsString.split("#")).stream()
+        return Arrays.stream(tagsString.split("#"))
                 .map(String::trim)
                 .filter(s -> s.length() > 0)
                 .map(t -> ofNullable(tagService
