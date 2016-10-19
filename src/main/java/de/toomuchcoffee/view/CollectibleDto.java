@@ -3,6 +3,9 @@ package de.toomuchcoffee.view;
 import de.toomuchcoffee.model.entites.Collectible;
 import de.toomuchcoffee.model.entites.Tag;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
@@ -16,6 +19,10 @@ public class CollectibleDto {
     private String tags;
 
     private String placementNo;
+
+    private String partOf;
+
+    private Set<CollectibleDto> contains;
 
     public Long getId() {
         return id;
@@ -57,6 +64,22 @@ public class CollectibleDto {
         this.placementNo = placementNo;
     }
 
+    public String getPartOf() {
+        return partOf;
+    }
+
+    public void setPartOf(String partOf) {
+        this.partOf = partOf;
+    }
+
+    public Set<CollectibleDto> getContains() {
+        return contains;
+    }
+
+    public void setContains(Set<CollectibleDto> contains) {
+        this.contains = contains;
+    }
+
     public String getPrimarySorting() {
         if (placementNo != null) {
             return placementNo.replaceAll("[0-9]", "").trim();
@@ -88,7 +111,17 @@ public class CollectibleDto {
 
         dto.setTags(
                 (collectible.getTags().size()>0 ? "#" : "")
-              + String.join(" #", collectible.getTags().stream().map(Tag::getName).collect(toList()))
+              + String.join(" #", collectible.getTags().stream()
+                        .map(Tag::getName)
+                        .collect(toList()))
+        );
+
+        ofNullable(collectible.getPartOf())
+                .ifPresent(p -> dto.setPartOf(p.getVerbatim()));
+
+        dto.setContains(collectible.getContains().stream()
+                        .map(CollectibleDto::toDto)
+                        .collect(Collectors.toSet())
         );
 
         return dto;

@@ -19,7 +19,7 @@
             <h4 ng-show="ctrl.selectedItem.id">Update existing collectible with ID: {{ctrl.selectedItem.id}}</h4>
             <h4 ng-hide="ctrl.selectedItem.id">Search / Create new collectible</h4>
             <div class="container-fluid">
-                <div class="form-group col-sm-3">
+                <div class="form-group col-sm-4">
                     <input type="text" class="form-control" placeholder="Verbatim, e.g. Han Solo (Hoth Outfit)"
                            ng-model="ctrl.selectedItem.verbatim" ng-change="ctrl.searchExisting()" required class="ng-dirty ng-invalid" />
                 </div>
@@ -27,15 +27,21 @@
                     <input type="text" class="form-control" placeholder="Line, e.g. Kenner, TLC, TVC, ..."
                            ng-model="ctrl.selectedItem.productLine" ng-change="ctrl.searchExisting()" required class="ng-dirty ng-invalid" />
                 </div>
-                <div class="form-group col-sm-2">
+                <div class="form-group col-sm-3">
                     <input type="text" class="form-control" placeholder="Placement No., e.g. TVC 15"
                            ng-model="ctrl.selectedItem.placementNo" />
                 </div>
                 <div class="form-group col-sm-3">
+                    <input type="text" class="form-control" placeholder="Part of a set, e.g. Villain Set"
+                              ng-model="ctrl.selectedItem.partOf" ng-disabled="!ctrl.selectedItem.verbatim" ng-keyup="ctrl.insertHashtag($event)" />
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="form-group col-sm-9">
                     <input type="text" class="form-control" placeholder="Tags, e.g. #hoth #echobase #theempirestrikesback"
                               ng-model="ctrl.selectedItem.tags" ng-disabled="!ctrl.selectedItem.verbatim" ng-keyup="ctrl.insertHashtag($event)" />
                 </div>
-                <div class="form-group col-sm-2">
+                <div class="form-group col-sm-3">
                     <button class="btn btn-primary" ng-disabled="!collectibleForm.$valid">
                         <span class="glyphicon glyphicon-ok"></span> {{ctrl.selectedItem.id ? "Save" : "Add"}}
                     </button>
@@ -50,12 +56,20 @@
 
         <div class="list-group container-fluid">
             <div ng-repeat="collectible in ctrl.items" class="list-group-item row">
-                <div class="col-sm-2">
-                    <img ng-src="collectibles/{{collectible.id}}/thumb" alt="no image" />
+                <div class="col-sm-1">
+                    <img ng-src="collectibles/{{collectible.id}}/thumb" alt="" />
                 </div>
-                <div class="col-sm-7">
-                    <p><strong>{{collectible.verbatim}}</strong><span ng-if="collectible.placementNo">, {{collectible.placementNo}}</span></p>
+                <div class="col-sm-8">
+                    <p><strong>{{collectible.verbatim}}</strong><span ng-if="collectible.placementNo">, {{collectible.placementNo}}</span><span ng-if="collectible.partOf">, [<em>{{collectible.partOf}}</em>]</span></p>
                     <p>{{collectible.productLine}}</p>
+                    <div ng-if="collectible.contains">
+                        <ul>
+                            <li ng-repeat="elem in collectible.contains" class="list-group-item">
+                                <img ng-src="collectibles/{{elem.id}}/thumb" alt="" />
+                                {{elem.verbatim}}
+                            </li>
+                        </ul>
+                    </div>
                     <small>{{collectible.tags}}</small>
                 </div>
                 <div class="col-sm-3">

@@ -74,6 +74,23 @@ public class CollectibleService {
             collectible.setTags(Sets.newHashSet());
         }
 
+        Collectible parent = null;
+        if (collectibleDto.getPartOf() != null) {
+            List<Collectible> matches = collectibleRepository.findByVerbatimIgnoreCaseContaining(collectibleDto.getPartOf());
+            if (matches.size() > 1) {
+                throw new RuntimeException("Too many matches for parents found: " + matches);
+            } else if (matches.size() == 1) {
+                parent = matches.get(0);
+            } else {
+                parent = new Collectible();
+                parent.setVerbatim(collectibleDto.getPartOf());
+                parent.setProductLine(collectible.getProductLine());
+            }
+        }
+        collectible.setPartOf(parent);
+
+        // TODO set 'contains' property
+
         return collectible;
     }
 

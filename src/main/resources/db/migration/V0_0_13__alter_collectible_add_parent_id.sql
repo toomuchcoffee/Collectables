@@ -1,0 +1,1 @@
+ALTER TABLE collectible ADD parent_id INTEGER REFERENCES collectible (id);
