@@ -1,7 +1,5 @@
 package de.toomuchcoffee.view;
 
-import de.toomuchcoffee.model.entites.Ownership;
-
 import java.math.BigDecimal;
 
 public class OwnershipDto {
@@ -55,13 +53,4 @@ public class OwnershipDto {
         this.collectible = collectible;
     }
 
-    public static OwnershipDto toDto(Ownership ownership) {
-        OwnershipDto dto = new OwnershipDto();
-        dto.setId(ownership.getId());
-        dto.setCollectible(CollectibleDto.toDto(ownership.getCollectible()));
-        dto.setUsername(ownership.getUser().getUsername());
-        dto.setPrice(ownership.getPrice());
-        dto.setMoc(ownership.isMoc());
-        return dto;
-    }
 }

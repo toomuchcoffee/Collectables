@@ -2,22 +2,22 @@ package de.toomuchcoffee.model.services;
 
 import com.google.common.collect.Sets;
 import de.toomuchcoffee.model.entites.Collectible;
-import de.toomuchcoffee.model.entites.ProductLine;
 import de.toomuchcoffee.model.entites.Tag;
+import de.toomuchcoffee.model.mappers.CollectibleMapper;
 import de.toomuchcoffee.model.repositories.CollectibleRepository;
 import de.toomuchcoffee.view.CollectibleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.nullsLast;
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 @Service
 public class CollectibleService {
@@ -28,10 +28,10 @@ public class CollectibleService {
     private TagService tagService;
 
     @Autowired
-    private ProductLineService productLineService;
+    private ImageService imageService;
 
     @Autowired
-    private ImageService imageService;
+    private CollectibleMapper collectibleMapper;
 
     @Transactional
     public Long add(CollectibleDto collectibleDto) {
@@ -49,65 +49,14 @@ public class CollectibleService {
         if (!Objects.equals(id, collectibleDto.getId())) {
             throw new IllegalArgumentException(String.format("Id %d does not match with dto id %d", id, collectibleDto.getId()));
         }
-        Collectible mergedCollectible = mergeWithEntity(collectibleDto, collectible);
+        Collectible mergedCollectible = collectibleMapper.mergeWithEntity(collectibleDto, collectible);
         collectibleRepository.save(mergedCollectible);
     }
 
     private Collectible mapToEntity(CollectibleDto collectibleDto) {
-        return mergeWithEntity(collectibleDto, new Collectible());
+        return collectibleMapper.mergeWithEntity(collectibleDto, new Collectible());
     }
 
-    private Collectible mergeWithEntity(CollectibleDto collectibleDto, Collectible collectible) {
-        collectible.setVerbatim(collectibleDto.getVerbatim());
-
-        if (collectibleDto.getPlacementNo() != null) {
-            collectible.setPlacementNo(collectibleDto.getPlacementNo().toUpperCase());
-        } else {
-            collectible.setPlacementNo(null);
-        }
-
-        collectible.setProductLine(getProductLineFromCode(collectibleDto.getProductLine()));
-
-        if (collectibleDto.getTags() != null) {
-            collectible.setTags(getTagsFromString(collectibleDto.getTags()));
-        } else {
-            collectible.setTags(Sets.newHashSet());
-        }
-
-        Collectible parent = null;
-        if (collectibleDto.getPartOf() != null) {
-            List<Collectible> matches = collectibleRepository.findByVerbatimIgnoreCaseContaining(collectibleDto.getPartOf());
-            if (matches.size() > 1) {
-                throw new RuntimeException("Too many matches for parents found: " + matches);
-            } else if (matches.size() == 1) {
-                parent = matches.get(0);
-            } else {
-                parent = new Collectible();
-                parent.setVerbatim(collectibleDto.getPartOf());
-                parent.setProductLine(collectible.getProductLine());
-            }
-        }
-        collectible.setPartOf(parent);
-
-        // TODO set 'contains' property
-
-        return collectible;
-    }
-
-    private ProductLine getProductLineFromCode(String code) {
-        return ofNullable(productLineService.find(code))
-                .orElse(new ProductLine(code.toUpperCase()));
-    }
-
-    private Set<Tag> getTagsFromString(String tagsString) {
-        return Arrays.stream(tagsString.split("#"))
-                .map(String::trim)
-                .filter(s -> s.length() > 0)
-                .map(t -> ofNullable(tagService
-                        .find(t.toLowerCase()))
-                        .orElse(new Tag(t.toLowerCase())))
-                .collect(toSet());
-    }
 
     @Transactional
     public void delete(Long id) {
@@ -116,7 +65,7 @@ public class CollectibleService {
 
     public CollectibleDto findOne(Long id) {
         Collectible collectible = collectibleRepository.findOne(id);
-        return CollectibleDto.toDto(collectible);
+        return collectibleMapper.toDto(collectible);
     }
 
     public List<CollectibleDto> find() {
@@ -143,7 +92,7 @@ public class CollectibleService {
 
     private List<CollectibleDto> sortedCollectibleDtos(List<Collectible> collectibles) {
         return collectibles.stream()
-                .map(CollectibleDto::toDto)
+                .map(collectibleMapper::toDto)
                 .sorted(comparing(CollectibleDto::getId))
                 .sorted(comparing(CollectibleDto::getSecondarySorting, nullsLast(Integer::compareTo)))
                 .sorted(comparing(CollectibleDto::getPrimarySorting, nullsLast(String::compareTo)))
@@ -153,7 +102,7 @@ public class CollectibleService {
     public List<CollectibleDto> findByTag(String tagId) {
         Tag tag = tagService.find(tagId);
         List<Collectible> collectibles = collectibleRepository.findByTags(Sets.newHashSet(tag));
-        return collectibles.stream().map(CollectibleDto::toDto).collect(toList());
+        return collectibles.stream().map(collectibleMapper::toDto).collect(toList());
     }
 
     public byte[] getCollectibleThumbnail(Long collectibleId) {

@@ -3,6 +3,7 @@ package de.toomuchcoffee.model.services;
 import de.toomuchcoffee.model.entites.Collectible;
 import de.toomuchcoffee.model.entites.Ownership;
 import de.toomuchcoffee.model.entites.User;
+import de.toomuchcoffee.model.mappers.OwnershipMapper;
 import de.toomuchcoffee.model.repositories.CollectibleRepository;
 import de.toomuchcoffee.model.repositories.OwnershipRepository;
 import de.toomuchcoffee.model.repositories.UserRepository;
@@ -30,6 +31,9 @@ public class OwnershipService {
     @Autowired
     private CollectibleRepository collectibleRepository;
 
+    @Autowired
+    private OwnershipMapper ownershipMapper;
+
     public void add(NewOwnershipDto ownershipDto) {
         Ownership ownership = new Ownership();
         ownership.setCollectible(collectibleRepository.findOne(ownershipDto.getCollectibleId()));
@@ -52,7 +56,7 @@ public class OwnershipService {
         User user = userRepository.findOne(username);
         Collectible collectible = collectibleRepository.findOne(collectibleId);
         List<Ownership> ownerships = ownershipRepository.findByUserAndCollectible(user, collectible);
-        return ownerships.stream().map(OwnershipDto::toDto).collect(toList());
+        return ownerships.stream().map(ownershipMapper::toDto).collect(toList());
     }
 
     public CollectionDto getCollection(String username, String productLine, String verbatim) {
@@ -76,7 +80,7 @@ public class OwnershipService {
     private CollectionDto getCollection(List<Ownership> ownerships) {
         CollectionDto collection = new CollectionDto();
         List<OwnershipDto> ownershipDtos = ownerships.stream()
-                .map(OwnershipDto::toDto)
+                .map(ownershipMapper::toDto)
                 .collect(toList());
         collection.setOwnerships(ownershipDtos);
         collection.setSize(ownerships.size());
