@@ -49,19 +49,35 @@ public class CollectibleMapper {
             collectible.setTags(Sets.newHashSet());
         }
 
+        Collectible parent = getParent(collectibleDto.getProductLine(), collectibleDto.getPartOf());
+        checkCircularRelation(collectible, parent);
+        collectible.setPartOf(parent);
+
+        return collectible;
+    }
+
+    private Collectible getParent(String line, String verbatim) {
         Collectible parent = null;
-        if (collectibleDto.getPartOf() != null) {
-            List<Collectible> matches = collectibleRepository.findByVerbatimIgnoreCaseContaining(collectibleDto.getPartOf());
+
+        if (verbatim != null) {
+            List<Collectible> matches = collectibleRepository.findByProductLineCodeIgnoreCaseContainingAndVerbatimIgnoreCaseContaining(line, verbatim);
             if (matches.size() > 1) {
                 throw new RuntimeException("Too many matches for parents found: " + matches);
             } else if (matches.size() == 1) {
                 parent = matches.get(0);
             } else {
                 parent = new Collectible();
-                parent.setVerbatim(collectibleDto.getPartOf());
-                parent.setProductLine(collectible.getProductLine());
+                parent.setVerbatim(verbatim);
+                parent.setProductLine(productLineService.find(line));
             }
         }
+
+        // TODO set 'contains' property
+
+        return parent;
+    }
+
+    private void checkCircularRelation(Collectible collectible, Collectible parent) {
         if (parent != null) {
             Collectible aParent = parent;
             while (aParent != null) {
@@ -69,13 +85,7 @@ public class CollectibleMapper {
                     throw new RuntimeException("Circular relation for 'partOf' property is not allowed");
                 aParent = parent.getPartOf();
             }
-            collectible.setPartOf(parent);
         }
-
-
-        // TODO set 'contains' property
-
-        return collectible;
     }
 
     private ProductLine getProductLineFromCode(String code) {

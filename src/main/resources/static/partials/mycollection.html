@@ -32,11 +32,14 @@
                     <img ng-src="collectibles/{{ownership.collectible.id}}/thumb" alt="no image" />
                 </div>
                 <div class="col-sm-7">
-                    <p><strong>{{ownership.collectible.verbatim}}</strong><span ng-if="ownership.collectible.placementNo">, {{ownership.collectible.placementNo}}</span></p>
+                    <p><strong>{{ownership.collectible.verbatim}}</strong><span ng-if="ownership.collectible.placementNo">, {{ownership.collectible.placementNo}}</span><span ng-if="ownership.collectible.partOf">, [<em>{{ownership.collectible.partOf}}</em>]</span></p>
                     <p>{{ownership.collectible.productLine}}</p>
                 </div>
                 <div class="col-sm-3">
-                    <div ng-if="!ctrl.isSelected(ownership)">
+                    <div ng-if="ownership.collectible.partOf">
+                        (part of a set)
+                    </div>
+                    <div ng-if="!ownership.collectible.partOf && !ctrl.isSelected(ownership)">
                         <a href="" ng-click="ctrl.selectOwnership(ownership)">
                             <span ng-if="ownership.price">{{ownership.price | currency }}</span>
                             <span ng-if="!ownership.price">add price</span>

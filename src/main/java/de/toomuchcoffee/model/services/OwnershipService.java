@@ -13,6 +13,7 @@ import de.toomuchcoffee.view.NewOwnershipDto;
 import de.toomuchcoffee.view.OwnershipDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -34,22 +35,36 @@ public class OwnershipService {
     @Autowired
     private OwnershipMapper ownershipMapper;
 
+    @Transactional
     public void add(NewOwnershipDto ownershipDto) {
+        Collectible collectible = collectibleRepository.findOne(ownershipDto.getCollectibleId());
+        User user = userRepository.getOne(ownershipDto.getUsername());
         Ownership ownership = new Ownership();
-        ownership.setCollectible(collectibleRepository.findOne(ownershipDto.getCollectibleId()));
-        ownership.setUser(userRepository.getOne(ownershipDto.getUsername()));
+        ownership.setCollectible(collectible);
+        ownership.setUser(user);
         ownershipRepository.save(ownership);
+        addChildren(collectible, user);
+    }
+
+    private void addChildren(Collectible collectible, User user) {
+        for (Collectible aCollectible : collectible.getContains()) {
+            Ownership ownership = new Ownership();
+            ownership.setCollectible(aCollectible);
+            ownership.setUser(user);
+            ownershipRepository.save(ownership);
+        }
     }
 
     public void modify(Long id, ModifyOwnershipDto modifyOwnership) {
         Ownership ownership = ownershipRepository.findOne(id);
         ownership.setPrice(modifyOwnership.getPrice());
-        ownership.setMoc(modifyOwnership.isMoc());
+        ownership.setMoc(modifyOwnership.isMoc()); // TODO change flag on children too
         ownershipRepository.save(ownership);
     }
 
     public void delete(Long id) {
         ownershipRepository.delete(id);
+        // TODO delete children too
     }
 
     public List<OwnershipDto> findByUsernameAndCollectibleId(String username, Long collectibleId) {
