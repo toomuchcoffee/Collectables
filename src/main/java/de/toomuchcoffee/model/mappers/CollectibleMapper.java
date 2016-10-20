@@ -62,7 +62,16 @@ public class CollectibleMapper {
                 parent.setProductLine(collectible.getProductLine());
             }
         }
-        collectible.setPartOf(parent);
+        if (parent != null) {
+            Collectible aParent = parent;
+            while (aParent != null) {
+                if (collectible.equals(aParent))
+                    throw new RuntimeException("Circular relation for 'partOf' property is not allowed");
+                aParent = parent.getPartOf();
+            }
+            collectible.setPartOf(parent);
+        }
+
 
         // TODO set 'contains' property
 

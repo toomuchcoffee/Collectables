@@ -8,10 +8,15 @@
         this.hasMoreTags = false;
 
         this.searchExisting = function() {
-            var verbatim = self.selectedItem.verbatim ? self.selectedItem.verbatim : '';
-            var line = self.selectedItem.productLine ? self.selectedItem.productLine : '';
-            var queryString = '?verbatim='+verbatim+'&line='+line;
-            $http.get('/collectibles'+queryString, []).then(
+            self.searchExistingWithParams(self.selectedItem.verbatim, self.selectedItem.productLine)
+        };
+
+        this.searchExistingWithParams = function(verbatim, line) {
+            var params = {};
+            if (verbatim) params['verbatim'] = verbatim;
+            if (line) params['line'] = line;
+            var queryString = $.param(params);
+            $http.get('/collectibles?'+queryString, []).then(
                 function(response) {
                     self.items = response.data;
                 },

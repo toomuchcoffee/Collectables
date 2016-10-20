@@ -33,7 +33,7 @@
                 </div>
                 <div class="form-group col-sm-3">
                     <input type="text" class="form-control" placeholder="Part of a set, e.g. Villain Set"
-                              ng-model="ctrl.selectedItem.partOf" ng-disabled="!ctrl.selectedItem.verbatim" ng-keyup="ctrl.insertHashtag($event)" />
+                              ng-model="ctrl.selectedItem.partOf" ng-change="ctrl.searchExistingWithParams(ctrl.selectedItem.partOf, ctrl.selectedItem.line)" ng-disabled="!ctrl.selectedItem.verbatim" ng-keyup="ctrl.insertHashtag($event)" />
                 </div>
             </div>
             <div class="container-fluid">
