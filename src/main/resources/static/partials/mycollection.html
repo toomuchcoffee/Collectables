@@ -29,7 +29,7 @@
         <div class="list-group container-fluid">
             <div ng-repeat="ownership in ctrl.collection.ownerships | orderBy:'id':true" class="list-group-item row">
                 <div class="col-sm-2">
-                    <img ng-src="collectibles/{{ownership.collectible.id}}/thumb" alt="no image" />
+                    <img ng-src="collectibles/{{ownership.collectible.id}}/thumb" alt="" />
                 </div>
                 <div class="col-sm-7">
                     <p><strong>{{ownership.collectible.verbatim}}</strong><span ng-if="ownership.collectible.placementNo">, {{ownership.collectible.placementNo}}</span><span ng-if="ownership.collectible.partOf">, [<em>{{ownership.collectible.partOf}}</em>]</span></p>

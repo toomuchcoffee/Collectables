@@ -52,19 +52,20 @@ public class OwnershipService {
             ownership.setCollectible(aCollectible);
             ownership.setUser(user);
             ownershipRepository.save(ownership);
+            addChildren(aCollectible, user);
         }
     }
 
+    @Transactional
     public void modify(Long id, ModifyOwnershipDto modifyOwnership) {
         Ownership ownership = ownershipRepository.findOne(id);
         ownership.setPrice(modifyOwnership.getPrice());
-        ownership.setMoc(modifyOwnership.isMoc()); // TODO change flag on children too
+        ownership.setMoc(modifyOwnership.isMoc());
         ownershipRepository.save(ownership);
     }
 
     public void delete(Long id) {
         ownershipRepository.delete(id);
-        // TODO delete children too
     }
 
     public List<OwnershipDto> findByUsernameAndCollectibleId(String username, Long collectibleId) {
