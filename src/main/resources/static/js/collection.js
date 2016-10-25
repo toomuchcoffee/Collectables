@@ -32,7 +32,6 @@
             $http.put('/ownerships/'+ownership.id, item, []).then(
                 function(response) {
                     self.selected = null;
-                    self.initialize();
                 },
                 function() {
                 }
@@ -43,7 +42,7 @@
             if (!confirm("Are you sure?")) return;
             $http.delete('/ownerships/'+id, []).then(
                 function(response) {
-                    self.initialize();
+                    self.findCollection();
                 },
                 function() {
                 }
