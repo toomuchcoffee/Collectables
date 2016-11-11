@@ -42,7 +42,7 @@
                     <div ng-if="!ownership.collectible.partOf && !ctrl.isSelected(ownership)">
                         <a href="" ng-click="ctrl.selectOwnership(ownership)">
                             <span ng-if="ownership.price">{{ownership.price | currency }}</span>
-                            <span ng-if="!ownership.price">add price</span>
+                            <span ng-if="!ownership.price">edit price</span>
                         </a>
                         <span ng-if="ownership.moc" class="badge">MOC</span>
                         <a class="btn btn-danger" href="" ng-click="ctrl.deleteOwnership(ownership.id)">
