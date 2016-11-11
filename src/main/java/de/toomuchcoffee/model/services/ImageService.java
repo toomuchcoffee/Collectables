@@ -35,7 +35,8 @@ public class ImageService {
         Set<String> verbatimTags = permutationService.getPermutations(collectible.getVerbatim());
 
         Set<String> tagQuery = Sets.newHashSet(verbatimTags);
-        tagQuery.add(collectible.getProductLine().getCode());
+
+        tagQuery.addAll(permutationService.getPermutations(collectible.getProductLine().verbatim));
 
         List<TumblrPost> posts = tumblrService.getPosts().stream()
                 .filter(tp -> Sets.intersection(verbatimTags, Sets.newHashSet(tp.tags)).size() > 0).collect(toList());

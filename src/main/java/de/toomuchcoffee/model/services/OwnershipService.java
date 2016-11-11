@@ -2,6 +2,7 @@ package de.toomuchcoffee.model.services;
 
 import de.toomuchcoffee.model.entites.Collectible;
 import de.toomuchcoffee.model.entites.Ownership;
+import de.toomuchcoffee.model.entites.ProductLine;
 import de.toomuchcoffee.model.entites.User;
 import de.toomuchcoffee.model.mappers.OwnershipMapper;
 import de.toomuchcoffee.model.repositories.CollectibleRepository;
@@ -75,15 +76,15 @@ public class OwnershipService {
         return ownerships.stream().map(ownershipMapper::toDto).collect(toList());
     }
 
-    public CollectionDto getCollection(String username, String productLine, String verbatim) {
+    public CollectionDto getCollection(String username, ProductLine productLine, String verbatim) {
         List<Ownership> ownerships;
-        if (!isNullOrEmpty(productLine) && !isNullOrEmpty(verbatim)) {
+        if (productLine != null && !isNullOrEmpty(verbatim)) {
             ownerships = ownershipRepository
-                    .findByUserUsernameAndCollectibleProductLineCodeIgnoreCaseContainingAndCollectibleVerbatimIgnoreCaseContaining(
+                    .findByUserUsernameAndCollectibleProductLineContainingAndCollectibleVerbatimIgnoreCaseContaining(
                     username, productLine, verbatim);
-        } else if (!isNullOrEmpty(productLine)) {
+        } else if (productLine != null) {
             ownerships = ownershipRepository
-                    .findByUserUsernameAndCollectibleProductLineCodeIgnoreCaseContaining(username, productLine);
+                    .findByUserUsernameAndCollectibleProductLineContaining(username, productLine);
         } else if (!isNullOrEmpty(verbatim)) {
             ownerships = ownershipRepository
                     .findByUserUsernameAndCollectibleVerbatimIgnoreCaseContaining(username, verbatim);

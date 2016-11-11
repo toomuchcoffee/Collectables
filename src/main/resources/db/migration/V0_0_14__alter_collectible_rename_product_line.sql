@@ -1,0 +1,1 @@
+ALTER TABLE collectible RENAME product_line_code TO product_line;

@@ -41,7 +41,7 @@ public class CollectibleMapper {
             collectible.setPlacementNo(null);
         }
 
-        collectible.setProductLine(getProductLineFromCode(collectibleDto.getProductLine()));
+        collectible.setProductLine(collectibleDto.getProductLine());
 
         if (collectibleDto.getTags() != null) {
             collectible.setTags(getTagsFromString(collectibleDto.getTags()));
@@ -56,11 +56,11 @@ public class CollectibleMapper {
         return collectible;
     }
 
-    private Collectible getParent(String line, String verbatim) {
+    private Collectible getParent(ProductLine line, String verbatim) {
         Collectible parent = null;
 
         if (verbatim != null) {
-            List<Collectible> matches = collectibleRepository.findByProductLineCodeIgnoreCaseContainingAndVerbatimIgnoreCaseContaining(line, verbatim);
+            List<Collectible> matches = collectibleRepository.findByProductLineContainingAndVerbatimIgnoreCaseContaining(line, verbatim);
             if (matches.size() > 1) {
                 throw new RuntimeException("Too many matches for parents found: " + matches);
             } else if (matches.size() == 1) {
@@ -68,7 +68,7 @@ public class CollectibleMapper {
             } else {
                 parent = new Collectible();
                 parent.setVerbatim(verbatim);
-                parent.setProductLine(productLineService.find(line));
+                parent.setProductLine(line);
             }
         }
 
@@ -86,11 +86,6 @@ public class CollectibleMapper {
                 aParent = parent.getPartOf();
             }
         }
-    }
-
-    private ProductLine getProductLineFromCode(String code) {
-        return ofNullable(productLineService.find(code))
-                .orElse(new ProductLine(code.toUpperCase()));
     }
 
     private Set<Tag> getTagsFromString(String tagsString) {
@@ -113,7 +108,7 @@ public class CollectibleMapper {
         dto.setPlacementNo(collectible.getPlacementNo());
 
         ofNullable(collectible.getProductLine())
-                .ifPresent(p -> dto.setProductLine(p.getCode()));
+                .ifPresent(dto::setProductLine);
 
         dto.setTags(
                 (collectible.getTags().size()>0 ? "#" : "")

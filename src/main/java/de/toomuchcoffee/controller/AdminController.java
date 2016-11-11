@@ -45,11 +45,6 @@ public class AdminController {
         tagService.delete(id);
     }
 
-    @RequestMapping(value = "/lines/{id}", method = RequestMethod.DELETE)
-    public void deleteProductLine(@PathVariable String id) {
-        productLineService.delete(id);
-    }
-
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public List<User> findUsers() {
         return userService.findAll();

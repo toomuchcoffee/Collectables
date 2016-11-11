@@ -1,5 +1,7 @@
 package de.toomuchcoffee.view;
 
+import de.toomuchcoffee.model.entites.ProductLine;
+
 import java.util.Set;
 
 public class CollectibleDto {
@@ -7,7 +9,7 @@ public class CollectibleDto {
 
     private String verbatim;
 
-    private String productLine;
+    private ProductLine productLine;
 
     private String tags;
 
@@ -33,11 +35,11 @@ public class CollectibleDto {
         this.verbatim = verbatim;
     }
 
-    public String getProductLine() {
+    public ProductLine getProductLine() {
         return productLine;
     }
 
-    public void setProductLine(String productLine) {
+    public void setProductLine(ProductLine productLine) {
         this.productLine = productLine;
     }
 

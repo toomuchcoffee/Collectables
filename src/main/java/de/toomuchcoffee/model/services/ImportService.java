@@ -1,5 +1,6 @@
 package de.toomuchcoffee.model.services;
 
+import de.toomuchcoffee.model.entites.ProductLine;
 import de.toomuchcoffee.view.CollectibleDto;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -42,7 +43,7 @@ public class ImportService {
         CollectibleDto collectible = new CollectibleDto();
         collectible.setVerbatim(record.get("verbatim"));
         collectible.setPlacementNo(getNullableValue(record, "placementNo"));
-        collectible.setProductLine(getNullableValue(record, "productLine"));
+        collectible.setProductLine(ProductLine.valueOf(getNullableValue(record, "productLine")));
         collectible.setTags(getNullableValue(record, "movie"));
         collectible.setPartOf(getNullableValue(record, "partOf"));
         return collectible;

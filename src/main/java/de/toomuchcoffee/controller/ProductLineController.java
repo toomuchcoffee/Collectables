@@ -1,7 +1,7 @@
 package de.toomuchcoffee.controller;
 
+import de.toomuchcoffee.model.entites.ProductLine;
 import de.toomuchcoffee.model.services.ProductLineService;
-import de.toomuchcoffee.view.ProductLineDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +19,7 @@ public class ProductLineController {
     private ProductLineService productLineService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<ProductLineDto> allProductLines() {
+    public List<ProductLine> allProductLines() {
         return productLineService.findAll();
     }
 
