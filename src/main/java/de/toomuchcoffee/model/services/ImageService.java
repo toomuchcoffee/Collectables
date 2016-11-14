@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.stream.Collectors.toList;
-
 @Service
 public class ImageService {
 
@@ -32,16 +30,16 @@ public class ImageService {
     }
 
     public byte[] getCollectibleThumbnail(Collectible collectible) {
-        Set<String> verbatimTags = permutationService.getPermutations(collectible.getVerbatim());
+        Set<String> filter = permutationService.getPermutations(collectible.getVerbatim());
 
-        Set<String> tagQuery = Sets.newHashSet(verbatimTags);
+        Set<String> qualifiers = Sets.newHashSet(filter);
+        qualifiers.add(collectible.getProductLine().name());
+        qualifiers.addAll(collectible.getProductLine().getTags());
+        qualifiers.addAll(permutationService.getPermutations(collectible.getProductLine().getVerbatim()));
 
-        tagQuery.addAll(permutationService.getPermutations(collectible.getProductLine().verbatim));
+        List<TumblrPost> posts = tumblrService.getPosts(filter);
 
-        List<TumblrPost> posts = tumblrService.getPosts().stream()
-                .filter(tp -> Sets.intersection(verbatimTags, Sets.newHashSet(tp.tags)).size() > 0).collect(toList());
-
-        List<RankedPost> rankedPosts = rankingService.getRankedPosts(posts, tagQuery);
+        List<RankedPost> rankedPosts = rankingService.getRankedPosts(posts, qualifiers);
 
         if (rankedPosts.size() > 0) {
             String url = rankedPosts.get(0).getPost().photoUrl75;

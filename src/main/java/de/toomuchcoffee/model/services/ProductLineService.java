@@ -14,7 +14,7 @@ public class ProductLineService {
 
     public List<ProductLineDto> findAll() {
         return newArrayList(ProductLine.values()).stream()
-                .map(p -> new ProductLineDto(p.name(), p.verbatim, p.startYear, p.endYear))
+                .map(p -> new ProductLineDto(p.name(), p.getVerbatim(), p.getStartYear(), p.getEndYear()))
                 .collect(toList());
     }
 
