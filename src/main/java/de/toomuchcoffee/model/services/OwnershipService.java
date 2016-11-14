@@ -76,15 +76,15 @@ public class OwnershipService {
         return ownerships.stream().map(ownershipMapper::toDto).collect(toList());
     }
 
-    public CollectionDto getCollection(String username, ProductLine productLine, String verbatim) {
+    public CollectionDto getCollection(String username, String line, String verbatim) {
         List<Ownership> ownerships;
-        if (productLine != null && !isNullOrEmpty(verbatim)) {
+        if (!isNullOrEmpty(line) && !isNullOrEmpty(verbatim)) {
             ownerships = ownershipRepository
-                    .findByUserUsernameAndCollectibleProductLineContainingAndCollectibleVerbatimIgnoreCaseContaining(
-                    username, productLine, verbatim);
-        } else if (productLine != null) {
+                    .findByUserUsernameAndCollectibleProductLineAndCollectibleVerbatimIgnoreCaseContaining(
+                    username, ProductLine.valueOf(line), verbatim);
+        } else if (!isNullOrEmpty(line)) {
             ownerships = ownershipRepository
-                    .findByUserUsernameAndCollectibleProductLineContaining(username, productLine);
+                    .findByUserUsernameAndCollectibleProductLine(username, ProductLine.valueOf(line));
         } else if (!isNullOrEmpty(verbatim)) {
             ownerships = ownershipRepository
                     .findByUserUsernameAndCollectibleVerbatimIgnoreCaseContaining(username, verbatim);

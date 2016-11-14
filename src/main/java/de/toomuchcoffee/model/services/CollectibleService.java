@@ -74,13 +74,14 @@ public class CollectibleService {
         return sortedCollectibleDtos(collectibles);
     }
 
-    public List<CollectibleDto> findByFilter(String verbatim, ProductLine productLine) {
+    public List<CollectibleDto> findByFilter(String verbatim, String line) {
         List<Collectible> collectibles;
-        if (productLine != null && !isNullOrEmpty(verbatim)) {
-            collectibles = collectibleRepository.findByProductLineContainingAndVerbatimIgnoreCaseContaining(productLine, verbatim);
+        if (!isNullOrEmpty(line) && !isNullOrEmpty(verbatim)) {
+            collectibles = collectibleRepository.findByProductLineAndVerbatimIgnoreCaseContaining(
+                    ProductLine.valueOf(line), verbatim);
         }
-        else if (productLine != null) {
-            collectibles = collectibleRepository.findByProductLineContaining(productLine);
+        else if (!isNullOrEmpty(line)) {
+            collectibles = collectibleRepository.findByProductLine(ProductLine.valueOf(line));
         }
         else if (!isNullOrEmpty(verbatim)) {
             collectibles = collectibleRepository.findByVerbatimIgnoreCaseContaining(verbatim);

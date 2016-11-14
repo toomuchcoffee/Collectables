@@ -12,6 +12,6 @@ public interface CollectibleRepository extends JpaRepository<Collectible, Long>{
     List<Collectible> findByTags(Set<Tag> tags);
 
     List<Collectible> findByVerbatimIgnoreCaseContaining(String verbatim);
-    List<Collectible> findByProductLineContaining(ProductLine productLine);
-    List<Collectible> findByProductLineContainingAndVerbatimIgnoreCaseContaining(ProductLine productLine, String verbatim);
+    List<Collectible> findByProductLine(ProductLine productLine);
+    List<Collectible> findByProductLineAndVerbatimIgnoreCaseContaining(ProductLine productLine, String verbatim);
 }

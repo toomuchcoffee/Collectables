@@ -1,6 +1,5 @@
 package de.toomuchcoffee.controller;
 
-import de.toomuchcoffee.model.entites.ProductLine;
 import de.toomuchcoffee.model.services.CollectibleService;
 import de.toomuchcoffee.view.CollectibleDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +27,8 @@ public class CollectibleController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public List<CollectibleDto> find(
             @RequestParam(name = "verbatim", required = false) String verbatim,
-            @RequestParam(name = "line", required = false) ProductLine line) {
-        if (!isNullOrEmpty(verbatim) || line != null) {
+            @RequestParam(name = "line", required = false) String line) {
+        if (!isNullOrEmpty(verbatim) || !isNullOrEmpty(line)) {
             return collectibleService.findByFilter(verbatim, line);
         }
         return collectibleService.find();

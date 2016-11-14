@@ -1,6 +1,5 @@
 package de.toomuchcoffee.controller;
 
-import de.toomuchcoffee.model.entites.ProductLine;
 import de.toomuchcoffee.model.services.OwnershipService;
 import de.toomuchcoffee.view.CollectionDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,9 @@ public class CollectionController {
     @RequestMapping(value = "{username}", method = RequestMethod.GET)
     public CollectionDto getCollection(
             @PathVariable String username,
-            @RequestParam(name="line", required = false) ProductLine productLine,
+            @RequestParam(required = false) String line,
             @RequestParam(required = false) String verbatim) {
-        return ownershipService.getCollection(username, productLine, verbatim);
+        return ownershipService.getCollection(username, line, verbatim);
     }
 
 }

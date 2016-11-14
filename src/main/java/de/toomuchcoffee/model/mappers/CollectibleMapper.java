@@ -41,7 +41,8 @@ public class CollectibleMapper {
             collectible.setPlacementNo(null);
         }
 
-        collectible.setProductLine(collectibleDto.getProductLine());
+        ProductLine productLine = ProductLine.valueOf(collectibleDto.getProductLine());
+        collectible.setProductLine(productLine);
 
         if (collectibleDto.getTags() != null) {
             collectible.setTags(getTagsFromString(collectibleDto.getTags()));
@@ -49,7 +50,7 @@ public class CollectibleMapper {
             collectible.setTags(Sets.newHashSet());
         }
 
-        Collectible parent = getParent(collectibleDto.getProductLine(), collectibleDto.getPartOf());
+        Collectible parent = getParent(productLine, collectibleDto.getPartOf());
         checkCircularRelation(collectible, parent);
         collectible.setPartOf(parent);
 
@@ -60,7 +61,7 @@ public class CollectibleMapper {
         Collectible parent = null;
 
         if (verbatim != null) {
-            List<Collectible> matches = collectibleRepository.findByProductLineContainingAndVerbatimIgnoreCaseContaining(line, verbatim);
+            List<Collectible> matches = collectibleRepository.findByProductLineAndVerbatimIgnoreCaseContaining(line, verbatim);
             if (matches.size() > 1) {
                 throw new RuntimeException("Too many matches for parents found: " + matches);
             } else if (matches.size() == 1) {
@@ -107,8 +108,7 @@ public class CollectibleMapper {
 
         dto.setPlacementNo(collectible.getPlacementNo());
 
-        ofNullable(collectible.getProductLine())
-                .ifPresent(dto::setProductLine);
+        dto.setProductLine(collectible.getProductLine().name());
 
         dto.setTags(
                 (collectible.getTags().size()>0 ? "#" : "")
