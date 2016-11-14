@@ -5,6 +5,7 @@
         var self = this;
 
         this.initialize = function() {
+            self.getLines();
             self.filterByLine = '';
             self.filterByVerbatim = '';
             self.username = $rootScope.authenticated;
@@ -18,6 +19,16 @@
             $http.get('/collections/' + self.username + queryString, []).then(
                 function(response) {
                     self.collection = response.data;
+                },
+                function() {
+                }
+            );
+        };
+
+        this.getLines = function() {
+            $http.get('/lines', []).then(
+                function(response) {
+                    self.lines = response.data;
                 },
                 function() {
                 }

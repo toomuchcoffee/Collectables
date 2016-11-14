@@ -93,6 +93,7 @@
 
         this.initialize = function() {
             self.getTags();
+            self.getLines();
         };
 
         this.getTags = function() {
@@ -100,6 +101,16 @@
                 function(response) {
                     self.tags = response.data;
                     self.checkHasMoreTags();
+                },
+                function() {
+                }
+            );
+        };
+
+        this.getLines = function() {
+            $http.get('/lines', []).then(
+                function(response) {
+                    self.lines = response.data;
                 },
                 function() {
                 }
