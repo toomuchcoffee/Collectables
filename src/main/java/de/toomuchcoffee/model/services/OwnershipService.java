@@ -17,10 +17,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static java.util.stream.Collectors.toList;
+import static java.util.Collections.reverseOrder;
+import static java.util.stream.Collectors.*;
 
 @Service
 public class OwnershipService {
@@ -102,10 +106,22 @@ public class OwnershipService {
         collection.setOwnerships(ownershipDtos);
         collection.setSize(ownerships.size());
 
+        Map<ProductLine, Long> ownedLines = ownerships.stream()
+                .map(Ownership::getCollectible)
+                .collect(groupingBy(Collectible::getProductLine, counting()))
+                .entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+        collection.setOwnedLines(ownedLines);
+
         BigDecimal value = ownerships.stream()
                 .map(o -> o.getPrice()==null ? BigDecimal.ZERO : o.getPrice())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
         collection.setValue(value);
         return collection;
     }

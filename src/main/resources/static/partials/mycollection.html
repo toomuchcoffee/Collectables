@@ -26,7 +26,15 @@
 
         <p ng-if="!ctrl.collection.ownerships"><span class="label label-warning">You don't have any items marked as owned, yet. Start adding items on the "Browse" page.</span></p>
         <p ng-if="ctrl.collection.ownerships">
-            <span class="label label-success"><strong>{{ctrl.collection.size}}</strong> collectibles with a total value of <strong>{{ctrl.collection.value | currency}}</strong></span>
+            <span class="label label-success"><strong>{{ctrl.collection.size}}</strong> collectibles found</span>
+            <dl>
+                <dt>Total value</dt>
+                <dd>{{ctrl.collection.value | currency}}</dd>
+                <dt>Owned lines</dt>
+                <dd ng-repeat="(key, value) in ctrl.collection.ownedLines">
+                    {{key}}: <strong>{{value}}</strong>
+                </dd>
+            </dl>
         </p>
 
         <div class="list-group container-fluid">

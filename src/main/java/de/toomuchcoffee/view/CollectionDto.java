@@ -1,7 +1,10 @@
 package de.toomuchcoffee.view;
 
+import de.toomuchcoffee.model.entites.ProductLine;
+
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public class CollectionDto {
     private List<OwnershipDto> ownerships;
@@ -9,6 +12,8 @@ public class CollectionDto {
     private Integer size;
 
     private BigDecimal value;
+
+    private Map<ProductLine, Long> ownedLines;
 
     public List<OwnershipDto> getOwnerships() {
         return ownerships;
@@ -32,5 +37,13 @@ public class CollectionDto {
 
     public void setValue(BigDecimal value) {
         this.value = value;
+    }
+
+    public Map<ProductLine, Long> getOwnedLines() {
+        return ownedLines;
+    }
+
+    public void setOwnedLines(Map<ProductLine, Long> ownedLines) {
+        this.ownedLines = ownedLines;
     }
 }
