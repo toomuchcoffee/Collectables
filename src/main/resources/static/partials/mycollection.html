@@ -50,7 +50,7 @@
                     <div ng-if="ownership.collectible.partOf">
                         (part of a set)
                     </div>
-                    <div ng-if="!ownership.collectible.partOf && !ctrl.isSelected(ownership)">
+                    <div ng-if="!ctrl.isSelected(ownership)">
                         <a href="" ng-click="ctrl.selectOwnership(ownership)">
                             <span ng-if="ownership.price">{{ownership.price | currency }}</span>
                             <span ng-if="!ownership.price">edit price</span>
