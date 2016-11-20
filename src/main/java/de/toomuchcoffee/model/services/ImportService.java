@@ -41,8 +41,8 @@ public class ImportService {
     private CollectibleDto getCollectibleDto(CSVRecord record) {
         CollectibleDto collectible = new CollectibleDto();
         collectible.setVerbatim(record.get("verbatim"));
+        collectible.setProductLine(record.get("productLine"));
         collectible.setPlacementNo(getNullableValue(record, "placementNo"));
-        collectible.setProductLine(getNullableValue(record, "productLine"));
         collectible.setTags(getNullableValue(record, "movie"));
         collectible.setPartOf(getNullableValue(record, "partOf"));
         return collectible;

@@ -2,6 +2,7 @@ package de.toomuchcoffee.model.services;
 
 import de.toomuchcoffee.model.entites.Collectible;
 import de.toomuchcoffee.model.entites.Ownership;
+import de.toomuchcoffee.model.entites.ProductLine;
 import de.toomuchcoffee.model.entites.User;
 import de.toomuchcoffee.model.mappers.OwnershipMapper;
 import de.toomuchcoffee.model.repositories.CollectibleRepository;
@@ -16,10 +17,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static java.util.stream.Collectors.toList;
+import static java.util.Collections.reverseOrder;
+import static java.util.stream.Collectors.*;
 
 @Service
 public class OwnershipService {
@@ -75,15 +80,15 @@ public class OwnershipService {
         return ownerships.stream().map(ownershipMapper::toDto).collect(toList());
     }
 
-    public CollectionDto getCollection(String username, String productLine, String verbatim) {
+    public CollectionDto getCollection(String username, String line, String verbatim) {
         List<Ownership> ownerships;
-        if (!isNullOrEmpty(productLine) && !isNullOrEmpty(verbatim)) {
+        if (!isNullOrEmpty(line) && !isNullOrEmpty(verbatim)) {
             ownerships = ownershipRepository
-                    .findByUserUsernameAndCollectibleProductLineCodeIgnoreCaseContainingAndCollectibleVerbatimIgnoreCaseContaining(
-                    username, productLine, verbatim);
-        } else if (!isNullOrEmpty(productLine)) {
+                    .findByUserUsernameAndCollectibleProductLineAndCollectibleVerbatimIgnoreCaseContaining(
+                    username, ProductLine.valueOf(line), verbatim);
+        } else if (!isNullOrEmpty(line)) {
             ownerships = ownershipRepository
-                    .findByUserUsernameAndCollectibleProductLineCodeIgnoreCaseContaining(username, productLine);
+                    .findByUserUsernameAndCollectibleProductLine(username, ProductLine.valueOf(line));
         } else if (!isNullOrEmpty(verbatim)) {
             ownerships = ownershipRepository
                     .findByUserUsernameAndCollectibleVerbatimIgnoreCaseContaining(username, verbatim);
@@ -101,10 +106,22 @@ public class OwnershipService {
         collection.setOwnerships(ownershipDtos);
         collection.setSize(ownerships.size());
 
+        Map<ProductLine, Long> ownedLines = ownerships.stream()
+                .map(Ownership::getCollectible)
+                .collect(groupingBy(Collectible::getProductLine, counting()))
+                .entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+        collection.setOwnedLines(ownedLines);
+
         BigDecimal value = ownerships.stream()
                 .map(o -> o.getPrice()==null ? BigDecimal.ZERO : o.getPrice())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
         collection.setValue(value);
         return collection;
     }

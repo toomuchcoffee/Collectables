@@ -1,27 +1,27 @@
 package de.toomuchcoffee.model.services;
 
-import com.google.common.collect.Sets;
 import de.toomuchcoffee.model.services.TumblrService.TumblrPost;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.collect.Sets.*;
+import static java.util.Collections.reverseOrder;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 @Service
 public class RankingService {
 
-    public List<RankedPost> getRankedPosts(List<TumblrPost> posts, Set<String> tagQuery) {
+    public List<RankedPost> getRankedPosts(List<TumblrPost> posts, Set<String> qualifiers) {
         return posts.stream()
                 .map(tp -> new RankedPost(
-                        Sets.intersection(tagQuery, Sets.newHashSet(tp.tags)).size(),
-                        Sets.difference(Sets.newHashSet(tp.tags), tagQuery).size(),
+                        intersection(qualifiers, newHashSet(tp.tags)).size(),
+                        difference(newHashSet(tp.tags), qualifiers).size(),
                         tp))
-                .sorted(Comparator.comparing(RankedPost::getMisses))
-                .sorted(Collections.reverseOrder(Comparator.comparing(RankedPost::getHits)))
+                .sorted(comparing(RankedPost::getMisses))
+                .sorted(reverseOrder(comparing(RankedPost::getHits)))
                 .collect(toList());
     }
 

@@ -13,7 +13,7 @@ public class Collectible extends AbstractEntity {
 
     private String placementNo;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @Enumerated(EnumType.STRING)
     private ProductLine productLine;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})

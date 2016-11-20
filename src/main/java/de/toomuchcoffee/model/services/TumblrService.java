@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -13,9 +12,13 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.intersection;
+import static com.google.common.collect.Sets.newHashSet;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -29,9 +32,9 @@ public class TumblrService {
 
     private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 8);
 
-    public List<TumblrPost> getPosts() {
+    public List<TumblrPost> getPosts(Set<String> filter) {
         return posts.stream()
-                .filter(tp -> tp.tags != null)
+                .filter(tp -> tp.tags != null && intersection(filter, newHashSet(tp.tags)).size() > 0)
                 .collect(toList());
     }
 
@@ -53,7 +56,7 @@ public class TumblrService {
 
         String tumblrFirstPageUrl = "http://yaswb.tumblr.com/api/read/json?type=photo";
         TumblrResponse tumblrFirstResponse = getTumblrResponse(tumblrFirstPageUrl);
-        posts = Lists.newArrayList(tumblrFirstResponse.posts).stream()
+        posts = newArrayList(tumblrFirstResponse.posts).stream()
                 .filter(tp -> tp.tags != null)
                 .collect(toList());
 

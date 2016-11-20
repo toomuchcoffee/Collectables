@@ -4,12 +4,15 @@
             <h4>Filter your collection</h4>
             <div class="container-fluid">
                 <div class="form-group col-sm-5">
-                    <input type="text" class="form-control" placeholder="Line, e.g. Kenner, TLC, TVC, ..."
-                           ng-model="ctrl.filterByLine" ng-change="ctrl.findCollection()" />
-                </div>
-                <div class="form-group col-sm-5">
                     <input type="text" class="form-control" placeholder="Verbatim, e.g. Han Solo (Hoth Outfit)"
                            ng-model="ctrl.filterByVerbatim" ng-change="ctrl.findCollection()" />
+                </div>
+                <div class="form-group col-sm-5">
+                    <select class="form-control"
+                            ng-model="ctrl.filterByLine"
+                            ng-change="ctrl.findCollection()">
+                        <option ng-repeat="option in ctrl.lines" value="{{option.code}}">{{option.verbatim}}</option>
+                    </select>
                 </div>
                 <div class="form-group col-sm-2">
                     <button class="btn btn-default" ng-click="ctrl.initialize()">
@@ -23,7 +26,15 @@
 
         <p ng-if="!ctrl.collection.ownerships"><span class="label label-warning">You don't have any items marked as owned, yet. Start adding items on the "Browse" page.</span></p>
         <p ng-if="ctrl.collection.ownerships">
-            <span class="label label-success"><strong>{{ctrl.collection.size}}</strong> collectibles with a total value of <strong>{{ctrl.collection.value | currency}}</strong></span>
+            <span class="label label-success"><strong>{{ctrl.collection.size}}</strong> collectibles found</span>
+            <dl>
+                <dt>Total value</dt>
+                <dd>{{ctrl.collection.value | currency}}</dd>
+                <dt>Owned lines</dt>
+                <dd ng-repeat="(key, value) in ctrl.collection.ownedLines">
+                    {{key}}: <strong>{{value}}</strong>
+                </dd>
+            </dl>
         </p>
 
         <div class="list-group container-fluid">

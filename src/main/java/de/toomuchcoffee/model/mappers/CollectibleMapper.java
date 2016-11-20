@@ -41,7 +41,8 @@ public class CollectibleMapper {
             collectible.setPlacementNo(null);
         }
 
-        collectible.setProductLine(getProductLineFromCode(collectibleDto.getProductLine()));
+        ProductLine productLine = ProductLine.valueOf(collectibleDto.getProductLine());
+        collectible.setProductLine(productLine);
 
         if (collectibleDto.getTags() != null) {
             collectible.setTags(getTagsFromString(collectibleDto.getTags()));
@@ -49,18 +50,18 @@ public class CollectibleMapper {
             collectible.setTags(Sets.newHashSet());
         }
 
-        Collectible parent = getParent(collectibleDto.getProductLine(), collectibleDto.getPartOf());
+        Collectible parent = getParent(productLine, collectibleDto.getPartOf());
         checkCircularRelation(collectible, parent);
         collectible.setPartOf(parent);
 
         return collectible;
     }
 
-    private Collectible getParent(String line, String verbatim) {
+    private Collectible getParent(ProductLine line, String verbatim) {
         Collectible parent = null;
 
         if (verbatim != null) {
-            List<Collectible> matches = collectibleRepository.findByProductLineCodeIgnoreCaseContainingAndVerbatimIgnoreCaseContaining(line, verbatim);
+            List<Collectible> matches = collectibleRepository.findByProductLineAndVerbatimIgnoreCaseContaining(line, verbatim);
             if (matches.size() > 1) {
                 throw new RuntimeException("Too many matches for parents found: " + matches);
             } else if (matches.size() == 1) {
@@ -68,7 +69,7 @@ public class CollectibleMapper {
             } else {
                 parent = new Collectible();
                 parent.setVerbatim(verbatim);
-                parent.setProductLine(productLineService.find(line));
+                parent.setProductLine(line);
             }
         }
 
@@ -86,11 +87,6 @@ public class CollectibleMapper {
                 aParent = parent.getPartOf();
             }
         }
-    }
-
-    private ProductLine getProductLineFromCode(String code) {
-        return ofNullable(productLineService.find(code))
-                .orElse(new ProductLine(code.toUpperCase()));
     }
 
     private Set<Tag> getTagsFromString(String tagsString) {
@@ -112,8 +108,7 @@ public class CollectibleMapper {
 
         dto.setPlacementNo(collectible.getPlacementNo());
 
-        ofNullable(collectible.getProductLine())
-                .ifPresent(p -> dto.setProductLine(p.getCode()));
+        dto.setProductLine(collectible.getProductLine().name());
 
         dto.setTags(
                 (collectible.getTags().size()>0 ? "#" : "")

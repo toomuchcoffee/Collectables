@@ -15,9 +15,9 @@ public class CollectionController {
     @RequestMapping(value = "{username}", method = RequestMethod.GET)
     public CollectionDto getCollection(
             @PathVariable String username,
-            @RequestParam(name="line", required = false) String productLine,
+            @RequestParam(required = false) String line,
             @RequestParam(required = false) String verbatim) {
-        return ownershipService.getCollection(username, productLine, verbatim);
+        return ownershipService.getCollection(username, line, verbatim);
     }
 
 }

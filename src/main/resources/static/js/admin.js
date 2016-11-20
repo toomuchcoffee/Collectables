@@ -7,19 +7,8 @@
         this.newUser = {};
 
         this.initialize = function() {
-            this.getLines();
             this.getUsers();
             this.getTumblrTimestamp();
-        };
-
-        this.getLines = function() {
-            $http.get('/lines', []).then(
-                function(response) {
-                    self.lines = response.data;
-                },
-                function() {
-                }
-            );
         };
 
         this.getUsers = function() {
@@ -48,17 +37,6 @@
                     self.getTumblrTimestamp();
                 },
                 function() {
-                }
-            )
-        };
-
-        this.deleteLine = function(line) {
-            $http.delete('/admin/lines/'+line.code, []).then(
-                function(response) {
-                    self.getLines();
-                },
-                function() {
-                    alert("Something went wrong!");
                 }
             )
         };
