@@ -1,5 +1,6 @@
 package de.toomuchcoffee.model.services;
 
+import com.google.common.collect.Lists;
 import de.toomuchcoffee.model.entites.Collectible;
 import de.toomuchcoffee.model.entites.Ownership;
 import de.toomuchcoffee.model.entites.ProductLine;
@@ -20,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -42,13 +44,14 @@ public class OwnershipService {
 
     @Transactional
     public void add(NewOwnershipDto ownershipDto) {
-        Collectible collectible = collectibleRepository.findOne(ownershipDto.getCollectibleId());
-        User user = userRepository.getOne(ownershipDto.getUsername());
-        Ownership ownership = new Ownership();
-        ownership.setCollectible(collectible);
-        ownership.setUser(user);
-        ownershipRepository.save(ownership);
-        addChildren(collectible, user);
+        collectibleRepository.findById(ownershipDto.getCollectibleId()).ifPresent(collectible -> {
+            User user = userRepository.getOne(ownershipDto.getUsername());
+            Ownership ownership = new Ownership();
+            ownership.setCollectible(collectible);
+            ownership.setUser(user);
+            ownershipRepository.save(ownership);
+            addChildren(collectible, user);
+        });
     }
 
     private void addChildren(Collectible collectible, User user) {
@@ -63,21 +66,25 @@ public class OwnershipService {
 
     @Transactional
     public void modify(Long id, ModifyOwnershipDto modifyOwnership) {
-        Ownership ownership = ownershipRepository.findOne(id);
-        ownership.setPrice(modifyOwnership.getPrice());
-        ownership.setMoc(modifyOwnership.isMoc());
-        ownershipRepository.save(ownership);
+        ownershipRepository.findById(id).ifPresent(ownership -> {
+            ownership.setPrice(modifyOwnership.getPrice());
+            ownership.setMoc(modifyOwnership.isMoc());
+            ownershipRepository.save(ownership);
+        });
     }
 
     public void delete(Long id) {
-        ownershipRepository.delete(id);
+        ownershipRepository.deleteById(id);
     }
 
     public List<OwnershipDto> findByUsernameAndCollectibleId(String username, Long collectibleId) {
-        User user = userRepository.findOne(username);
-        Collectible collectible = collectibleRepository.findOne(collectibleId);
-        List<Ownership> ownerships = ownershipRepository.findByUserAndCollectible(user, collectible);
-        return ownerships.stream().map(ownershipMapper::toDto).collect(toList());
+        Optional<User> user = userRepository.findById(username);
+        Optional<Collectible> collectible = collectibleRepository.findById(collectibleId);
+        if (user.isPresent() && collectible.isPresent()) {
+            return ownershipRepository.findByUserAndCollectible(user.get(), collectible.get()).stream()
+                    .map(ownershipMapper::toDto).collect(toList());
+        }
+        return Lists.newArrayList();
     }
 
     public CollectionDto getCollection(String username, String line, String verbatim) {
@@ -85,7 +92,7 @@ public class OwnershipService {
         if (!isNullOrEmpty(line) && !isNullOrEmpty(verbatim)) {
             ownerships = ownershipRepository
                     .findByUserUsernameAndCollectibleProductLineAndCollectibleVerbatimIgnoreCaseContaining(
-                    username, ProductLine.valueOf(line), verbatim);
+                            username, ProductLine.valueOf(line), verbatim);
         } else if (!isNullOrEmpty(line)) {
             ownerships = ownershipRepository
                     .findByUserUsernameAndCollectibleProductLine(username, ProductLine.valueOf(line));
@@ -120,7 +127,7 @@ public class OwnershipService {
         collection.setOwnedLines(ownedLines);
 
         BigDecimal value = ownerships.stream()
-                .map(o -> o.getPrice()==null ? BigDecimal.ZERO : o.getPrice())
+                .map(o -> o.getPrice() == null ? BigDecimal.ZERO : o.getPrice())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         collection.setValue(value);
         return collection;

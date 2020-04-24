@@ -1,36 +1,45 @@
 package de.toomuchcoffee.model.services;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
+import com.tumblr.jumblr.JumblrClient;
+import com.tumblr.jumblr.types.Blog;
+import com.tumblr.jumblr.types.Photo;
+import com.tumblr.jumblr.types.PhotoPost;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.BiConsumer;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.intersection;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.stream.Collectors.toList;
 
 @Service
 public class TumblrService {
+    private static final int MAX_PAGE_SIZE = 50;
 
-    private List<TumblrPost> posts;
+    private List<TumblrPost> posts = new ArrayList<>();
 
     private Long timestamp;
 
-    private ObjectMapper objectMapper;
+    private final JumblrClient jumblrClient;
 
-    private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 8);
+    private final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 8);
+
+    private TumblrService(
+            @Value("${tumblr.consumer-key}") String consumerKey,
+            @Value("${tumblr.consumer-secret}") String consumerSecret) {
+        this.jumblrClient = new JumblrClient(consumerKey, consumerSecret);
+    }
+
 
     public List<TumblrPost> getPosts(Set<String> filter) {
         return posts.stream()
@@ -49,74 +58,87 @@ public class TumblrService {
     }
 
     public void readPosts() {
-        this.timestamp = System.currentTimeMillis();
+        Blog blog = jumblrClient.blogInfo("yaswb.tumblr.com");
+        Integer postCount = blog.getPostCount();
 
-        objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        BiConsumer<Integer, Integer> function = (offset, pageSize) -> {
+            Map<String, Integer> options = ImmutableMap.of("limit", pageSize, "offset", offset);
+            executor.submit(() ->
+                    jumblrClient.blogPosts("yaswb", options).stream()
+                            .filter(post -> post instanceof PhotoPost)
+                            .map(post -> (PhotoPost) post)
+                            .forEach(post -> post.getPhotos().stream()
+                                    .map(photo -> mapToTumblrResponse(post, photo))
+                                    .forEach(posts::add)));
+        };
 
-        String tumblrFirstPageUrl = "http://yaswb.tumblr.com/api/read/json?type=photo";
-        TumblrResponse tumblrFirstResponse = getTumblrResponse(tumblrFirstPageUrl);
-        posts = newArrayList(tumblrFirstResponse.posts).stream()
-                .filter(tp -> tp.tags != null)
-                .collect(toList());
-
-        int offset = 20;
-        int maxPage = (int) Math.ceil(((double) tumblrFirstResponse.postsTotal) / offset);
-        for (int page = 1; page < maxPage; page ++) {
-            final int start = page * offset;
-            final String tumblrUrl = String.format("http://yaswb.tumblr.com/api/read/json?type=photo&num=20&start=%s", start);
-            executor.submit(() -> {
-                System.out.println(String.format("Getting tumblr response from url: %s", tumblrUrl));
-                TumblrResponse tumblrPageResponse = getTumblrResponse(tumblrUrl);
-                posts.addAll(Arrays.asList(tumblrPageResponse.posts));
-            });
-        }
+        new BatchedExecutor(MAX_PAGE_SIZE, postCount).execute(function);
     }
 
     public Long getTimestamp() {
         return timestamp;
     }
 
-    private TumblrResponse getTumblrResponse(String tumblrUrl) {
-        String jsonString = new RestTemplate().getForObject(tumblrUrl, String.class);
-        jsonString = jsonString.replaceFirst("var tumblr_api_read =", "").trim();
-
-        try {
-            return objectMapper.readValue(jsonString, TumblrResponse.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private TumblrPost mapToTumblrResponse(PhotoPost post, Photo photo) {
+        TumblrPost tumblrPost = new TumblrPost(post.getTags().toArray(new String[0]));
+        photo.getSizes().forEach(s -> {
+            switch (s.getWidth()) {
+                case 1280:
+                    tumblrPost.setPhotoUrl1280(s.getUrl());
+                    break;
+                case 500:
+                    tumblrPost.setPhotoUrl500(s.getUrl());
+                    break;
+                case 400:
+                    tumblrPost.setPhotoUrl400(s.getUrl());
+                    break;
+                case 250:
+                    tumblrPost.setPhotoUrl250(s.getUrl());
+                    break;
+                case 100:
+                    tumblrPost.setPhotoUrl100(s.getUrl());
+                    break;
+                case 75:
+                    tumblrPost.setPhotoUrl75(s.getUrl());
+                    break;
+            }
+        });
+        return tumblrPost;
     }
 
-    @JsonIgnoreProperties
-    public static class TumblrResponse {
-        @JsonProperty("posts-total")
-        public int postsTotal;
 
-        public TumblrPost[] posts;
-    }
-
-    @JsonIgnoreProperties
+    @Getter
+    @Setter
+    @RequiredArgsConstructor
     public static class TumblrPost {
-        public String[] tags;
+        public final String[] tags;
 
-        @JsonProperty("photo-url-1280")
         public String photoUrl1280;
 
-        @JsonProperty("photo-url-500")
         public String photoUrl500;
 
-        @JsonProperty("photo-url-400")
         public String photoUrl400;
 
-        @JsonProperty("photo-url-250")
         public String photoUrl250;
 
-        @JsonProperty("photo-url-100")
         public String photoUrl100;
 
-        @JsonProperty("photo-url-75")
         public String photoUrl75;
+    }
+
+    @RequiredArgsConstructor
+    public static class BatchedExecutor {
+        private final int pageSize;
+        private final int totalCount;
+
+        public <T> void execute(BiConsumer<Integer, Integer> function) {
+            int count = 0;
+            while ((count * pageSize) < totalCount) {
+                int offset = count * pageSize;
+                function.accept(offset, pageSize);
+                count++;
+            }
+        }
     }
 
 }

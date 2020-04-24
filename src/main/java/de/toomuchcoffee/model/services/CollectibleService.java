@@ -43,10 +43,9 @@ public class CollectibleService {
 
     @Transactional
     public void update(Long id, CollectibleDto collectibleDto) {
-        Collectible collectible = collectibleRepository.findOne(id);
-        if (collectible == null) {
-            throw new NoSuchElementException(String.format("Collectible with id %d does not exist", id));
-        }
+        Collectible collectible = collectibleRepository
+                .findById(id)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Collectible with id %d does not exist", id)));
         if (!Objects.equals(id, collectibleDto.getId())) {
             throw new IllegalArgumentException(String.format("Id %d does not match with dto id %d", id, collectibleDto.getId()));
         }
@@ -61,12 +60,13 @@ public class CollectibleService {
 
     @Transactional
     public void delete(Long id) {
-        collectibleRepository.delete(id);
+        collectibleRepository.deleteById(id);
     }
 
     public CollectibleDto findOne(Long id) {
-        Collectible collectible = collectibleRepository.findOne(id);
-        return collectibleMapper.toDto(collectible);
+        return collectibleRepository.findById(id)
+                .map(collectibleMapper::toDto)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Collectible with id %d does not exist", id)));
     }
 
     public List<CollectibleDto> find() {
@@ -108,7 +108,8 @@ public class CollectibleService {
     }
 
     public byte[] getCollectibleThumbnail(Long collectibleId) {
-        Collectible collectible = collectibleRepository.findOne(collectibleId);
-        return imageService.getCollectibleThumbnail(collectible);
+        return collectibleRepository.findById(collectibleId)
+                .map(imageService::getCollectibleThumbnail)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Collectible with id %d does not exist", collectibleId)));
     }
 }

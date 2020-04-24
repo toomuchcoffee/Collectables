@@ -18,7 +18,7 @@ public class TagService {
     private TagRepository tagRepository;
 
     public Tag find(String tagId) {
-        return tagRepository.findOne(tagId.toLowerCase());
+        return tagRepository.findById(tagId.toLowerCase()).orElse(null);
     }
 
     public List<TagDto> findAll() {
@@ -30,6 +30,6 @@ public class TagService {
 
     @Transactional
     public void delete(String id) {
-        tagRepository.delete(id);
+        tagRepository.deleteById(id);
     }
 }

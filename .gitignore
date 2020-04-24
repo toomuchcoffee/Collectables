@@ -1,4 +1,6 @@
-/target/
-*.iml
-/.idea
-/.mvn
+.idea
+**/*.iml
+target
+**/application-local.yml
+.postgres-data
+.lucene

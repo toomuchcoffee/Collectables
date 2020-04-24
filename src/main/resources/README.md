@@ -1,12 +1,23 @@
-Database setup for local development
-====================================
-* start postgres server
-* open psql console
-  * # CREATE DATABASE collectables;
-  * # CREATE USER collectables WITH PASSWORD 'geheim1';
-  * # GRANT ALL PRIVILEGES ON DATABASE "collectables" TO collectables;
+### Setup for local development
+
+#### Start environment with DB
+```
+docker-compose up -d
+```
+
+#### Connect to DB
+```
+psql -h localhost -p 5432 -U collectables -d collectables 
+```
+enter password `geheim1`
+
+#### Stop environment with DB
+```
+docker-compose down
+```
+   
+### Testing
+Docker needs to run for the test database    
   
-WIP: Swagger config
-===================
-see http://www.baeldung.com/swagger-2-documentation-for-spring-rest-api
+
 
