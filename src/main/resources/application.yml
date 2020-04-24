@@ -1,26 +1,30 @@
 spring:
-    jpa:
-        hibernate:
-            ddl-auto: none
-    database:
-        driver-class-name: org.postgresql.Driver
-    datasource:
-        url: jdbc:postgresql://localhost:5432/collectables
-        username: collectables
-        password: geheim1
+  jpa:
+    hibernate:
+      ddl-auto: none
+  database:
+    driver-class-name: org.postgresql.Driver
+  datasource:
+    url: jdbc:postgresql://localhost:5432/collectables
+    username: collectables
+    password: geheim1
 
 # actuator specific
 management:
   context-path: /status
 
+tumblr:
+  consumer-key: ${API_KEY}
+  consumer-secret: ${API_SECRET}
+
+flyway:
+  table: schema_version
+
 ---
 
 spring:
-    profiles: heroku
-    datasource:
-        url: ${JDBC_DATABASE_URL}
-        username: ${JDBC_DATABASE_USERNAME}
-        password: ${JDBC_DATABASE_PASSWORD}
-    tumblr:
-      consumer-key: ${API_KEY}
-      consumer-secret: ${API_SECRET}
+  profiles: heroku
+  datasource:
+    url: ${JDBC_DATABASE_URL}
+    username: ${JDBC_DATABASE_USERNAME}
+    password: ${JDBC_DATABASE_PASSWORD}
