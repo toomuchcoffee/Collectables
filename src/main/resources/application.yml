@@ -8,6 +8,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/collectables
     username: collectables
     password: geheim1
+  flyway:
+    enabled: true
+    table: schema_version
+    validate-on-migrate: false
 
 # actuator specific
 management:
@@ -16,11 +20,6 @@ management:
 tumblr:
   consumer-key: ${API_KEY}
   consumer-secret: ${API_SECRET}
-
-flyway:
-  enabled: true
-  table: schema_version
-  validate-on-migrate: false
 
 ---
 
