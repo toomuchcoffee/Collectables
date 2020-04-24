@@ -18,7 +18,9 @@ tumblr:
   consumer-secret: ${API_SECRET}
 
 flyway:
+  enabled: true
   table: schema_version
+  validate-on-migrate: false
 
 ---
 
