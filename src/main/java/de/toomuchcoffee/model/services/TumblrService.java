@@ -26,7 +26,7 @@ import static java.util.stream.Collectors.toList;
 public class TumblrService {
     private static final int MAX_PAGE_SIZE = 50;
 
-    private List<TumblrPost> posts = new ArrayList<>();
+    private final List<TumblrPost> posts = new ArrayList<>();
 
     private Long timestamp;
 

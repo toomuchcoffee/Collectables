@@ -1,10 +1,10 @@
 package de.toomuchcoffee.model.services;
 
 import de.toomuchcoffee.view.CollectibleDto;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +16,10 @@ import static java.util.Arrays.stream;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Service
+@RequiredArgsConstructor
 public class ImportService {
 
-    @Autowired
-    private CollectibleService collectibleService;
+    private final CollectibleService collectibleService;
 
     @Transactional
     public void importCsv(byte[] data) throws IOException {

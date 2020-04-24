@@ -8,7 +8,7 @@ import de.toomuchcoffee.model.repositories.CollectibleRepository;
 import de.toomuchcoffee.model.services.ProductLineService;
 import de.toomuchcoffee.model.services.TagService;
 import de.toomuchcoffee.view.CollectibleDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -21,16 +21,14 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 @Component
+@RequiredArgsConstructor
 public class CollectibleMapper {
 
-    @Autowired
-    private CollectibleRepository collectibleRepository;
+    private final CollectibleRepository collectibleRepository;
 
-    @Autowired
-    private TagService tagService;
+    private final TagService tagService;
 
-    @Autowired
-    private ProductLineService productLineService;
+    private final ProductLineService productLineService;
 
     public Collectible mergeWithEntity(CollectibleDto collectibleDto, Collectible collectible) {
         collectible.setVerbatim(collectibleDto.getVerbatim());

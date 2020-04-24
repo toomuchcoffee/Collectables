@@ -2,14 +2,14 @@ package de.toomuchcoffee.model.mappers;
 
 import de.toomuchcoffee.model.entites.Ownership;
 import de.toomuchcoffee.view.OwnershipDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class OwnershipMapper {
 
-    @Autowired
-    private CollectibleMapper collectibleMapper;
+    private final CollectibleMapper collectibleMapper;
 
     public OwnershipDto toDto(Ownership ownership) {
         OwnershipDto dto = new OwnershipDto();

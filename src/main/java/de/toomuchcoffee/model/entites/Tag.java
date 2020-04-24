@@ -1,11 +1,16 @@
 package de.toomuchcoffee.model.entites;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
 public class Tag extends AbstractEntity {
     @Id
@@ -18,21 +23,5 @@ public class Tag extends AbstractEntity {
 
     public Tag(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<Collectible> getCollectibles() {
-        return collectibles;
-    }
-
-    public void setCollectibles(Set<Collectible> collectibles) {
-        this.collectibles = collectibles;
     }
 }

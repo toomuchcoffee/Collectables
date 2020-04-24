@@ -1,7 +1,7 @@
 package de.toomuchcoffee.controller;
 
 import de.toomuchcoffee.model.services.ImportService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +11,10 @@ import java.io.IOException;
 
 @RequestMapping("file")
 @RestController
+@RequiredArgsConstructor
 public class ImportController {
 
-    @Autowired
-    private ImportService importService;
+    private final ImportService importService;
 
     @RequestMapping(value="", method= RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)

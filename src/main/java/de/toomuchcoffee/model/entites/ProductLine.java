@@ -1,9 +1,14 @@
 package de.toomuchcoffee.model.entites;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
 
+@RequiredArgsConstructor
+@Getter
 public enum ProductLine {
     // inspired by JediBusiness.com
     KENNER("Kenner", 1978, 1985, newHashSet("vintage")),
@@ -33,34 +38,12 @@ public enum ProductLine {
     TFA("The Force Awakens", 2015, 2016, newHashSet()),
     RO("Rogue One", 2016, 2017, newHashSet());
 
-    private String verbatim;
+    private final String verbatim;
 
-    private Integer startYear;
+    private final Integer startYear;
 
-    private Integer endYear;
+    private final Integer endYear;
 
-    private Set<String> tags;
+    private final Set<String> tags;
 
-    ProductLine(String verbatim, Integer startYear, Integer endYear, Set<String> tags) {
-        this.verbatim = verbatim;
-        this.startYear = startYear;
-        this.endYear = endYear;
-        this.tags = tags;
-    }
-
-    public String getVerbatim() {
-        return verbatim;
-    }
-
-    public Integer getStartYear() {
-        return startYear;
-    }
-
-    public Integer getEndYear() {
-        return endYear;
-    }
-
-    public Set<String> getTags() {
-        return tags;
-    }
 }

@@ -13,7 +13,7 @@ import de.toomuchcoffee.view.CollectionDto;
 import de.toomuchcoffee.view.ModifyOwnershipDto;
 import de.toomuchcoffee.view.NewOwnershipDto;
 import de.toomuchcoffee.view.OwnershipDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,18 +29,15 @@ import static java.util.Collections.reverseOrder;
 import static java.util.stream.Collectors.*;
 
 @Service
+@RequiredArgsConstructor
 public class OwnershipService {
-    @Autowired
-    private OwnershipRepository ownershipRepository;
+    private final OwnershipRepository ownershipRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private CollectibleRepository collectibleRepository;
+    private final CollectibleRepository collectibleRepository;
 
-    @Autowired
-    private OwnershipMapper ownershipMapper;
+    private final OwnershipMapper ownershipMapper;
 
     @Transactional
     public void add(NewOwnershipDto ownershipDto) {

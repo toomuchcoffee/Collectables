@@ -4,7 +4,7 @@ import de.toomuchcoffee.model.services.OwnershipService;
 import de.toomuchcoffee.view.ModifyOwnershipDto;
 import de.toomuchcoffee.view.NewOwnershipDto;
 import de.toomuchcoffee.view.OwnershipDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,10 +12,10 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/ownerships")
 @CrossOrigin
+@RequiredArgsConstructor
 public class OwnershipController {
 
-    @Autowired
-    private OwnershipService ownershipService;
+    private final OwnershipService ownershipService;
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public void addOwnership(@RequestBody NewOwnershipDto ownership) {

@@ -4,7 +4,7 @@ import com.google.common.collect.Sets;
 import de.toomuchcoffee.model.entites.Collectible;
 import de.toomuchcoffee.model.services.RankingService.RankedPost;
 import de.toomuchcoffee.model.services.TumblrService.TumblrPost;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -13,16 +13,14 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class ImageService {
 
-    @Autowired
-    private TumblrService tumblrService;
+    private final TumblrService tumblrService;
 
-    @Autowired
-    private PermutationService permutationService;
+    private final PermutationService permutationService;
 
-    @Autowired
-    private RankingService rankingService;
+    private final RankingService rankingService;
 
     public byte[] getWelcomeImage() throws IOException {
         String url = tumblrService.getAnyPost().photoUrl500;

@@ -2,7 +2,7 @@ package de.toomuchcoffee.controller;
 
 import de.toomuchcoffee.model.services.ProductLineService;
 import de.toomuchcoffee.view.ProductLineDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,10 +13,10 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/lines")
 @CrossOrigin
+@RequiredArgsConstructor
 public class ProductLineController {
 
-    @Autowired
-    private ProductLineService productLineService;
+    private final ProductLineService productLineService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public List<ProductLineDto> allProductLines() {

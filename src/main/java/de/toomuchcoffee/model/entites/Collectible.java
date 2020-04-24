@@ -1,8 +1,13 @@
 package de.toomuchcoffee.model.entites;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
 public class Collectible extends AbstractEntity {
     @Id
@@ -27,59 +32,4 @@ public class Collectible extends AbstractEntity {
     @OneToMany(mappedBy="partOf", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Collectible> contains;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getVerbatim() {
-        return verbatim;
-    }
-
-    public void setVerbatim(String verbatim) {
-        this.verbatim = verbatim;
-    }
-
-    public ProductLine getProductLine() {
-        return productLine;
-    }
-
-    public void setProductLine(ProductLine productLine) {
-        this.productLine = productLine;
-    }
-
-    public Set<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
-    }
-
-    public String getPlacementNo() {
-        return placementNo;
-    }
-
-    public void setPlacementNo(String placementNo) {
-        this.placementNo = placementNo;
-    }
-
-    public Collectible getPartOf() {
-        return partOf;
-    }
-
-    public void setPartOf(Collectible partOf) {
-        this.partOf = partOf;
-    }
-
-    public Set<Collectible> getContains() {
-        return contains;
-    }
-
-    public void setContains(Set<Collectible> contains) {
-        this.contains = contains;
-    }
 }

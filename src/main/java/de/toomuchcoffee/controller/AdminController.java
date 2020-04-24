@@ -4,7 +4,7 @@ import de.toomuchcoffee.model.entites.User;
 import de.toomuchcoffee.model.services.*;
 import de.toomuchcoffee.view.CollectibleDto;
 import de.toomuchcoffee.view.NewUserDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,22 +12,18 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/admin")
 @CrossOrigin
+@RequiredArgsConstructor
 public class AdminController {
 
-    @Autowired
-    private CollectibleService collectibleService;
+    private final CollectibleService collectibleService;
 
-    @Autowired
-    private TagService tagService;
+    private final TagService tagService;
 
-    @Autowired
-    private ProductLineService productLineService;
+    private final ProductLineService productLineService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private TumblrService tumblrService;
+    private final TumblrService tumblrService;
 
 
     @RequestMapping(value = "/collectibles/{id}", method = RequestMethod.PUT)

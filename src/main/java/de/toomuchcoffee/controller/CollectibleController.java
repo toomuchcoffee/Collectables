@@ -2,7 +2,7 @@ package de.toomuchcoffee.controller;
 
 import de.toomuchcoffee.model.services.CollectibleService;
 import de.toomuchcoffee.view.CollectibleDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +14,10 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @RestController
 @RequestMapping(value = "/collectibles")
 @CrossOrigin
+@RequiredArgsConstructor
 public class CollectibleController {
 
-    @Autowired
-    private CollectibleService collectibleService;
+    private final CollectibleService collectibleService;
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public CollectibleDto findOne(@PathVariable Long id) {

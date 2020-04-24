@@ -7,7 +7,7 @@ import de.toomuchcoffee.model.entites.Tag;
 import de.toomuchcoffee.model.mappers.CollectibleMapper;
 import de.toomuchcoffee.model.repositories.CollectibleRepository;
 import de.toomuchcoffee.view.CollectibleDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,18 +21,15 @@ import static java.util.Comparator.nullsLast;
 import static java.util.stream.Collectors.toList;
 
 @Service
+@RequiredArgsConstructor
 public class CollectibleService {
-    @Autowired
-    private CollectibleRepository collectibleRepository;
+    private final CollectibleRepository collectibleRepository;
 
-    @Autowired
-    private TagService tagService;
+    private final TagService tagService;
 
-    @Autowired
-    private ImageService imageService;
+    private final ImageService imageService;
 
-    @Autowired
-    private CollectibleMapper collectibleMapper;
+    private final CollectibleMapper collectibleMapper;
 
     @Transactional
     public Long add(CollectibleDto collectibleDto) {
@@ -79,14 +76,11 @@ public class CollectibleService {
         if (!isNullOrEmpty(line) && !isNullOrEmpty(verbatim)) {
             collectibles = collectibleRepository.findByProductLineAndVerbatimIgnoreCaseContaining(
                     ProductLine.valueOf(line), verbatim);
-        }
-        else if (!isNullOrEmpty(line)) {
+        } else if (!isNullOrEmpty(line)) {
             collectibles = collectibleRepository.findByProductLine(ProductLine.valueOf(line));
-        }
-        else if (!isNullOrEmpty(verbatim)) {
+        } else if (!isNullOrEmpty(verbatim)) {
             collectibles = collectibleRepository.findByVerbatimIgnoreCaseContaining(verbatim);
-        }
-        else {
+        } else {
             collectibles = collectibleRepository.findAll();
         }
         return sortedCollectibleDtos(collectibles);
