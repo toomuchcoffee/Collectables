@@ -9,7 +9,7 @@ docker-compose up -d
 ```
 psql -h localhost -p 5432 -U collectables -d collectables 
 ```
-enter password `s3cr3t`
+enter password `geheim1`
 
 #### Stop environment with DB
 ```
